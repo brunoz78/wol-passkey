@@ -1,0 +1,12 @@
+# Persönliche Konfiguration (enthält den geheimen Setup-Schlüssel!)
+# (nur im Hauptordner - auth/config.php gehört ins Repo)
+/config.php
+
+# Zur Laufzeit erzeugte Nutzerdaten (Passwort-Hash, Passkeys, Geräteliste)
+auth/data.php
+auth/devices-data.php
+auth/*.tmp
+
+# Lokale Werkzeuge
+.claude/
+debug-host.php
