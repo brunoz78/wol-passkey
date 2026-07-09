@@ -38,6 +38,7 @@ $excludes = [
     '.gitignore',
     'remote.png',              // ungenutztes Alt-Asset
     'debug-host.php',          // lokales Werkzeug
+    'build-release.cmd',       // Build-Werkzeug (Windows-Starter)
     'auth/data.php',           // zur Laufzeit erzeugte Nutzerdaten
     'auth/devices-data.php',   // zur Laufzeit erzeugte Geräteliste
 ];
