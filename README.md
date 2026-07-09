@@ -121,6 +121,31 @@ wurde. Die Seite also immer über dieselbe Adresse aufrufen (Lesezeichen!).
 - Passwort vergessen? `setup.php` aufrufen und mit dem Setup-Schlüssel ein
   neues setzen
 
+## Release-ZIP selbst bauen
+
+Das Installations-ZIP (nur die für den Betrieb nötigen Dateien) wird mit einem
+mitgelieferten Skript erzeugt – plattformübergreifend mit korrekten
+Vorwärts-Schrägstrichen (wichtig fürs Entpacken auf Linux/NAS):
+
+```bash
+php tools/build-release.php 1.0.1
+```
+
+Ergebnis: `dist/wol-passkey-1.0.1.zip`. Das Skript schliesst automatisch die
+geheime `config.php`, Screenshots und Entwicklungs-Dateien aus und bricht ab,
+falls versehentlich ein Geheimnis im Archiv landen würde. Die Versionsnummer im
+Dateinamen ist das Argument.
+
+Anschliessend an ein GitHub-Release anhängen – entweder über die Weboberfläche
+(*Releases → Draft/Edit release → Datei ins „Attach binaries"-Feld ziehen*) oder
+per Kommandozeile:
+
+```bash
+gh release create v1.0.1 dist/wol-passkey-1.0.1.zip --title "v1.0.1" --notes "…"
+# oder an ein bestehendes Release anhängen:
+gh release upload v1.0.1 dist/wol-passkey-1.0.1.zip
+```
+
 ## Credits
 
 - Ursprüngliches WOL-Skript: © 2014 [Barry Schiffer](http://www.barryschiffer.com),

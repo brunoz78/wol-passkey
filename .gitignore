@@ -10,3 +10,6 @@ auth/*.tmp
 # Lokale Werkzeuge
 .claude/
 debug-host.php
+
+# Gebaute Release-ZIPs (tools/build-release.php)
+dist/
