@@ -2,66 +2,70 @@
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/devices.php';
 require_login();
-?>
-<!DOCTYPE html>
-<html>
-  <!--
 
-    PHP Wake on Lan
+/*
+  PHP Wake on Lan – basierend auf dem Skript von Barry Schiffer / Manuel
+  Azevedo (2014, http://www.barryschiffer.com/using-synology-disk-station-wake-lan).
+  Erweitert um Login, Passkeys, Geräteverwaltung und Themes.
+*/
+require __DIR__ . '/wol.php';
 
-    Version 1.0 - 2014.11.01
+$devices = devices_load();
 
-    Uses icon from http://www.streamlineicons.com/ Free Pack via https://www.iconfinder.com/icons/185036/remote_control_streamline_icon#size=128
-    (c) 2014 Barry Schiffer. Based on code provided by Barry Schiffer at http://www.barryschiffer.com/using-synology-disk-station-wake-lan
-    (c) 2014 Manuel Azevedo <azevedo.manuel@gmail.com> 
-      * Adapted to iPhone resolution
-      * Added image
-      * Adapt code
-      * Create config.php
-      * Add support for multiple mac formats
-    
-    -->
-  <?php include 'wol.php'; ?>
-  <head>
-    <meta id="viewport" name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="smartphone.css" />
-    <title><?php echo htmlspecialchars($sitename); ?></title>
-  </head>
-  <body>
-    <div class="title"><?php echo htmlspecialchars($sitename); ?></div>
-    <div class="undertitle">Sendet ein Magic Packet Signal an das angegebene Zielgerät.</div>
-    <div class="logo"><img src="remote.png" alt="PHP Wake on Lan" /></div>
-    <?php
-      $result = null;
+// WOL-Verarbeitung
+$wakeResult = null;
+$wakeError  = null;
+$wakemachine = $_GET['wake_machine'] ?? '';
 
-      $wakemachine = $_GET["wake_machine"] ?? "";
-
-      if($wakemachine != "" && $wakemachine != "-1") {
-        if (!csrf_check($_GET['csrf_token'] ?? '')) {
-          echo "<div class=\"messageNOK\">Ungültige Anfrage, bitte Formular erneut absenden.</div>\n<hr />\n";
+if ($wakemachine !== '' && $wakemachine !== '-1') {
+    if (!csrf_check($_GET['csrf_token'] ?? '')) {
+        $wakeError = 'Ungültige Anfrage, bitte Formular erneut absenden.';
+    } else {
+        ob_start();
+        $ok = WakeOnLan($networkbroadcast, $wakemachine, $port);
+        $wolOutput = ob_get_clean(); // technische Ausgabe von wol.php (Port/MAC/Daten)
+        if ($ok) {
+            $wakeResult = $wolOutput;
         } else {
-          $result = WakeOnLan($networkbroadcast, $wakemachine, $port);
+            $wakeError = 'Magic Packet konnte nicht gesendet werden.';
         }
-      }
+    }
+}
 
-      if($result != null)
-        echo "<div class=\"messageOK\">WOL für ".$wakemachine." war erfolgreich!</div>\n<hr />\n";
-    ?>
-    <form name="WakeOnLan" method="get" action="index.php">
-      <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
-      <div class="normal">
-        <label for="WakeOnLan" class="label">Bitte Zielgerät auswählen.<br /></label>
-      </div>
-      <div class="normal">
-        <select name="wake_machine" id="WakeOnLan">
-          <option id="select" value="-1">klick mich</option><?php PopulateMACList(devices_load()); ?>
-        </select>
-        <input id="submit" type="submit" value="Aufwecken" />
-      </div>
-    </form>
-    <div class="normal">
-      <a href="devices.php">Geräte verwalten</a> · <a href="register-passkey.php">Passkey verwalten</a> · <a href="logout.php">Abmelden</a>
-    </div>
-  </body>
-</html>
+$page_title = null;
+$brand_sub  = 'Gerät auswählen und aufwecken';
+$show_menu  = true;
+require __DIR__ . '/partials/head.php';
+?>
+    <?php if ($wakeError !== null): ?>
+      <div class="messageNOK"><?php echo htmlspecialchars($wakeError); ?></div>
+    <?php elseif ($wakeResult !== null): ?>
+      <div class="messageOK">Aufwecken gesendet an <?php echo htmlspecialchars($wakemachine); ?></div>
+    <?php endif; ?>
+
+    <?php if (count($devices) === 0): ?>
+      <p class="section-label" style="margin-top:20px">Noch keine Geräte eingetragen.</p>
+      <a class="btn mt" href="devices.php"><svg><use href="#i-plus"/></svg>Gerät hinzufügen</a>
+    <?php else: ?>
+      <form name="WakeOnLan" method="get" action="index.php">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
+        <p class="section-label" style="margin-top:18px">Deine Geräte</p>
+        <div class="devlist">
+          <?php foreach ($devices as $name => $mac): ?>
+            <label class="dev">
+              <input type="radio" name="wake_machine" value="<?php echo htmlspecialchars($mac, ENT_QUOTES); ?>" required />
+              <span class="ic"><svg><use href="#i-mon"/></svg></span>
+              <span class="txt">
+                <span class="nm"><?php echo htmlspecialchars($name); ?></span>
+                <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
+              </span>
+              <span class="ind"></span>
+            </label>
+          <?php endforeach; ?>
+        </div>
+        <div class="mt"><button class="btn btn-wake" type="submit"><svg><use href="#i-pw"/></svg>Aufwecken</button></div>
+      </form>
+    <?php endif; ?>
+
+    <div class="spacer"></div>
+<?php require __DIR__ . '/partials/foot.php'; ?>

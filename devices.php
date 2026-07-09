@@ -51,48 +51,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $devices = devices_load();
+$page_title = 'Geräte';
+$brand_title = 'Geräte verwalten';
+$brand_sub   = 'Zielgeräte hinzufügen oder entfernen';
+$show_menu   = true;
+require __DIR__ . '/partials/head.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="smartphone.css" />
-    <title><?php echo htmlspecialchars($sitename); ?> - Geräte</title>
-  </head>
-  <body>
-    <div class="title">Geräte verwalten</div>
-    <div class="undertitle">Zielgeräte für Wake on LAN hinzufügen oder entfernen.</div>
-
     <?php if (!devices_storage_writable()): ?>
-      <div class="messageNOK">Achtung: Der Ordner "auth" ist für den Webserver nicht beschreibbar.
+      <div class="messageNOK">Der Ordner „auth“ ist für den Webserver nicht beschreibbar –
         Änderungen können so nicht gespeichert werden.</div>
-      <hr />
     <?php endif; ?>
 
     <?php if ($error): ?>
       <div class="messageNOK"><?php echo htmlspecialchars($error); ?></div>
-      <hr />
     <?php elseif ($success): ?>
       <div class="messageOK"><?php echo htmlspecialchars($success); ?></div>
-      <hr />
     <?php endif; ?>
 
     <?php if (count($devices) === 0): ?>
-      <div class="normal">Noch keine Geräte eingetragen.</div>
+      <p class="section-label" style="margin-top:16px">Noch keine Geräte eingetragen.</p>
     <?php else: ?>
+      <p class="section-label" style="margin-top:16px">Deine Geräte</p>
       <?php foreach ($devices as $name => $mac): ?>
-        <div class="device-row">
-          <div class="device-info">
-            <?php echo htmlspecialchars($name); ?><br />
-            <span class="device-mac"><?php echo htmlspecialchars($mac); ?></span>
-          </div>
+        <div class="item">
+          <span class="ic"><svg><use href="#i-mon"/></svg></span>
+          <span class="txt grow">
+            <span class="nm"><?php echo htmlspecialchars($name); ?></span>
+            <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
+          </span>
           <form method="post" action="devices.php"
                 onsubmit="return confirm('Gerät &quot;<?php echo htmlspecialchars($name, ENT_QUOTES); ?>&quot; wirklich entfernen?');">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
-            <button class="btn-small" type="submit">Entfernen</button>
+            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg>Entfernen</button>
           </form>
         </div>
       <?php endforeach; ?>
@@ -102,22 +94,17 @@ $devices = devices_load();
     <form method="post" action="devices.php">
       <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
       <input type="hidden" name="action" value="add" />
-      <div class="normal">
-        <label>Gerätename<br />
-          <input type="text" name="device_name" maxlength="40" placeholder="z.B. Wohnzimmer-PC" required />
-        </label>
+      <p class="section-label">Neues Gerät</p>
+      <div class="field">
+        <label for="dn">Gerätename</label>
+        <input id="dn" type="text" name="device_name" maxlength="40" placeholder="z.B. Wohnzimmer-PC" required />
       </div>
-      <div class="normal">
-        <label>MAC-Adresse<br />
-          <input type="text" name="device_mac" placeholder="00:11:22:33:44:55" required />
-        </label>
+      <div class="field">
+        <label for="dm">MAC-Adresse</label>
+        <input id="dm" type="text" name="device_mac" placeholder="00:11:22:33:44:55" required />
       </div>
-      <div class="normal">
-        <button class="btn" type="submit">Gerät hinzufügen</button>
-      </div>
+      <div class="mt"><button class="btn" type="submit"><svg><use href="#i-plus"/></svg>Gerät hinzufügen</button></div>
     </form>
 
-    <hr />
-    <div class="normal"><a href="index.php">Zurück</a></div>
-  </body>
-</html>
+    <div class="spacer"></div>
+<?php require __DIR__ . '/partials/foot.php'; ?>

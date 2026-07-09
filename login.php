@@ -37,44 +37,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
         $error = 'Passwort ist falsch.';
     }
 }
+$page_title = 'Login';
+$brand_sub  = 'Bitte anmelden';
+require __DIR__ . '/partials/head.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="smartphone.css" />
-    <title><?php echo htmlspecialchars($sitename); ?> - Login</title>
-  </head>
-  <body>
-    <div class="title"><?php echo htmlspecialchars($sitename); ?></div>
-    <div class="undertitle">Bitte anmelden.</div>
-    <div class="logo"><img src="remote.png" alt="PHP Wake on Lan" /></div>
+    <div class="hero"><svg><use href="#i-fp"/></svg></div>
 
     <?php if ($error): ?>
       <div class="messageNOK"><?php echo htmlspecialchars($error); ?></div>
-      <hr />
     <?php endif; ?>
 
-    <div class="normal">
-      <button class="btn" type="button" onclick="waLoginWithPasskey(document.getElementById('waStatus'))">Mit Passkey / Fingerabdruck anmelden</button>
-    </div>
-    <div id="waStatus" class="normal"></div>
+    <button class="btn" type="button" onclick="waLoginWithPasskey(document.getElementById('waStatus'))">
+      <svg><use href="#i-fp"/></svg>Mit Passkey anmelden
+    </button>
+    <div id="waStatus"></div>
 
-    <hr />
+    <div class="divider">oder mit Passwort</div>
 
-    <div class="normal">Oder mit Passwort:</div>
     <form method="post" action="login.php">
       <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
-      <div class="normal">
-        <label>Passwort<br />
-          <input type="password" name="password" autocomplete="current-password" autofocus required />
-        </label>
+      <div class="field">
+        <label for="pw">Passwort</label>
+        <input id="pw" type="password" name="password" autocomplete="current-password" autofocus required />
       </div>
-      <div class="normal">
-        <input id="submit" type="submit" value="Anmelden" />
-      </div>
+      <div class="mt"><button class="btn btn-ghost" type="submit">Anmelden</button></div>
     </form>
+
+    <div class="spacer"></div>
 
     <script src="assets/webauthn-client.js"></script>
     <?php if ($_SERVER['REQUEST_METHOD'] === 'GET'): ?>
@@ -84,5 +73,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
       waAutoLoginIfKnownDevice(document.getElementById('waStatus'));
     </script>
     <?php endif; ?>
-  </body>
-</html>
+<?php require __DIR__ . '/partials/foot.php'; ?>

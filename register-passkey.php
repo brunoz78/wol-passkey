@@ -4,42 +4,38 @@ require_once __DIR__ . '/auth/store.php';
 require_login();
 
 $data = auth_load();
+$page_title = 'Passkey';
+$brand_title = 'Passkey verwalten';
+$brand_sub   = 'Fingerabdruck / Face ID dieses Geräts';
+$show_menu   = true;
+require __DIR__ . '/partials/head.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="smartphone.css" />
-    <title><?php echo htmlspecialchars($sitename); ?> - Passkey</title>
-  </head>
-  <body>
-    <div class="title">Passkey verwalten</div>
-    <div class="undertitle">Registriere den Fingerabdruck/Face ID dieses Geräts für den Login.</div>
+    <div class="hero"><svg><use href="#i-fp"/></svg></div>
 
     <?php if (count($data['credentials']) > 0): ?>
+      <p class="section-label">Registrierte Passkeys</p>
+      <?php foreach ($data['credentials'] as $cred): ?>
+        <div class="item">
+          <span class="ic"><svg><use href="#i-fp"/></svg></span>
+          <span class="txt grow">
+            <span class="nm"><?php echo htmlspecialchars($cred['name'] ?? 'Unbenannt'); ?></span>
+            <span class="mac">registriert am <?php echo htmlspecialchars($cred['createdAt'] ?? '?'); ?></span>
+          </span>
+        </div>
+      <?php endforeach; ?>
       <hr />
-      <div class="normal">Registrierte Passkeys:</div>
-      <ul>
-        <?php foreach ($data['credentials'] as $cred): ?>
-          <li><?php echo htmlspecialchars($cred['name'] ?? 'Unbenannt'); ?> (registriert am <?php echo htmlspecialchars($cred['createdAt'] ?? '?'); ?>)</li>
-        <?php endforeach; ?>
-      </ul>
     <?php endif; ?>
 
-    <hr />
-    <div class="normal">
-      <label>Name für dieses Gerät<br />
-        <input type="text" id="deviceName" placeholder="z.B. Mein Smartphone" />
-      </label>
+    <div class="field">
+      <label for="deviceName">Name für dieses Gerät</label>
+      <input type="text" id="deviceName" placeholder="z.B. Mein Smartphone" />
     </div>
-    <div class="normal">
-      <button class="btn" type="button" onclick="waDoRegister()">Passkey für dieses Gerät registrieren</button>
+    <div class="mt">
+      <button class="btn" type="button" onclick="waDoRegister()"><svg><use href="#i-fp"/></svg>Passkey registrieren</button>
     </div>
-    <div id="waStatus" class="normal"></div>
+    <div id="waStatus"></div>
 
-    <hr />
-    <div class="normal"><a href="index.php">Zurück</a></div>
+    <div class="spacer"></div>
 
     <script src="assets/webauthn-client.js"></script>
     <script>
@@ -52,5 +48,4 @@ $data = auth_load();
         });
       }
     </script>
-  </body>
-</html>
+<?php require __DIR__ . '/partials/foot.php'; ?>

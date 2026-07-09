@@ -8,11 +8,15 @@ Vom Smartphone aus: Seite öffnen → Finger auflegen → Rechner aufwecken.
 
 ## Screenshots
 
-| Login mit Passkey | Rechner aufwecken |
-|:---:|:---:|
-| ![Login mit Passkey/Fingerabdruck](docs/screenshots/1-login.png) | ![Wake-on-LAN-Startseite](docs/screenshots/2-wake.png) |
-| **Geräte verwalten** | **Passkeys verwalten** |
-| ![Geräteverwaltung](docs/screenshots/3-devices.png) | ![Passkey-Verwaltung](docs/screenshots/4-passkey.png) |
+Drei umschaltbare Designs (Standard ist **Hell**):
+
+| Hell | Dunkel | Bunt |
+|:---:|:---:|:---:|
+| ![Design Hell](docs/screenshots/theme-daylight.png) | ![Design Dunkel](docs/screenshots/theme-midnight.png) | ![Design Bunt](docs/screenshots/theme-vivid.png) |
+
+| Login mit Passkey | Geräte verwalten | Passkeys verwalten |
+|:---:|:---:|:---:|
+| ![Login](docs/screenshots/screen-login.png) | ![Geräteverwaltung](docs/screenshots/screen-devices.png) | ![Passkey-Verwaltung](docs/screenshots/screen-passkey.png) |
 
 ## Funktionen
 
@@ -20,7 +24,10 @@ Vom Smartphone aus: Seite öffnen → Finger auflegen → Rechner aufwecken.
 - 🔐 **Login-Schutz**: Passwort-Login mit Sperre nach zu vielen Fehlversuchen
 - 👆 **Passkeys (WebAuthn)**: Anmeldung per Fingerabdruck/Face ID, pro Gerät registrierbar;
   auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch
-- 📱 **Für Smartphones optimiert**: grosse Buttons und Eingabefelder
+- 🎨 **Drei Designs**: Hell, Dunkel und Bunt – jederzeit über den Umschalter oben rechts
+  wählbar, die Wahl wird pro Browser gemerkt
+- 📱 **Für Smartphones optimiert**: grosse Buttons, antippbare Gerätekacheln,
+  Navigation im Hamburger-Menü
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
   ohne Dateien zu editieren
 - 🔁 **Reverse-Proxy-tauglich**: funktioniert hinter gängigen Reverse Proxies

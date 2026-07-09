@@ -1,164 +1,365 @@
+/* =========================================================================
+   Wake on LAN – themenfähiges Stylesheet
+   Drei Designs über CSS-Variablen: daylight (Standard), midnight, vivid.
+   Umgeschaltet per data-theme auf <html> (siehe assets/theme.js).
+   ========================================================================= */
+
+/* ---------- Standard = Daylight (hell) ---------- */
+:root, [data-theme="daylight"] {
+  --font: -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+  --page-bg: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  --text: #0f172a;
+  --muted: #64748b;
+  --brand: #0f172a;
+
+  --card-bg: #ffffff;
+  --card-border: #eef2f7;
+  --card-shadow: 0 2px 8px rgba(15,23,42,.06);
+
+  --accent: #2563eb;
+  --accent-grad: linear-gradient(135deg, #3b82f6, #2563eb);
+  --on-accent: #ffffff;
+  --btn-shadow: 0 8px 18px rgba(37,99,235,.28);
+
+  --hero-grad: linear-gradient(150deg, #3b82f6, #2563eb);
+  --hero-shadow: 0 16px 30px rgba(37,99,235,.35);
+  --hero-icon: #ffffff;
+
+  --wake-grad: linear-gradient(135deg, #22c55e, #16a34a);
+  --wake-shadow: 0 8px 18px rgba(34,197,94,.3);
+
+  --ghost-bg: #ffffff;
+  --ghost-border: #e2e8f0;
+  --ghost-text: #334155;
+
+  --input-bg: #ffffff;
+  --input-border: #e2e8f0;
+  --input-text: #0f172a;
+  --input-placeholder: #94a3b8;
+
+  --divider: #e2e8f0;
+
+  --active-border: #93c5fd;
+  --active-bg: #ffffff;
+  --active-shadow: 0 4px 14px rgba(37,99,235,.16);
+  --radio: #cbd5e1;
+
+  --chip-bg: #eff6ff;         --chip-color: #2563eb;
+  --chip-active-bg: #eff6ff;  --chip-active-color: #2563eb;
+
+  --dev-text: #0f172a;        --dev-active-text: #0f172a;
+  --mac: #94a3b8;             --dev-active-mac: #2563eb;
+
+  --switch-bg: #ffffff;   --switch-border: #e2e8f0;
+  --switch-icon: #64748b; --switch-active: #2563eb; --switch-active-fg: #ffffff;
+
+  --menu-bg: #ffffff; --nav-hover: #f1f5f9;
+
+  --msg-ok-bg: #ecfdf5;  --msg-ok-text: #047857;  --msg-ok-border: #a7f3d0;
+  --msg-err-bg: #fef2f2; --msg-err-text: #b91c1c; --msg-err-border: #fecaca;
+
+  --link: #2563eb;
+}
+
+/* ---------- Midnight (dunkel) ---------- */
+[data-theme="midnight"] {
+  --page-bg: radial-gradient(120% 90% at 50% 0%, #1e293b 0%, #0f172a 55%, #0b1120 100%);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --brand: #f1f5f9;
+
+  --card-bg: rgba(255,255,255,.055);
+  --card-border: rgba(255,255,255,.10);
+  --card-shadow: none;
+
+  --accent: #8b5cf6;
+  --accent-grad: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --on-accent: #ffffff;
+  --btn-shadow: 0 10px 24px rgba(99,102,241,.45);
+
+  --hero-grad: linear-gradient(150deg, rgba(99,102,241,.35), rgba(6,182,212,.22));
+  --hero-shadow: 0 16px 30px rgba(99,102,241,.28);
+  --hero-icon: #c7d2fe;
+
+  --wake-grad: linear-gradient(135deg, #10b981, #059669);
+  --wake-shadow: 0 10px 24px rgba(16,185,129,.4);
+
+  --ghost-bg: rgba(255,255,255,.06);
+  --ghost-border: rgba(255,255,255,.16);
+  --ghost-text: #e2e8f0;
+
+  --input-bg: rgba(255,255,255,.05);
+  --input-border: rgba(255,255,255,.14);
+  --input-text: #e2e8f0;
+  --input-placeholder: #64748b;
+
+  --divider: rgba(255,255,255,.12);
+
+  --active-border: rgba(99,102,241,.6);
+  --active-bg: rgba(99,102,241,.14);
+  --active-shadow: 0 0 0 1px rgba(99,102,241,.3);
+  --radio: rgba(255,255,255,.35);
+
+  --chip-bg: rgba(255,255,255,.08);        --chip-color: #a5b4fc;
+  --chip-active-bg: rgba(99,102,241,.25);  --chip-active-color: #c7d2fe;
+
+  --dev-text: #e2e8f0;      --dev-active-text: #ffffff;
+  --mac: #64748b;           --dev-active-mac: #a5b4fc;
+
+  --switch-bg: rgba(255,255,255,.06); --switch-border: rgba(255,255,255,.14);
+  --switch-icon: #cbd5e1; --switch-active: #8b5cf6; --switch-active-fg: #ffffff;
+
+  --menu-bg: #0f172a; --nav-hover: rgba(255,255,255,.06);
+
+  --msg-ok-bg: rgba(16,185,129,.14);  --msg-ok-text: #6ee7b7;  --msg-ok-border: rgba(16,185,129,.35);
+  --msg-err-bg: rgba(239,68,68,.14);  --msg-err-text: #fca5a5; --msg-err-border: rgba(239,68,68,.35);
+
+  --link: #a5b4fc;
+}
+
+/* ---------- Vivid (bunt) ---------- */
+[data-theme="vivid"] {
+  --page-bg: linear-gradient(160deg, #7c3aed 0%, #a21caf 55%, #db2777 100%);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,.85);
+  --brand: #ffffff;
+
+  --card-bg: rgba(255,255,255,.14);
+  --card-border: rgba(255,255,255,.20);
+  --card-shadow: 0 10px 26px rgba(60,10,80,.22);
+
+  --accent: #db2777;
+  --accent-grad: linear-gradient(135deg, #7c3aed, #db2777);
+  --on-accent: #ffffff;
+  --btn-shadow: 0 10px 22px rgba(219,39,119,.4);
+
+  --hero-grad: rgba(255,255,255,.16);
+  --hero-shadow: 0 16px 34px rgba(0,0,0,.2);
+  --hero-icon: #ffffff;
+
+  --wake-grad: linear-gradient(135deg, #f59e0b, #ef4444);
+  --wake-shadow: 0 10px 22px rgba(239,68,68,.4);
+
+  --ghost-bg: rgba(255,255,255,.16);
+  --ghost-border: rgba(255,255,255,.28);
+  --ghost-text: #ffffff;
+
+  --input-bg: rgba(255,255,255,.95);
+  --input-border: rgba(255,255,255,.5);
+  --input-text: #3b0764;
+  --input-placeholder: #a78bfa;
+
+  --divider: rgba(255,255,255,.28);
+
+  --active-border: #ffffff;
+  --active-bg: #ffffff;
+  --active-shadow: 0 8px 20px rgba(0,0,0,.18);
+  --radio: rgba(255,255,255,.6);
+
+  --chip-bg: rgba(255,255,255,.2);   --chip-color: #ffffff;
+  --chip-active-bg: #f5f3ff;         --chip-active-color: #7c3aed;
+
+  --dev-text: #ffffff;      --dev-active-text: #6d28d9;
+  --mac: rgba(255,255,255,.7); --dev-active-mac: #a855f7;
+
+  --switch-bg: rgba(255,255,255,.16); --switch-border: rgba(255,255,255,.28);
+  --switch-icon: #ffffff; --switch-active: #ffffff; --switch-active-fg: #7c3aed;
+
+  --menu-bg: #3b0764; --nav-hover: rgba(255,255,255,.14);
+
+  --msg-ok-bg: rgba(255,255,255,.92);  --msg-ok-text: #6d28d9;  --msg-ok-border: transparent;
+  --msg-err-bg: rgba(255,255,255,.92); --msg-err-text: #be123c; --msg-err-border: transparent;
+
+  --link: #ffffff;
+}
+
+/* ---------- Grundgerüst ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+/* Das ausgeblendete Menü liegt links ausserhalb - kein Seitwärts-Scrollen zulassen. */
+html { overflow-x: hidden; }
 body {
-    width: 320px;
-    font: 12pt Helvetica, sans-serif;
-	color: #999;
-} 
-
-.title {
-    font-size: 20pt;
-    color: red;
-    text-align: center;
+  font-family: var(--font);
+  background: var(--page-bg) fixed;
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
-
-.undertitle{
-    font-size: 12pt;
-    text-align: center;
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px 20px 40px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+.spacer { flex: 1; }
 
-.normal {
-    text-align: center;
+/* ---------- Kopfleiste (Hamburger links, Theme-Umschalter rechts) ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; min-height: 40px; }
+.topbar-slot { width: 40px; }
+
+.hamburger {
+  width: 44px; height: 40px; border-radius: 12px;
+  background: var(--switch-bg); border: 1px solid var(--switch-border); color: var(--switch-icon);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
+.hamburger svg { width: 20px; height: 20px; }
 
-.logo {
-    padding: 10px;
-    text-align: center;
+/* Ausklappmenü (reiner CSS-Umschalter über versteckte Checkbox) */
+.nav-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 40; }
+.nav-menu {
+  position: fixed; top: 0; left: 0; z-index: 50; height: 100%;
+  width: 260px; max-width: 82vw; box-sizing: border-box; padding: 14px 12px;
+  background: var(--menu-bg); border-right: 1px solid var(--card-border);
+  box-shadow: 8px 0 30px rgba(0,0,0,.25);
+  transform: translateX(-105%); transition: transform .22s ease;
+  display: flex; flex-direction: column; gap: 4px;
 }
-
-.messageOK{
-    color: green;
-    text-align: center;
+.nav-toggle:checked ~ .nav-overlay { display: block; }
+.nav-toggle:checked ~ .nav-menu { transform: translateX(0); }
+.nav-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px 12px; }
+.nav-head span { font-weight: 800; font-size: 16px; color: var(--brand); }
+.nav-close { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
+.nav-close svg { width: 18px; height: 18px; }
+.nav-menu a {
+  display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px;
+  color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px;
 }
+.nav-menu a svg { width: 19px; height: 19px; color: var(--muted); }
+.nav-menu a:hover { background: var(--nav-hover); }
+.nav-menu a.active { background: var(--nav-hover); }
+.nav-menu a.active svg { color: var(--accent); }
 
-.messageNOK{
-    color: red;
-    text-align: center;
+/* ---------- Theme-Umschalter ---------- */
+.theme-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--switch-bg);
+  border: 1px solid var(--switch-border);
 }
-
-.textarea{
-    width: 300px;
-    height: 80px;
-    font-family: Courier, monospace;
-    font-size: 12px;
+.theme-switch button {
+  width: 40px; height: 34px;
+  border: none; border-radius: 999px;
+  background: transparent; color: var(--switch-icon);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
 }
+.theme-switch button svg { width: 18px; height: 18px; }
+.theme-switch button.active { background: var(--switch-active); color: var(--switch-active-fg); }
 
-/* Style für den Auswahl  */
-#select {
-	/* background:url(images/submit.png); */
-	width:272px;
-	height:30px;
-	/* text-align: center; */
-	font-size:32px;
-	border:none;
-	margin-top:10px;
-	cursor:pointer;
+/* ---------- Marken-Header ---------- */
+.brand { text-align: center; margin: 4px 0 6px; }
+.brand h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--brand); }
+.brand .sub { margin: 6px 0 0; font-size: 14px; color: var(--muted); font-weight: 500; }
+
+/* ---------- Hero-Icon (Fingerabdruck) ---------- */
+.hero {
+  width: 104px; height: 104px; margin: 28px auto 22px;
+  border-radius: 30px; background: var(--hero-grad);
+  border: 1px solid var(--card-border); box-shadow: var(--hero-shadow);
+  display: flex; align-items: center; justify-content: center;
 }
+.hero svg { width: 52px; height: 52px; color: var(--hero-icon); }
 
-#select:hover {
-	color:#fff;
-	background-color: #216182;
-	opacity:0.9;
-}
-
-
-/* Style für den Übernehmen  */
-#submit {
-	/* background:url(images/submit.png); */
-	width:300px;
-	height:60px;
-	/* text-align: center; */
-	font-size:32px;
-	border:none;
-	margin-top:10px;
-	cursor:pointer;
-}
-
-#submit:hover {
-	color:#fff;
-	background-color: #216182;
-	opacity:0.9;
-}
-
-/* Wiederverwendbarer Button-Style (z.B. Passkey-Button).
-   Gleiche Grösse wie #submit; Höhe wächst bei langem Text mit. */
+/* ---------- Buttons ---------- */
 .btn {
-	width:300px;
-	min-height:60px;
-	font-size:32px;
-	line-height:1.2;
-	padding:10px;
-	border:none;
-	margin-top:10px;
-	cursor:pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; border: none; border-radius: 16px; padding: 16px;
+  font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+  background: var(--accent-grad); color: var(--on-accent); box-shadow: var(--btn-shadow);
+}
+.btn svg { width: 20px; height: 20px; }
+.btn:active { transform: translateY(1px); }
+a.btn { text-decoration: none; }
+.btn-ghost { background: var(--ghost-bg); color: var(--ghost-text); border: 1px solid var(--ghost-border); box-shadow: none; }
+.btn-wake { background: var(--wake-grad); color: #fff; box-shadow: var(--wake-shadow); font-size: 18px; padding: 18px; }
+.mt { margin-top: 14px; }
+
+/* ---------- Trenner "oder mit Passwort" ---------- */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--muted); font-size: 12px; font-weight: 500; margin: 18px 0;
+}
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--divider); }
+
+/* ---------- Formularfelder ---------- */
+.field { margin-top: 12px; text-align: left; }
+.field > label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px 4px; }
+input[type="text"], input[type="password"] {
+  width: 100%; border-radius: 14px; padding: 15px; font-family: inherit; font-size: 16px;
+  background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text);
+}
+input[type="text"]::placeholder, input[type="password"]::placeholder { color: var(--input-placeholder); }
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.section-label { font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 0 10px 4px; text-align: left; }
+
+/* ---------- Geräte-Kacheln (auswählbar, index.php) ---------- */
+.devlist { display: flex; flex-direction: column; gap: 10px; }
+.dev {
+  position: relative; display: flex; align-items: center; gap: 13px;
+  padding: 14px; border-radius: 16px; cursor: pointer;
+  background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
+}
+.dev input { position: absolute; opacity: 0; width: 0; height: 0; }
+.dev:has(input:checked) { border-color: var(--active-border); background: var(--active-bg); box-shadow: var(--active-shadow); }
+.dev .ic {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px;
+  background: var(--chip-bg); color: var(--chip-color);
+  display: flex; align-items: center; justify-content: center;
+}
+.dev .ic svg { width: 19px; height: 19px; }
+.dev:has(input:checked) .ic { background: var(--chip-active-bg); color: var(--chip-active-color); }
+.dev .txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.dev .nm { font-weight: 700; color: var(--dev-text); }
+.dev .mac { font-size: 11px; font-family: ui-monospace, "Cascadia Code", monospace; color: var(--mac); margin-top: 2px; }
+.dev:has(input:checked) .nm { color: var(--dev-active-text); }
+.dev:has(input:checked) .mac { color: var(--dev-active-mac); }
+.dev .ind { margin-left: auto; flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--radio); }
+.dev:has(input:checked) .ind { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 45%, transparent 48%); }
+
+/* ---------- Statische Info-Zeile (Passkeys, Geräteliste devices.php) ---------- */
+.item {
+  display: flex; align-items: center; gap: 13px; padding: 14px; margin-bottom: 10px;
+  border-radius: 16px; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
+}
+.item .ic { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px; background: var(--chip-bg); color: var(--chip-color); display: flex; align-items: center; justify-content: center; }
+.item .ic svg { width: 19px; height: 19px; }
+.item .txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.item .nm { font-weight: 700; color: var(--dev-text); }
+.item .mac { font-size: 11px; font-family: ui-monospace, "Cascadia Code", monospace; color: var(--mac); margin-top: 2px; }
+.item .grow { flex: 1; }
+
+/* kleiner Icon-Button (z.B. Entfernen) */
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--ghost-border); background: var(--ghost-bg); color: var(--ghost-text);
+  border-radius: 12px; padding: 10px 13px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.icon-btn svg { width: 16px; height: 16px; }
+.item form { margin: 0; }
+
+/* ---------- Meldungen ---------- */
+.msg, .messageOK, .messageNOK {
+  border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 600; text-align: center; margin: 6px 0;
+}
+.messageOK, .msg-ok  { background: var(--msg-ok-bg);  color: var(--msg-ok-text);  border: 1px solid var(--msg-ok-border); }
+.messageNOK, .msg-err { background: var(--msg-err-bg); color: var(--msg-err-text); border: 1px solid var(--msg-err-border); }
+/* Status-Zeile der Passkey-Aktion soll nur bei Inhalt einen Rahmen zeigen */
+#waStatus:empty { display: none; }
+
+.textarea {
+  width: 100%; border-radius: 12px; padding: 10px; margin-top: 8px; min-height: 70px;
+  font-family: ui-monospace, monospace; font-size: 12px;
+  background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text);
 }
 
-.btn:hover {
-	color:#fff;
-	background-color: #216182;
-	opacity:0.9;
-}
-
-/* Geräteauswahl - gleiche Optik wie die grossen Buttons */
-select {
-	width:300px;
-	min-height:60px;
-	font-size:28px;
-	padding:8px;
-	box-sizing:border-box;
-	margin-top:10px;
-}
-
-/* Gerätezeile auf der Verwaltungsseite */
-.device-row {
-	display:flex;
-	align-items:center;
-	justify-content:space-between;
-	gap:10px;
-	width:300px;
-	margin:8px auto;
-}
-
-.device-info {
-	font-size:16px;
-	color:#555;
-	text-align:left;
-	overflow-wrap:anywhere;
-}
-
-.device-mac {
-	font-family:Courier, monospace;
-	font-size:13px;
-	color:#999;
-}
-
-.btn-small {
-	font-size:18px;
-	padding:12px 14px;
-	border:none;
-	cursor:pointer;
-	white-space:nowrap;
-}
-
-.btn-small:hover {
-	color:#fff;
-	background-color:#216182;
-	opacity:0.9;
-}
-
-/* Eingabefelder (Passwort, Gerätename) - gross genug für Touch-Bedienung */
-input[type="text"],
-input[type="password"] {
-	width:300px;
-	font-size:24px;
-	padding:8px;
-	box-sizing:border-box;
-	margin-top:5px;
-}
-
-.linkbutton {
-	background:none;
-	border:none;
-	color:#216182;
-	text-decoration:underline;
-	cursor:pointer;
-	font:inherit;
-}
+/* ---------- Trenner + Fußzeile ---------- */
+hr { border: none; border-top: 1px solid var(--divider); margin: 20px 0; }
+.links { margin-top: 22px; text-align: center; font-size: 13px; color: var(--muted); }
+.links a { color: var(--link); text-decoration: none; font-weight: 600; }
+.links a:hover { text-decoration: underline; }
+.links .sep { opacity: .5; margin: 0 4px; }

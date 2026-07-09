@@ -40,64 +40,50 @@ if (!$setupKeyMissing && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$page_title = 'Setup';
+$brand_title = 'Login-Setup';
+$brand_sub   = 'Passwort setzen oder zurücksetzen';
+require __DIR__ . '/partials/head.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" href="smartphone.css" />
-    <title><?php echo htmlspecialchars($sitename); ?> - Setup</title>
-  </head>
-  <body>
-    <div class="title">Login-Setup</div>
-    <div class="undertitle">Passwort setzen oder zurücksetzen.</div>
+    <div class="hero"><svg><use href="#i-fp"/></svg></div>
 
     <?php if ($setupKeyMissing): ?>
       <div class="messageNOK">Setup gesperrt: Bitte zuerst in der Datei config.php einen eigenen
-        geheimen Wert für $setup_key eintragen (siehe config.sample.php) und die Datei neu hochladen.</div>
-      <hr />
+        geheimen Wert für <code>$setup_key</code> eintragen (siehe config.sample.php) und die Datei neu hochladen.</div>
     <?php endif; ?>
 
     <?php if (!auth_storage_writable()): ?>
-      <div class="messageNOK">Achtung: Der Ordner "auth" ist für den Webserver nicht beschreibbar.
-        Das Passwort kann so nicht gespeichert werden. Bitte in der File Station der Gruppe "http"
-        Lese-/Schreibrechte auf den Ordner "auth" geben.</div>
-      <hr />
+      <div class="messageNOK">Der Ordner „auth“ ist für den Webserver nicht beschreibbar.
+        Das Passwort kann so nicht gespeichert werden – bitte dem Web-Benutzer (Gruppe „http“)
+        Schreibrechte auf den Ordner „auth“ geben.</div>
     <?php endif; ?>
 
     <?php if ($success): ?>
       <div class="messageOK"><?php echo htmlspecialchars($success); ?></div>
-      <hr />
-      <div class="normal"><a href="login.php">Zum Login</a></div>
+      <a class="btn mt" href="login.php">Zum Login</a>
     <?php elseif (!$setupKeyMissing): ?>
       <?php if ($error): ?>
         <div class="messageNOK"><?php echo htmlspecialchars($error); ?></div>
-        <hr />
       <?php endif; ?>
       <form method="post" action="setup.php">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
         <?php if (!is_logged_in()): ?>
-        <div class="normal">
-          <label>Setup-Schlüssel<br />
-            <input type="password" name="setup_key" autocomplete="off" required />
-          </label>
+        <div class="field">
+          <label for="sk">Setup-Schlüssel</label>
+          <input id="sk" type="password" name="setup_key" autocomplete="off" required />
         </div>
         <?php endif; ?>
-        <div class="normal">
-          <label>Neues Passwort<br />
-            <input type="password" name="new_password" autocomplete="new-password" required />
-          </label>
+        <div class="field">
+          <label for="np1">Neues Passwort</label>
+          <input id="np1" type="password" name="new_password" autocomplete="new-password" required />
         </div>
-        <div class="normal">
-          <label>Neues Passwort wiederholen<br />
-            <input type="password" name="new_password2" autocomplete="new-password" required />
-          </label>
+        <div class="field">
+          <label for="np2">Neues Passwort wiederholen</label>
+          <input id="np2" type="password" name="new_password2" autocomplete="new-password" required />
         </div>
-        <div class="normal">
-          <input id="submit" type="submit" value="Passwort speichern" />
-        </div>
+        <div class="mt"><button class="btn" type="submit">Passwort speichern</button></div>
       </form>
     <?php endif; ?>
-  </body>
-</html>
+
+    <div class="spacer"></div>
+<?php require __DIR__ . '/partials/foot.php'; ?>
