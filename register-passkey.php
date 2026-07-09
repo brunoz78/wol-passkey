@@ -30,7 +30,7 @@ $data = auth_load();
     <hr />
     <div class="normal">
       <label>Name für dieses Gerät<br />
-        <input type="text" id="deviceName" placeholder="z.B. iPhone von Bruno" />
+        <input type="text" id="deviceName" placeholder="z.B. Mein Smartphone" />
       </label>
     </div>
     <div class="normal">

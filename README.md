@@ -6,6 +6,14 @@ keine Datenbank, kein Composer, keine Build-Tools: hochladen, Passwort setzen, f
 
 Vom Smartphone aus: Seite öffnen → Finger auflegen → Rechner aufwecken.
 
+## Screenshots
+
+| Login mit Passkey | Rechner aufwecken |
+|:---:|:---:|
+| ![Login mit Passkey/Fingerabdruck](docs/screenshots/1-login.png) | ![Wake-on-LAN-Startseite](docs/screenshots/2-wake.png) |
+| **Geräte verwalten** | **Passkeys verwalten** |
+| ![Geräteverwaltung](docs/screenshots/3-devices.png) | ![Passkey-Verwaltung](docs/screenshots/4-passkey.png) |
+
 ## Funktionen
 
 - 🖥️ **Wake on LAN**: weckt Rechner im Heimnetz per Magic Packet (UDP-Broadcast)
@@ -15,14 +23,16 @@ Vom Smartphone aus: Seite öffnen → Finger auflegen → Rechner aufwecken.
 - 📱 **Für Smartphones optimiert**: grosse Buttons und Eingabefelder
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
   ohne Dateien zu editieren
-- 🔁 **Reverse-Proxy-tauglich**: funktioniert hinter Nginx Proxy Manager, DSM-Reverse-Proxy u.ä.
+- 🔁 **Reverse-Proxy-tauglich**: funktioniert hinter gängigen Reverse Proxies
+  (Nginx Proxy Manager, Traefik, Caddy, der Reverse-Proxy in Synology DSM u.ä.)
 - 🗂️ **Keine Datenbank**: alle Daten liegen in selbstschützenden Dateien im Ordner `auth/`
 
 ## Voraussetzungen
 
 - PHP **8.0 oder neuer** mit den Extensions **openssl** und **sockets**
   (kein mbstring, kein Composer nötig)
-- Ein Webserver (Apache, nginx, ...) – auf Synology z.B. die Web Station
+- Ein Webserver (Apache, nginx, Caddy, ... – oder ein fertiges Paket wie
+  XAMPP, ein Docker-PHP-Image oder die Web Station eines NAS)
 - **HTTPS** mit gültigem Zertifikat – ohne HTTPS verweigert der Browser Passkeys
 - Der Server muss **im selben LAN** stehen wie die aufzuweckenden Geräte
   (Magic Packets sind Broadcasts und verlassen das lokale Netz nicht –
@@ -41,8 +51,8 @@ Vom Smartphone aus: Seite öffnen → Finger auflegen → Rechner aufwecken.
    - `$maclist`: optional erste Zielgeräte eintragen (später bequem über die
      Weboberfläche pflegbar)
 3. Dem Webserver-Benutzer **Schreibrechte auf den Ordner `auth/`** geben
-   (Synology: File Station → Ordner `auth` → Eigenschaften → Berechtigung →
-   Gruppe `http` → Lesen/Schreiben)
+   (Linux z.B. `chown www-data auth/` bzw. `chmod`; bei einem NAS über den
+   Datei-Manager dem Web-Benutzer, meist Gruppe `http`, Lese-/Schreibrecht geben)
 4. `https://deine-domain/setup.php` aufrufen, Setup-Schlüssel eingeben und
    Login-Passwort setzen
 5. Anmelden und unter **„Passkey verwalten"** den Fingerabdruck des Geräts
@@ -63,9 +73,10 @@ location / {
 }
 ```
 
-**Synology DSM-Reverse-Proxy**: Systemsteuerung → Anmeldeportal → Erweitert →
-Reverse Proxy → Eintrag bearbeiten → Benutzerdefinierte Kopfzeile →
-`X-Forwarded-Host` = `$host` und `X-Forwarded-Proto` = `$scheme`.
+Bei anderen Reverse Proxies dieselben zwei Header setzen. Beispiel
+**Synology DSM**: Systemsteuerung → Anmeldeportal → Erweitert → Reverse Proxy →
+Eintrag bearbeiten → Benutzerdefinierte Kopfzeile → `X-Forwarded-Host` = `$host`
+und `X-Forwarded-Proto` = `$scheme`.
 
 Ohne diese Header erscheint bei der Passkey-Registrierung die Fehlermeldung
 *„The relying party ID is not a registrable domain suffix of, nor equal to the
