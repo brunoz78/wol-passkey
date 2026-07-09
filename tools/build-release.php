@@ -43,7 +43,7 @@ $excludes = [
     'auth/devices-data.php',   // zur Laufzeit erzeugte Geräteliste
 ];
 $excludeDirs   = ['.git', '.claude', 'docs', 'dist', 'tools']; // ganze Ordner
-$excludeGlobs  = ['auth/*.tmp'];                               // Muster
+$excludeGlobs  = ['auth/*.tmp', '*.cmd'];                      // Muster
 
 function is_excluded(string $rel, array $excludes, array $excludeDirs, array $excludeGlobs): bool {
     foreach ($excludeDirs as $d) {
