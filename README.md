@@ -48,7 +48,15 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 
 ## Installation
 
-1. Alle Dateien in einen Ordner des Webservers hochladen
+> **Tipp:** Am einfachsten das fertige Installations-ZIP von der
+> [Releases-Seite](https://github.com/brunoz78/wol-passkey/releases/latest)
+> herunterladen (`wol-passkey-<version>.zip`). Es enthält nur die für den Betrieb
+> nötigen Dateien – ohne Screenshots, Entwicklungs-Dateien usw. Der „Source
+> code"-Download enthält dagegen das komplette Projekt und ist für die
+> Installation nicht nötig.
+
+1. Das Installations-ZIP herunterladen, entpacken und den **Inhalt** des Ordners
+   in ein Verzeichnis des Webservers hochladen
 2. `config.sample.php` nach `config.php` kopieren und anpassen:
    - `$setup_key`: **einen eigenen langen Zufallswert eintragen** (z.B. aus dem
      Passwort-Manager). Wer diesen Schlüssel kennt, kann das Login-Passwort
