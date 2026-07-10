@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 try {
     $post = json_decode(file_get_contents('php://input'));
     if (!$post) {
-        throw new Exception('Ungültige Anfrage.');
+        throw new Exception(t('wa.bad_request'));
     }
 
     $id = !empty($post->id) ? base64_decode($post->id) : null;
@@ -18,10 +18,10 @@ try {
     $challenge = $_SESSION['webauthn_challenge'] ?? null;
 
     if (!$challenge) {
-        throw new Exception('Keine aktive Anmeldeanfrage. Bitte Seite neu laden.');
+        throw new Exception(t('wa.no_login_request'));
     }
     if (!$id) {
-        throw new Exception('Kein Passkey übermittelt.');
+        throw new Exception(t('wa.no_passkey'));
     }
 
     $data = auth_load();
@@ -34,7 +34,7 @@ try {
     }
 
     if ($credIndex === null) {
-        throw new Exception('Dieser Passkey ist hier nicht registriert.');
+        throw new Exception(t('wa.unknown_passkey'));
     }
 
     $cred = $data['credentials'][$credIndex];

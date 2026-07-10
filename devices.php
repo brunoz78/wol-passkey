@@ -8,7 +8,7 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
-        $error = 'Ungültige Anfrage, bitte erneut versuchen.';
+        $error = t('devices.csrf');
     } else {
         $devices = devices_load();
         $action = $_POST['action'] ?? '';
@@ -19,31 +19,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // preg_match('//u', ...) prüft UTF-8-Gültigkeit ohne mbstring
             if ($name === '' || preg_match('//u', $name) !== 1) {
-                $error = 'Bitte einen Gerätenamen angeben.';
+                $error = t('devices.name_required');
             } elseif (strlen($name) > 40) {
-                $error = 'Der Gerätename darf höchstens 40 Zeichen lang sein.';
+                $error = t('devices.name_too_long');
             } elseif ($mac === null) {
-                $error = 'Die MAC-Adresse ist ungültig. Erlaubt sind 12 Hex-Zeichen, z.B. 00:11:22:33:44:55.';
+                $error = t('devices.mac_invalid');
             } elseif (isset($devices[$name])) {
-                $error = 'Ein Gerät mit diesem Namen existiert bereits. Bitte zuerst entfernen oder anderen Namen wählen.';
+                $error = t('devices.exists');
             } else {
                 $devices[$name] = $mac;
                 if (devices_save($devices)) {
-                    $success = 'Gerät "' . $name . '" hinzugefügt.';
+                    $success = t('devices.added', $name);
                 } else {
-                    $error = 'Speichern fehlgeschlagen: Der Ordner "auth" ist für den Webserver nicht beschreibbar.';
+                    $error = t('devices.save_failed');
                 }
             }
         } elseif ($action === 'delete') {
             $name = $_POST['device_name'] ?? '';
             if (!isset($devices[$name])) {
-                $error = 'Gerät nicht gefunden.';
+                $error = t('devices.not_found');
             } else {
                 unset($devices[$name]);
                 if (devices_save($devices)) {
-                    $success = 'Gerät "' . $name . '" entfernt.';
+                    $success = t('devices.removed', $name);
                 } else {
-                    $error = 'Speichern fehlgeschlagen: Der Ordner "auth" ist für den Webserver nicht beschreibbar.';
+                    $error = t('devices.save_failed');
                 }
             }
         }
@@ -51,15 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $devices = devices_load();
-$page_title = 'Geräte';
-$brand_title = 'Geräte verwalten';
-$brand_sub   = 'Zielgeräte hinzufügen oder entfernen';
+$page_title  = t('devices.title');
+$brand_title = t('devices.brand');
+$brand_sub   = t('devices.sub');
 $show_menu   = true;
 require __DIR__ . '/partials/head.php';
 ?>
     <?php if (!devices_storage_writable()): ?>
-      <div class="messageNOK">Der Ordner „auth“ ist für den Webserver nicht beschreibbar –
-        Änderungen können so nicht gespeichert werden.</div>
+      <div class="messageNOK"><?php te('devices.not_writable'); ?></div>
     <?php endif; ?>
 
     <?php if ($error): ?>
@@ -69,9 +68,9 @@ require __DIR__ . '/partials/head.php';
     <?php endif; ?>
 
     <?php if (count($devices) === 0): ?>
-      <p class="section-label" style="margin-top:16px">Noch keine Geräte eingetragen.</p>
+      <p class="section-label" style="margin-top:16px"><?php te('devices.none'); ?></p>
     <?php else: ?>
-      <p class="section-label" style="margin-top:16px">Deine Geräte</p>
+      <p class="section-label" style="margin-top:16px"><?php te('devices.your_devices'); ?></p>
       <?php foreach ($devices as $name => $mac): ?>
         <div class="item">
           <span class="ic"><svg><use href="#i-mon"/></svg></span>
@@ -79,12 +78,13 @@ require __DIR__ . '/partials/head.php';
             <span class="nm"><?php echo htmlspecialchars($name); ?></span>
             <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
           </span>
+          <?php /* json_encode liefert ein gültiges JS-String-Literal, auch bei Anführungszeichen im Namen. */ ?>
           <form method="post" action="devices.php"
-                onsubmit="return confirm('Gerät &quot;<?php echo htmlspecialchars($name, ENT_QUOTES); ?>&quot; wirklich entfernen?');">
+                onsubmit="return confirm(<?php echo htmlspecialchars(json_encode(t('devices.confirm', $name)), ENT_QUOTES); ?>);">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
-            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg>Entfernen</button>
+            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg><?php te('devices.remove'); ?></button>
           </form>
         </div>
       <?php endforeach; ?>
@@ -94,16 +94,16 @@ require __DIR__ . '/partials/head.php';
     <form method="post" action="devices.php">
       <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
       <input type="hidden" name="action" value="add" />
-      <p class="section-label">Neues Gerät</p>
+      <p class="section-label"><?php te('devices.new'); ?></p>
       <div class="field">
-        <label for="dn">Gerätename</label>
-        <input id="dn" type="text" name="device_name" maxlength="40" placeholder="z.B. Wohnzimmer-PC" required />
+        <label for="dn"><?php te('devices.name'); ?></label>
+        <input id="dn" type="text" name="device_name" maxlength="40" placeholder="<?php te('devices.name_ph'); ?>" required />
       </div>
       <div class="field">
-        <label for="dm">MAC-Adresse</label>
+        <label for="dm"><?php te('devices.mac'); ?></label>
         <input id="dm" type="text" name="device_mac" placeholder="00:11:22:33:44:55" required />
       </div>
-      <div class="mt"><button class="btn" type="submit"><svg><use href="#i-plus"/></svg>Gerät hinzufügen</button></div>
+      <div class="mt"><button class="btn" type="submit"><svg><use href="#i-plus"/></svg><?php te('devices.add'); ?></button></div>
     </form>
 
     <div class="spacer"></div>

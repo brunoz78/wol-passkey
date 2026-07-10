@@ -35,6 +35,8 @@ $prefix  = 'wol-passkey/';                   // Ordner-Präfix im ZIP
 $excludes = [
     'config.php',              // enthält den geheimen Setup-Schlüssel!
     'README.md',               // Doku, für den Betrieb nicht nötig
+    'README_en.md',
+    'CHANGELOG.md',
     '.gitignore',
     'remote.png',              // ungenutztes Alt-Asset
     'debug-host.php',          // lokales Werkzeug

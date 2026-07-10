@@ -231,6 +231,37 @@ body {
 .nav-menu a.active { background: var(--nav-hover); }
 .nav-menu a.active svg { color: var(--accent); }
 
+/* Sprachbereich im Ausklappmenü */
+.nav-sep { height: 1px; background: var(--card-border); margin: 10px 8px 6px; }
+.nav-label {
+  display: flex; align-items: center; gap: 12px; margin: 0; padding: 8px 14px 4px;
+  font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--muted);
+}
+.nav-label svg { width: 19px; height: 19px; color: var(--muted); }
+/* ohne Icon - auf die Textspalte der Menüeinträge einrücken */
+.nav-menu a.lang { padding-left: 45px; padding-top: 11px; padding-bottom: 11px; }
+.nav-menu a.lang.active { color: var(--accent); }
+
+/* ---------- Sprachumschalter (Seiten ohne Menü) ---------- */
+.lang-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--switch-bg);
+  border: 1px solid var(--switch-border);
+}
+.lang-switch a {
+  min-width: 40px; height: 34px;
+  border-radius: 999px;
+  color: var(--switch-icon); text-decoration: none;
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+}
+.lang-switch a.active { background: var(--switch-active); color: var(--switch-active-fg); }
+
 /* ---------- Theme-Umschalter ---------- */
 .theme-switch {
   display: inline-flex;

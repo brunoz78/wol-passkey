@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/i18n.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_name(AUTH_SESSION_NAME);
@@ -19,6 +20,9 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
     session_start();
 }
+
+// Sprache bestimmen (muss vor jeder Ausgabe passieren, siehe auth/i18n.php).
+i18n_init();
 
 function is_logged_in() {
     return !empty($_SESSION['authenticated']);

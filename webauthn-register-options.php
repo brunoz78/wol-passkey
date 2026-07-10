@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 
 if (!is_logged_in()) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'msg' => 'Nicht angemeldet.']);
+    echo json_encode(['success' => false, 'msg' => t('wa.not_logged_in')]);
     exit;
 }
 
@@ -21,10 +21,11 @@ try {
         $excludeIds[] = base64_decode($cred['id']);
     }
 
+    // Anzeigename im Passkey-Dialog des Geräts: der Seitenname aus config.php.
     $args = $webauthn->getCreateArgs(
         hex2bin($data['user_id']),
-        'bruno',
-        'Bruno WOL Login',
+        'wol',
+        WEBAUTHN_RP_NAME,
         WEBAUTHN_TIMEOUT,
         true,   // requireResidentKey (Passkey)
         true,   // requireUserVerification (Biometrie/PIN)

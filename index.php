@@ -19,7 +19,7 @@ $wakemachine = $_GET['wake_machine'] ?? '';
 
 if ($wakemachine !== '' && $wakemachine !== '-1') {
     if (!csrf_check($_GET['csrf_token'] ?? '')) {
-        $wakeError = 'Ungültige Anfrage, bitte Formular erneut absenden.';
+        $wakeError = t('index.csrf');
     } else {
         ob_start();
         $ok = WakeOnLan($networkbroadcast, $wakemachine, $port);
@@ -27,29 +27,29 @@ if ($wakemachine !== '' && $wakemachine !== '-1') {
         if ($ok) {
             $wakeResult = $wolOutput;
         } else {
-            $wakeError = 'Magic Packet konnte nicht gesendet werden.';
+            $wakeError = t('index.wake_failed');
         }
     }
 }
 
 $page_title = null;
-$brand_sub  = 'Gerät auswählen und aufwecken';
+$brand_sub  = t('index.sub');
 $show_menu  = true;
 require __DIR__ . '/partials/head.php';
 ?>
     <?php if ($wakeError !== null): ?>
       <div class="messageNOK"><?php echo htmlspecialchars($wakeError); ?></div>
     <?php elseif ($wakeResult !== null): ?>
-      <div class="messageOK">Aufwecken gesendet an <?php echo htmlspecialchars($wakemachine); ?></div>
+      <div class="messageOK"><?php te('index.wake_sent', $wakemachine); ?></div>
     <?php endif; ?>
 
     <?php if (count($devices) === 0): ?>
-      <p class="section-label" style="margin-top:20px">Noch keine Geräte eingetragen.</p>
-      <a class="btn mt" href="devices.php"><svg><use href="#i-plus"/></svg>Gerät hinzufügen</a>
+      <p class="section-label" style="margin-top:20px"><?php te('index.no_devices'); ?></p>
+      <a class="btn mt" href="devices.php"><svg><use href="#i-plus"/></svg><?php te('index.add_device'); ?></a>
     <?php else: ?>
       <form name="WakeOnLan" method="get" action="index.php">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
-        <p class="section-label" style="margin-top:18px">Deine Geräte</p>
+        <p class="section-label" style="margin-top:18px"><?php te('index.your_devices'); ?></p>
         <div class="devlist">
           <?php foreach ($devices as $name => $mac): ?>
             <label class="dev">
@@ -63,7 +63,7 @@ require __DIR__ . '/partials/head.php';
             </label>
           <?php endforeach; ?>
         </div>
-        <div class="mt"><button class="btn btn-wake" type="submit"><svg><use href="#i-pw"/></svg>Aufwecken</button></div>
+        <div class="mt"><button class="btn btn-wake" type="submit"><svg><use href="#i-pw"/></svg><?php te('index.wake'); ?></button></div>
       </form>
     <?php endif; ?>
 

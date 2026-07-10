@@ -42,18 +42,26 @@ function waSetStatus(el, msg, isError) {
   el.className = isError ? 'messageNOK' : 'messageOK';
 }
 
+/*
+  Übersetzter Text. Die Texte liefert partials/head.php als window.WOL_I18N
+  (Schlüssel "js.*" aus den Dateien in lang/, ohne das Präfix).
+*/
+function waT(key) {
+  return (window.WOL_I18N && window.WOL_I18N[key]) || key;
+}
+
 async function waRegisterPasskey(statusEl, deviceName) {
   try {
     if (!window.PublicKeyCredential) {
-      throw new Error('Dieser Browser unterstützt keine Passkeys.');
+      throw new Error(waT('no_support'));
     }
 
-    waSetStatus(statusEl, 'Bitte Biometrie am Gerät bestätigen …', false);
+    waSetStatus(statusEl, waT('confirm_biometry'), false);
 
     var optRes = await fetch('webauthn-register-options.php', { credentials: 'same-origin' });
     var optJson = await optRes.json();
     if (!optJson.success) {
-      throw new Error(optJson.msg || 'Fehler beim Vorbereiten der Registrierung.');
+      throw new Error(optJson.msg || waT('register_prepare'));
     }
 
     var createArgs = optJson.options;
@@ -75,14 +83,14 @@ async function waRegisterPasskey(statusEl, deviceName) {
     });
     var verifyJson = await verifyRes.json();
     if (!verifyJson.success) {
-      throw new Error(verifyJson.msg || 'Registrierung fehlgeschlagen.');
+      throw new Error(verifyJson.msg || waT('register_failed'));
     }
 
-    waSetStatus(statusEl, 'Passkey erfolgreich registriert!', false);
+    waSetStatus(statusEl, waT('register_ok'), false);
     waRememberDevice();
     return true;
   } catch (err) {
-    waSetStatus(statusEl, err.message || 'Unbekannter Fehler', true);
+    waSetStatus(statusEl, err.message || waT('unknown_error'), true);
     return false;
   }
 }
@@ -90,19 +98,19 @@ async function waRegisterPasskey(statusEl, deviceName) {
 async function waLoginWithPasskey(statusEl) {
   try {
     if (!window.PublicKeyCredential) {
-      throw new Error('Dieser Browser unterstützt keine Passkeys.');
+      throw new Error(waT('no_support'));
     }
 
     var optRes = await fetch('webauthn-login-options.php', { credentials: 'same-origin' });
     var optJson = await optRes.json();
     if (!optJson.success) {
-      throw new Error(optJson.msg || 'Fehler beim Vorbereiten der Anmeldung.');
+      throw new Error(optJson.msg || waT('login_prepare'));
     }
 
     var getArgs = optJson.options;
     waRecursiveBase64StrToArrayBuffer(getArgs);
 
-    waSetStatus(statusEl, 'Bitte Fingerabdruck/Face ID bestätigen …', false);
+    waSetStatus(statusEl, waT('confirm_fingerprint'), false);
 
     var cred = await navigator.credentials.get(getArgs);
 
@@ -122,15 +130,15 @@ async function waLoginWithPasskey(statusEl) {
     });
     var verifyJson = await verifyRes.json();
     if (!verifyJson.success) {
-      throw new Error(verifyJson.msg || 'Anmeldung fehlgeschlagen.');
+      throw new Error(verifyJson.msg || waT('login_failed'));
     }
 
-    waSetStatus(statusEl, 'Angemeldet, du wirst weitergeleitet …', false);
+    waSetStatus(statusEl, waT('login_ok'), false);
     waRememberDevice();
     window.location.href = verifyJson.redirect || 'index.php';
     return true;
   } catch (err) {
-    waSetStatus(statusEl, err.message || 'Unbekannter Fehler', true);
+    waSetStatus(statusEl, err.message || waT('unknown_error'), true);
     return false;
   }
 }

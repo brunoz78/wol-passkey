@@ -11,7 +11,7 @@ $sitename    = $sitename    ?? 'Wake on LAN';
 $brand_title = $brand_title ?? $sitename;
 $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title : '';
 ?><!DOCTYPE html>
-<html lang="de" data-theme="daylight">
+<html lang="<?php echo htmlspecialchars(i18n_current()); ?>" data-theme="daylight">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -25,6 +25,9 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
         if (t) document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
+    /* Übersetzte Texte für assets/webauthn-client.js */
+    window.WOL_I18N = <?php echo json_encode(i18n_js_strings(),
+        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
   </script>
 </head>
 <body>
@@ -58,41 +61,57 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></symbol>
   </svg>
 
   <div class="app">
     <div class="topbar">
+      <?php $langs = i18n_languages(); $curLang = i18n_current(); ?>
       <?php if (!empty($show_menu)):
         $cur = basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
         $navItems = [
-          'index.php'           => ['i-pw',     'Aufwecken'],
-          'devices.php'         => ['i-mon',    'Geräte verwalten'],
-          'register-passkey.php'=> ['i-fp',     'Passkey verwalten'],
-          'logout.php'          => ['i-logout', 'Abmelden'],
+          'index.php'           => ['i-pw',     'nav.wake'],
+          'devices.php'         => ['i-mon',    'nav.devices'],
+          'register-passkey.php'=> ['i-fp',     'nav.passkey'],
+          'logout.php'          => ['i-logout', 'nav.logout'],
         ];
       ?>
         <input type="checkbox" id="navToggle" class="nav-toggle" hidden />
-        <label for="navToggle" class="hamburger" aria-label="Menü öffnen"><svg><use href="#i-menu"/></svg></label>
+        <label for="navToggle" class="hamburger" aria-label="<?php te('nav.open'); ?>"><svg><use href="#i-menu"/></svg></label>
         <label for="navToggle" class="nav-overlay" aria-hidden="true"></label>
-        <nav class="nav-menu" aria-label="Navigation">
+        <nav class="nav-menu" aria-label="<?php te('nav.aria'); ?>">
           <div class="nav-head">
             <span><?php echo htmlspecialchars($sitename); ?></span>
-            <label for="navToggle" class="nav-close" aria-label="Menü schließen"><svg><use href="#i-close"/></svg></label>
+            <label for="navToggle" class="nav-close" aria-label="<?php te('nav.close'); ?>"><svg><use href="#i-close"/></svg></label>
           </div>
           <?php foreach ($navItems as $href => $it): ?>
             <a href="<?php echo $href; ?>"<?php echo $href === $cur ? ' class="active" aria-current="page"' : ''; ?>>
-              <svg><use href="#<?php echo $it[0]; ?>"/></svg><?php echo htmlspecialchars($it[1]); ?>
+              <svg><use href="#<?php echo $it[0]; ?>"/></svg><?php te($it[1]); ?>
             </a>
+          <?php endforeach; ?>
+
+          <div class="nav-sep"></div>
+          <p class="nav-label"><svg><use href="#i-globe"/></svg><?php te('nav.language'); ?></p>
+          <?php foreach ($langs as $code => $label): ?>
+            <a class="lang<?php echo $code === $curLang ? ' active' : ''; ?>" href="?lang=<?php echo urlencode($code); ?>"
+               <?php echo $code === $curLang ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($label); ?></a>
           <?php endforeach; ?>
         </nav>
       <?php else: ?>
-        <span class="topbar-slot"></span>
+        <?php /* Login/Setup haben kein Menü - hier ein kompakter Sprachumschalter. */ ?>
+        <div class="lang-switch" role="group" aria-label="<?php te('lang.aria'); ?>">
+          <?php foreach ($langs as $code => $label): ?>
+            <a href="?lang=<?php echo urlencode($code); ?>" title="<?php echo htmlspecialchars($label); ?>"
+               class="<?php echo $code === $curLang ? 'active' : ''; ?>"><?php echo htmlspecialchars(strtoupper($code)); ?></a>
+          <?php endforeach; ?>
+        </div>
       <?php endif; ?>
 
-      <div class="theme-switch" role="group" aria-label="Design wählen">
-        <button type="button" data-theme-btn="daylight" title="Hell" aria-label="Helles Design"><svg><use href="#i-sun"/></svg></button>
-        <button type="button" data-theme-btn="midnight" title="Dunkel" aria-label="Dunkles Design"><svg><use href="#i-moon"/></svg></button>
-        <button type="button" data-theme-btn="vivid" title="Bunt" aria-label="Buntes Design"><svg><use href="#i-spark"/></svg></button>
+      <div class="theme-switch" role="group" aria-label="<?php te('theme.aria'); ?>">
+        <button type="button" data-theme-btn="daylight" aria-label="<?php te('theme.light'); ?>" title="<?php te('theme.light'); ?>"><svg><use href="#i-sun"/></svg></button>
+        <button type="button" data-theme-btn="midnight" aria-label="<?php te('theme.dark'); ?>" title="<?php te('theme.dark'); ?>"><svg><use href="#i-moon"/></svg></button>
+        <button type="button" data-theme-btn="vivid" aria-label="<?php te('theme.vivid'); ?>" title="<?php te('theme.vivid'); ?>"><svg><use href="#i-spark"/></svg></button>
       </div>
     </div>
 

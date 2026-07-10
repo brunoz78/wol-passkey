@@ -1,5 +1,7 @@
 # WOL mit Passkey-Login
 
+*[English version](README_en.md)*
+
 Eine schlanke Wake-on-LAN-Weboberfläche für den Heimgebrauch – mit modernem
 **Passkey-Login (Fingerabdruck / Face ID)** statt nur Passwort. Ein Ordner PHP,
 keine Datenbank, kein Composer, keine Build-Tools: hochladen, Passwort setzen, fertig.
@@ -26,6 +28,9 @@ Drei umschaltbare Designs (Standard ist **Hell**):
   auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch
 - 🎨 **Drei Designs**: Hell, Dunkel und Bunt – jederzeit über den Umschalter oben rechts
   wählbar, die Wahl wird pro Browser gemerkt
+- 🌍 **Mehrsprachig**: Deutsch und Englisch, umschaltbar im Hamburger-Menü;
+  beim ersten Besuch wird die Browsersprache erkannt. Weitere Sprachen sind
+  leicht ergänzbar (siehe [Sprache hinzufügen](#eine-sprache-hinzufügen))
 - 📱 **Für Smartphones optimiert**: grosse Buttons, antippbare Gerätekacheln,
   Navigation im Hamburger-Menü
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
@@ -113,13 +118,34 @@ wurde. Die Seite also immer über dieselbe Adresse aufrufen (Lesezeichen!).
   empfiehlt sich analog:
 
   ```nginx
-  location ~ ^/(auth|lib)/ { deny all; }
+  location ~ ^/(auth|lib|lang)/ { deny all; }
   ```
 
 - Nach 5 falschen Passwort-Versuchen wird das Login 5 Minuten gesperrt
   (einstellbar in `auth/config.php`)
 - Passwort vergessen? `setup.php` aufrufen und mit dem Setup-Schlüssel ein
   neues setzen
+
+## Eine Sprache hinzufügen
+
+Die Texte liegen als einfache PHP-Arrays im Ordner `lang/`. Eine neue Sprache
+braucht keine Code-Änderung an den Seiten:
+
+1. `lang/de.php` nach `lang/<code>.php` kopieren (z.B. `lang/fr.php`)
+2. Die Texte rechts vom `=>` übersetzen
+3. Den Code in `auth/i18n.php` bei `i18n_languages()` eintragen:
+
+   ```php
+   return [
+       'de' => 'Deutsch',
+       'en' => 'English',
+       'fr' => 'Français',
+   ];
+   ```
+
+Fehlt in einer Sprachdatei ein Text, wird automatisch der deutsche verwendet
+(Deutsch ist die Ausgangssprache). Die gewählte Sprache wird in einem Cookie
+gemerkt; beim ersten Besuch entscheidet die Browsersprache, sonst Englisch.
 
 ## Release-ZIP selbst bauen
 

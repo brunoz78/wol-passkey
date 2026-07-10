@@ -13,12 +13,12 @@ $noPasswordSet = empty($data['password_hash']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
-        $error = 'Ungültige Anfrage, bitte Seite neu laden.';
+        $error = t('login.csrf');
     } elseif (!empty($data['locked_until']) && $data['locked_until'] > time()) {
         $wait = $data['locked_until'] - time();
-        $error = 'Zu viele Fehlversuche. Bitte in ' . ceil($wait / 60) . ' Minute(n) erneut versuchen.';
+        $error = t('login.locked', (int)ceil($wait / 60));
     } elseif ($noPasswordSet) {
-        $error = 'Es ist noch kein Passwort gesetzt. Bitte zuerst setup.php aufrufen.';
+        $error = t('login.no_password');
     } elseif (password_verify($_POST['password'], $data['password_hash'])) {
         $data['failed_attempts'] = 0;
         $data['locked_until'] = 0;
@@ -34,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
             $data['failed_attempts'] = 0;
         }
         auth_save($data);
-        $error = 'Passwort ist falsch.';
+        $error = t('login.wrong_password');
     }
 }
-$page_title = 'Login';
-$brand_sub  = 'Bitte anmelden';
+$page_title = t('login.title');
+$brand_sub  = t('login.sub');
 require __DIR__ . '/partials/head.php';
 ?>
     <div class="hero"><svg><use href="#i-fp"/></svg></div>
@@ -48,19 +48,19 @@ require __DIR__ . '/partials/head.php';
     <?php endif; ?>
 
     <button class="btn" type="button" onclick="waLoginWithPasskey(document.getElementById('waStatus'))">
-      <svg><use href="#i-fp"/></svg>Mit Passkey anmelden
+      <svg><use href="#i-fp"/></svg><?php te('login.with_passkey'); ?>
     </button>
     <div id="waStatus"></div>
 
-    <div class="divider">oder mit Passwort</div>
+    <div class="divider"><?php te('login.or_password'); ?></div>
 
     <form method="post" action="login.php">
       <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
       <div class="field">
-        <label for="pw">Passwort</label>
+        <label for="pw"><?php te('login.password'); ?></label>
         <input id="pw" type="password" name="password" autocomplete="current-password" autofocus required />
       </div>
-      <div class="mt"><button class="btn btn-ghost" type="submit">Anmelden</button></div>
+      <div class="mt"><button class="btn btn-ghost" type="submit"><?php te('login.submit'); ?></button></div>
     </form>
 
     <div class="spacer"></div>
