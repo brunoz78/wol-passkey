@@ -77,8 +77,17 @@ function i18n_init() {
             'samesite' => 'Lax',
         ]);
 
-        $target = strtok($_SERVER['REQUEST_URI'] ?? 'index.php', '?');
-        header('Location: ' . ($target !== false && $target !== '' ? $target : 'index.php'));
+        // Bewusst RELATIV umleiten (nur der Dateiname, ohne Pfad):
+        // Hinter einem Reverse Proxy ist der interne Pfad (REQUEST_URI) ein
+        // anderer als der öffentliche - eine absolute Umleitung landete sonst
+        // z.B. auf /WOL/login.php statt /login.php. Den relativen Ort löst der
+        // Browser gegen die aufgerufene Adresse auf, und der Proxy schreibt
+        // ihn nicht um.
+        $target = basename($_SERVER['SCRIPT_NAME'] ?? '');
+        if ($target === '' || !preg_match('/^[A-Za-z0-9_.-]+$/', $target)) {
+            $target = 'index.php';
+        }
+        header('Location: ' . $target);
         exit;
     }
 

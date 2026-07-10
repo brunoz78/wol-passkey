@@ -4,6 +4,14 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.1.1] – 2026-07-10
+
+### Behoben
+- **Sprachwechsel hinter einem Reverse Proxy** führte zu „Not Found": Nach dem
+  Umschalten wurde auf den *internen* Pfad des Proxys umgeleitet (z.B.
+  `/WOL/login.php` statt `/login.php`). Die Umleitung erfolgt jetzt relativ und
+  funktioniert dadurch hinter jedem Proxy.
+
 ## [1.1.0] – 2026-07-10
 
 ### Hinzugefügt
@@ -41,5 +49,6 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.1.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.1
 [1.1.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.0
 [1.0.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.0.0
