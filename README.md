@@ -78,6 +78,26 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 5. Anmelden und unter **„Passkey verwalten"** den Fingerabdruck des Geräts
    registrieren – ab dann geht der Login ohne Passwort
 
+## Aktualisieren
+
+Nach dem Login zeigt die App automatisch einen Hinweis an, sobald auf GitHub
+eine neuere Version veröffentlicht wurde (Prüfung höchstens 1x täglich, rein
+informativ – es wird nichts automatisch heruntergeladen oder installiert). Ein
+Klick auf den Hinweis führt zur
+[Releases-Seite](https://github.com/brunoz78/wol-passkey/releases/latest).
+
+So aktualisierst du von Hand:
+
+1. Das neue Installations-ZIP von der Releases-Seite herunterladen und entpacken
+2. Den **Inhalt** des Ordners auf den Webserver hochladen und dabei alle
+   vorhandenen Dateien überschreiben
+3. Fertig – `config.php` sowie die selbst erzeugten Daten in `auth/data.php`
+   und `auth/devices-data.php` sind **nicht** im Installations-ZIP enthalten
+   und bleiben unangetastet; Login-Passwort, Passkeys und Geräteliste bleiben
+   erhalten
+
+Ein Blick ins [CHANGELOG.md](CHANGELOG.md) lohnt sich vor dem Update.
+
 ## Betrieb hinter einem Reverse Proxy
 
 Passkeys sind an die Domain gebunden, die im Browser steht. Damit der Server

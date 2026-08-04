@@ -373,6 +373,16 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .icon-btn svg { width: 16px; height: 16px; }
 .item form { margin: 0; }
 
+/* ---------- Update-Hinweis ---------- */
+.update-hint { text-align: center; margin: 0 0 10px; }
+.update-hint a {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--msg-ok-bg); color: var(--msg-ok-text); border: 1px solid var(--msg-ok-border);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; text-decoration: none;
+}
+.update-hint a svg { width: 14px; height: 14px; }
+.update-hint a:hover { text-decoration: underline; }
+
 /* ---------- Meldungen ---------- */
 .msg, .messageOK, .messageNOK {
   border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 600; text-align: center; margin: 6px 0;

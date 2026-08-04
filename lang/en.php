@@ -13,6 +13,10 @@ return [
     'nav.open'        => 'Open menu',
     'nav.close'       => 'Close menu',
     'nav.language'    => 'Language',
+    'nav.about'       => 'About (version %s)',
+
+    // ---------- Update notice ----------
+    'update.available' => 'Update available: version %s',
 
     'theme.aria'      => 'Choose a theme',
     'theme.light'     => 'Light theme',

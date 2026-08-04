@@ -9,6 +9,16 @@
 // Benutzer-Einstellungen laden ($setup_key, $sitename, ...)
 require_once dirname(__DIR__) . '/config.php';
 
+// Installierte Version. Bei jedem Release zusammen mit CHANGELOG.md und dem
+// Git-Tag hochzählen - der Update-Hinweis (auth/update-check.php) vergleicht
+// dagegen die neueste GitHub-Release.
+define('WOL_VERSION', '1.2.0');
+
+// Woher/wie oft der Update-Hinweis prüft (siehe auth/update-check.php).
+define('WOL_UPDATE_REPO', 'brunoz78/wol-passkey');
+define('WOL_UPDATE_CACHE_FILE', __DIR__ . '/update-check-data.php');
+define('WOL_UPDATE_CHECK_INTERVAL', 24 * 3600); // höchstens 1x täglich prüfen
+
 // Name, der im Passkey-Dialog des Geräts angezeigt wird
 define('WEBAUTHN_RP_NAME', isset($sitename) && $sitename !== '' ? $sitename : 'Wake on LAN');
 

@@ -77,6 +77,25 @@ Three switchable themes (**Light** is the default):
 5. Sign in and register this device's fingerprint under **"Manage passkeys"** –
    from then on you can sign in without a password
 
+## Updating
+
+After signing in, the app automatically shows a notice once a newer version
+has been published on GitHub (checked at most once a day, purely
+informational – nothing is downloaded or installed automatically). Clicking
+the notice opens the
+[releases page](https://github.com/brunoz78/wol-passkey/releases/latest).
+
+To update manually:
+
+1. Download the new installation ZIP from the releases page and extract it
+2. Upload the **contents** of the folder to your web server, overwriting all
+   existing files
+3. Done – `config.php` and the self-generated data in `auth/data.php` and
+   `auth/devices-data.php` are **not** included in the installation ZIP and
+   stay untouched; your login password, passkeys and device list are preserved
+
+It's worth checking [CHANGELOG.md](CHANGELOG.md) before updating.
+
 ## Running behind a reverse proxy
 
 Passkeys are bound to the domain shown in the browser. For the server to know that

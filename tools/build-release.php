@@ -41,8 +41,9 @@ $excludes = [
     'remote.png',              // ungenutztes Alt-Asset
     'debug-host.php',          // lokales Werkzeug
     'build-release.cmd',       // Build-Werkzeug (Windows-Starter)
-    'auth/data.php',           // zur Laufzeit erzeugte Nutzerdaten
-    'auth/devices-data.php',   // zur Laufzeit erzeugte Geräteliste
+    'auth/data.php',              // zur Laufzeit erzeugte Nutzerdaten
+    'auth/devices-data.php',      // zur Laufzeit erzeugte Geräteliste
+    'auth/update-check-data.php', // Cache des Update-Hinweises
 ];
 $excludeDirs   = ['.git', '.claude', 'docs', 'dist', 'tools']; // ganze Ordner
 $excludeGlobs  = ['auth/*.tmp', '*.cmd'];                      // Muster

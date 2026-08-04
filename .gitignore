@@ -7,6 +7,9 @@ auth/data.php
 auth/devices-data.php
 auth/*.tmp
 
+# Cache des Update-Hinweises (auth/update-check.php)
+auth/update-check-data.php
+
 # Lokale Werkzeuge
 .claude/
 debug-host.php

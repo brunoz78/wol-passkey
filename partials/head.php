@@ -63,6 +63,8 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.5h.01"/></symbol>
   </svg>
 
   <div class="app">
@@ -97,6 +99,11 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
             <a class="lang<?php echo $code === $curLang ? ' active' : ''; ?>" href="?lang=<?php echo urlencode($code); ?>"
                <?php echo $code === $curLang ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($label); ?></a>
           <?php endforeach; ?>
+
+          <div class="nav-sep"></div>
+          <a href="https://github.com/brunoz78/wol-passkey" target="_blank" rel="noopener">
+            <svg><use href="#i-info"/></svg><?php te('nav.about', WOL_VERSION); ?>
+          </a>
         </nav>
       <?php else: ?>
         <?php /* Login/Setup haben kein Menü - hier ein kompakter Sprachumschalter. */ ?>
@@ -119,3 +126,13 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <h1><?php echo htmlspecialchars($brand_title); ?></h1>
       <?php if (!empty($brand_sub)): ?><p class="sub"><?php echo htmlspecialchars($brand_sub); ?></p><?php endif; ?>
     </header>
+
+    <?php if (!empty($show_menu)): $wolUpdate = wol_update_check(); ?>
+      <?php if (!empty($wolUpdate['available'])): ?>
+        <p class="update-hint">
+          <a href="<?php echo htmlspecialchars($wolUpdate['url']); ?>" target="_blank" rel="noopener">
+            <svg><use href="#i-spark"/></svg><?php te('update.available', $wolUpdate['latest']); ?>
+          </a>
+        </p>
+      <?php endif; ?>
+    <?php endif; ?>

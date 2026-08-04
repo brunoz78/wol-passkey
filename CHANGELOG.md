@@ -4,6 +4,18 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.2.0] – 2026-08-04
+
+### Hinzugefügt
+- **Update-Hinweis:** Nach dem Login prüft die App höchstens 1x täglich über
+  die GitHub-Releases-API, ob eine neuere Version verfügbar ist, und zeigt
+  dann einen Hinweis mit Link zur Releases-Seite an. Es wird nichts
+  automatisch heruntergeladen oder installiert; das Ergebnis wird lokal
+  gecacht (`auth/update-check-data.php`), Netzwerkfehler werden verschluckt.
+- Neuer Abschnitt „Aktualisieren" im README mit Anleitung zum manuellen Update.
+- **„Über"-Eintrag im Hamburger-Menü:** zeigt die installierte Version an und
+  verlinkt auf die GitHub-Projektseite.
+
 ## [1.1.1] – 2026-07-10
 
 ### Behoben
@@ -49,6 +61,7 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.2.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.2.0
 [1.1.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.1
 [1.1.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.0
 [1.0.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.0.0

@@ -18,6 +18,10 @@ return [
     'nav.open'        => 'Menü öffnen',
     'nav.close'       => 'Menü schließen',
     'nav.language'    => 'Sprache',
+    'nav.about'       => 'Über (Version %s)',
+
+    // ---------- Update-Hinweis ----------
+    'update.available' => 'Update verfügbar: Version %s',
 
     'theme.aria'      => 'Design wählen',
     'theme.light'     => 'Helles Design',
