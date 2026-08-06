@@ -148,9 +148,12 @@ wird bis dahin über den eigenen Fork, siehe
 
 Neue Projekte (jünger als drei Monate) dürfen dort **ausschliesslich** als
 Kommentar im wöchentlichen *New Project Megathread* vorgestellt werden.
-Eigenständige Beiträge werden entfernt. Aktuellen Thread über die
+Eigenständige Beiträge werden entfernt.
+
+Zum Thread: <https://www.reddit.com/r/selfhosted/> – der aktuelle Megathread ist
+dort oben angepinnt. Falls nicht, über die
 [Suche](https://www.reddit.com/r/selfhosted/search/?q=%22New%20Project%20Megathread%20-%22&type=posts&sort=new)
-finden.
+(nach „neu" sortiert) den obersten Treffer nehmen.
 
 **Timing:** Ein neuer Thread erscheint **jeden Freitag**. Kommentieren ist an
 jedem Wochentag erlaubt – man muss also nicht bis Freitag warten. Da sich pro
