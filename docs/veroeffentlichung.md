@@ -144,13 +144,82 @@ wird bis dahin über den eigenen Fork, siehe
 
 ---
 
-## Weitere Kanäle
+## r/selfhosted
 
-- <https://www.reddit.com/r/selfhosted/> – grösste Reichweite; vorher die Regeln
-  zur Eigenwerbung lesen
-- <https://www.reddit.com/r/homelab/>
+Neue Projekte (jünger als drei Monate) dürfen dort **ausschliesslich** als
+Kommentar im wöchentlichen *New Project Megathread* vorgestellt werden.
+Eigenständige Beiträge werden entfernt. Ein neuer Thread erscheint jeden
+Freitag, kommentieren kann man an jedem Wochentag. Aktuellen Thread über die
+[Suche](https://www.reddit.com/r/selfhosted/search/?q=%22New%20Project%20Megathread%20-%22&type=posts&sort=new)
+finden.
+
+Vorgegebene Gliederung: `Project Name`, `Repo/Website Link`, `Description`,
+`Deployment`, `AI Involvement`.
+
+**`AI Involvement` ist Pflicht und der Grund, warum es den Thread überhaupt
+gibt** („the rapid influx of AI-generated projects"). Alle Beiträge dort machen
+die Angabe. Ehrlichkeit wird nicht abgestraft – Verschweigen schon. Zur
+Faktenlage: Sämtliche Commits dieses Projekts tragen einen
+Claude-Co-Author-Trailer.
+
+**Entwurf:**
+
+```markdown
+**Project Name:** WoL Passkey
+
+**Repo/Website Link:** https://github.com/brunoz78/wol-passkey
+
+**Description:**
+Wake-on-LAN web interface built for the phone. Devices show up as tiles; tap
+one to send the magic packet. If you store a device's IP, the tile also shows
+whether that machine is already awake, so you don't wake something that's
+already running.
+
+Sign-in is a passkey (WebAuthn) via fingerprint or Face ID, with a password as
+fallback. The WebAuthn side uses the lbuchs/WebAuthn library, not hand-rolled
+crypto.
+
+I built it because the WOL dashboards I found all wanted a container and a
+database for something that sends a 102-byte UDP packet. This one is flat-file
+PHP: no database, no build step, no Docker. It runs on a NAS, a Pi or shared
+hosting, and fits in a 512 MB LXC.
+
+- German and English UI, three themes
+- Devices managed in the browser, stored in self-protecting PHP files
+- Optional online status per device (TCP probe, no root required)
+- MIT
+
+**Deployment:**
+Download the release ZIP, unpack into a web root, copy config.sample.php to
+config.php, give the web server write access to auth/. Full instructions in the
+README (English version linked at the top). No Docker image; it needs PHP 8
+with the openssl and sockets extensions.
+
+For Proxmox there's a one-line script that creates a Debian LXC with nginx and
+PHP-FPM and installs everything.
+
+Heads up: passkeys require HTTPS. Over plain HTTP only the password login
+works, so put it behind a reverse proxy with TLS.
+
+**AI Involvement:**
+Substantial, and I'd rather say so plainly. The project was built with Claude
+Code from the start. I decide what gets built, test every release on my own
+hardware (a Synology NAS and a Proxmox host) and review changes before they go
+in, but a large share of the code was written by the model. I'm a hobbyist
+self-hoster, not a professional developer. The security-critical WebAuthn part
+is deliberately not generated code but the established lbuchs/WebAuthn library.
+```
+
+Den Abschnitt `AI Involvement` unbedingt selbst prüfen und in eigenen Worten
+formulieren – nur du weisst, wie du deinen eigenen Anteil beschreiben willst.
+
+**r/homelab** ist hardwarelastig (Racks, Server, Verkabelung) und passt für eine
+Web-App schlechter.
 - <https://www.computerbase.de/forum/forums/heimnetzwerke-und-internethardware.41/>
   – deutschsprachig
 
-Das **Proxmox-Forum** ist ein reines Support-Forum ohne Bereich für eigene
+
+### Proxmox-Forum
+
+Das Proxmox-Forum ist ein reines Support-Forum ohne Bereich für eigene
 Projekte; dort lohnt sich der Aufwand nicht.
