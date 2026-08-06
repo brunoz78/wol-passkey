@@ -17,7 +17,9 @@ msg_info "Installing Dependencies"
 $STD apt install -y nginx
 msg_ok "Installed Dependencies"
 
-PHP_VERSION="8.4" PHP_FPM="YES" setup_php
+# Also used for the FPM socket path in the nginx vhost below.
+PHP_VERSION="8.4"
+PHP_FPM="YES" setup_php
 
 fetch_and_deploy_gh_release "wol-passkey" "brunoz78/wol-passkey" "prebuild" "latest" "/opt/wol-passkey" "wol-passkey-*.zip"
 
@@ -36,7 +38,6 @@ msg_info "Creating Service"
 cat <<EOF >/etc/nginx/sites-available/wol-passkey
 server {
     listen 80;
-    listen [::]:80;
     server_name _;
 
     root /opt/wol-passkey;
@@ -54,14 +55,18 @@ server {
 
     location ~ \.php\$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:$(get_php_fpm_socket);
+        fastcgi_pass unix:/run/php/php${PHP_VERSION}-fpm.sock;
     }
 
     access_log /var/log/nginx/wol-passkey.access.log;
     error_log /var/log/nginx/wol-passkey.error.log;
 }
 EOF
-nginx_enable_site wol-passkey
+rm -f /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/wol-passkey /etc/nginx/sites-enabled/wol-passkey
+$STD nginx -t
+$STD systemctl enable nginx
+$STD systemctl restart nginx
 msg_ok "Created Service"
 
 motd_ssh

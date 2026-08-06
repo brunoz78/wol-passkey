@@ -49,6 +49,7 @@ function update_script() {
     msg_ok "Restored Permissions"
 
     msg_info "Starting Nginx"
+    systemctl restart php8.4-fpm
     systemctl start nginx
     msg_ok "Started Nginx"
     msg_ok "Updated successfully!"

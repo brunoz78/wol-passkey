@@ -80,24 +80,36 @@ Die Struktur ist pro Projekt dieselbe; nur der App-Teil ändert sich.
    Asset-Namen passen.
 3. **Framework-Funktionen statt Eigenbau.** `misc/tools.func` enthält u. a.
    `setup_php`, `setup_nodejs`, `setup_postgresql`, `fetch_and_deploy_gh_release`,
-   `check_for_gh_release`, `create_backup`/`restore_backup`, `nginx_enable_site`,
-   `get_php_fpm_socket`. Eigene `curl`/`wget`-Download- oder
-   Versionsvergleich-Logik ist ein Ablehnungsgrund.
-4. **Diese Funktionen nicht in `msg_info`/`msg_ok` einpacken** – sie bringen
+   `check_for_gh_release`, `create_backup`/`restore_backup`. Eigene
+   `curl`/`wget`-Download- oder Versionsvergleich-Logik ist ein
+   Ablehnungsgrund.
+4. **Verfügbarkeit immer gegen ProxmoxVED prüfen, nicht gegen ProxmoxVE.** Die
+   beiden Repos haben *unterschiedliche* `tools.func`. `nginx_enable_site` und
+   `get_php_fpm_socket` gibt es z. B. nur in ProxmoxVE – ein Script, das sie
+   nutzt, bricht in VED mit Exit-Code 127 ab. Am schnellsten prüft man das im
+   Klon des Forks:
+
+   ```bash
+   grep -n "^funktionsname() {" misc/*.func
+   ```
+
+   `catch_errors` liegt übrigens in `misc/error_handler.func`, nicht in
+   `core.func`.
+5. **Diese Funktionen nicht in `msg_info`/`msg_ok` einpacken** – sie bringen
    ihre eigenen Statusmeldungen mit. Nur eigener Code wird eingerahmt.
-5. **`$STD` vor jedes `apt`/Build-Kommando**, `apt` statt `apt-get`. Basis-Pakete
+6. **`$STD` vor jedes `apt`/Build-Kommando**, `apt` statt `apt-get`. Basis-Pakete
    (`curl`, `sudo`, `wget`, `jq`, `gnupg`, `ca-certificates`) nicht als
    Abhängigkeit auflisten – die sind vorhanden.
-6. **`update_script()` muss wirklich aktualisieren**: Dienst stoppen,
+7. **`update_script()` muss wirklich aktualisieren**: Dienst stoppen,
    `create_backup` der Konfig- und Datendateien, `CLEAN_INSTALL=1` neu
    ausrollen, `restore_backup`, Rechte setzen, Dienst starten. Am Ende `exit`.
-7. **Kein Docker, keine eigenen Systembenutzer, kein `sudo`** – im LXC läuft
+8. **Kein Docker, keine eigenen Systembenutzer, kein `sudo`** – im LXC läuft
    alles als root, die App-Dateien gehören dem Dienstbenutzer (hier `www-data`).
-8. **Kein `git pull`** für Updates.
-9. **Dev-Dateien ausschliessen:** neue Ordner in
-   `tools/build-release.php` unter `$excludeDirs` eintragen, sonst landen sie im
-   Installations-ZIP.
-10. Bei nginx: der `deny`-Block für interne Verzeichnisse muss **vor** dem
+9. **Kein `git pull`** für Updates.
+10. **Dev-Dateien ausschliessen:** neue Ordner in
+    `tools/build-release.php` unter `$excludeDirs` eintragen, sonst landen sie im
+    Installations-ZIP.
+11. Bei nginx: der `deny`-Block für interne Verzeichnisse muss **vor** dem
     `location ~ \.php$`-Block stehen – nginx nimmt den ersten passenden
     Regex-Block.
 
