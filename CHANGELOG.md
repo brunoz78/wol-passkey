@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
-## [Unveröffentlicht]
+## [1.3.1] – 2026-08-06
 
 ### Behoben
 - **Englische Browser-Fehlermeldungen beim Passkey-Dialog:** Bricht man den
