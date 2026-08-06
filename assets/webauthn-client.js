@@ -64,6 +64,30 @@ function waUnavailableReason() {
   return null;
 }
 
+/*
+  Übersetzt die Fehler der WebAuthn-Schnittstelle. Der Browser wirft dort
+  DOMException-Objekte mit englischem Text und Link zur Spezifikation - für
+  den Abbruch durch den Nutzer, mit Abstand der häufigste Fall, ist das
+  unbrauchbar. Unterschieden wird über err.name, weil der Text je nach
+  Browser abweicht. Eigene Fehler tragen bereits einen übersetzten Text und
+  fallen unten durch.
+*/
+function waErrorMessage(err) {
+  if (!err) return waT('unknown_error');
+  switch (err.name) {
+    case 'NotAllowedError':   // abgebrochen oder Zeitlimit
+    case 'AbortError':
+      return waT('err_cancelled');
+    case 'InvalidStateError': // auf diesem Gerät gibt es den Passkey schon
+      return waT('err_already_registered');
+    case 'SecurityError':     // Hostname passt nicht zur RP-ID
+      return waT('err_origin');
+    case 'NotSupportedError':
+      return waT('no_support');
+  }
+  return err.message || waT('unknown_error');
+}
+
 async function waRegisterPasskey(statusEl, deviceName) {
   try {
     var unavailable = waUnavailableReason();
@@ -105,7 +129,7 @@ async function waRegisterPasskey(statusEl, deviceName) {
     waRememberDevice();
     return true;
   } catch (err) {
-    waSetStatus(statusEl, err.message || waT('unknown_error'), true);
+    waSetStatus(statusEl, waErrorMessage(err), true);
     return false;
   }
 }
@@ -154,7 +178,7 @@ async function waLoginWithPasskey(statusEl) {
     window.location.href = verifyJson.redirect || 'index.php';
     return true;
   } catch (err) {
-    waSetStatus(statusEl, err.message || waT('unknown_error'), true);
+    waSetStatus(statusEl, waErrorMessage(err), true);
     return false;
   }
 }

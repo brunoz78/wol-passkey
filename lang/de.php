@@ -136,6 +136,9 @@ return [
     'js.login_prepare'        => 'Fehler beim Vorbereiten der Anmeldung.',
     'js.login_failed'         => 'Anmeldung fehlgeschlagen.',
     'js.login_ok'             => 'Angemeldet, du wirst weitergeleitet …',
+    'js.err_cancelled'        => 'Abgebrochen oder Zeitlimit überschritten. Bitte erneut versuchen.',
+    'js.err_already_registered' => 'Für dieses Gerät ist bereits ein Passkey hinterlegt.',
+    'js.err_origin'           => 'Die Adresse dieser Seite passt nicht zum Passkey. Ein Passkey gilt immer nur für genau einen Hostnamen.',
     'js.unknown_error'        => 'Unbekannter Fehler',
     'js.device_online'        => 'Läuft',
 ];

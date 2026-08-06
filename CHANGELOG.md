@@ -4,6 +4,17 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unveröffentlicht]
+
+### Behoben
+- **Englische Browser-Fehlermeldungen beim Passkey-Dialog:** Bricht man den
+  Dialog ab oder läuft er ins Zeitlimit, reichte die Oberfläche die rohe
+  `DOMException` des Browsers durch – englischer Text samt Link zur
+  WebAuthn-Spezifikation. Die gängigen Fälle werden jetzt anhand von
+  `err.name` übersetzt (Abbruch, Passkey bereits vorhanden, Hostname passt
+  nicht zur RP-ID, keine Unterstützung); unbekannte Fehler zeigen weiterhin
+  den Originaltext.
+
 ## [1.3.0] – 2026-08-04
 
 ### Hinzugefügt

@@ -130,6 +130,9 @@ return [
     'js.login_prepare'       => 'Could not prepare the sign-in.',
     'js.login_failed'        => 'Sign-in failed.',
     'js.login_ok'            => 'Signed in, redirecting …',
+    'js.err_cancelled'       => 'Cancelled or timed out. Please try again.',
+    'js.err_already_registered' => 'This device already has a passkey registered.',
+    'js.err_origin'          => 'This page address does not match the passkey. A passkey is always tied to one exact hostname.',
     'js.unknown_error'       => 'Unknown error',
     'js.device_online'       => 'Running',
 ];
