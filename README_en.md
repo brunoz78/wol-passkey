@@ -77,6 +77,23 @@ Three switchable themes (**Light** is the default):
 5. Sign in and register this device's fingerprint under **"Manage passkeys"** –
    from then on you can sign in without a password
 
+### On Proxmox: LXC via script
+
+On a Proxmox host there is a shortcut. A single call on the host shell creates
+a Debian container with nginx and PHP-FPM, installs the app, generates a random
+setup key and derives the broadcast address from the container's own subnet:
+
+```bash
+BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+```
+
+The setup key is printed at the end; continue with step 4 above. Later updates
+are done by running `update` inside the container.
+
+The script builds on the [community-scripts](https://community-scripts.org)
+framework, but lives in a personal fork and is **not** part of the official
+collection. Details: [`proxmox/README.md`](proxmox/README.md).
+
 ## Updating
 
 After signing in, the app automatically shows a notice once a newer version

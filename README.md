@@ -78,6 +78,24 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 5. Anmelden und unter **„Passkey verwalten"** den Fingerabdruck des Geräts
    registrieren – ab dann geht der Login ohne Passwort
 
+### Auf Proxmox: LXC per Script
+
+Auf einem Proxmox-Host gibt es eine Abkürzung. Ein Aufruf auf der Host-Shell
+legt einen Debian-Container mit nginx und PHP-FPM an, installiert die App,
+erzeugt einen zufälligen Setup-Schlüssel und leitet die Broadcast-Adresse aus
+dem Subnetz des Containers ab:
+
+```bash
+BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+```
+
+Der Setup-Schlüssel wird am Ende angezeigt; danach direkt mit Schritt 4 oben
+weiter. Spätere Updates laufen mit `update` im Container.
+
+Das Script nutzt das Framework von [community-scripts](https://community-scripts.org),
+liegt aber in einem eigenen Fork und ist **nicht** Teil der offiziellen
+Sammlung. Aufbau und Hintergründe: [`proxmox/README.md`](proxmox/README.md).
+
 ## Aktualisieren
 
 Nach dem Login zeigt die App automatisch einen Hinweis an, sobald auf GitHub
