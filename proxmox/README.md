@@ -128,9 +128,13 @@ JSON-Datei (WoL Passkey nutzt `4` = Network & Firewall).
   `$networkbroadcast` aus der Broadcast-Adresse des Containers ab. Liegen die
   Zielgeräte in einem anderen Netz, muss der Wert in
   `/opt/wol-passkey/config.php` angepasst werden.
-- **Der Setup-Schlüssel wird zufällig erzeugt** und steht in
-  `/opt/wol-passkey/config.php`. Ohne ihn lässt sich über `/setup.php` kein
-  Login-Passwort setzen.
+- **Der Setup-Schlüssel wird zufällig erzeugt** und am Ende der Installation
+  angezeigt. Ohne ihn lässt sich über `/setup.php` kein Login-Passwort setzen.
+  Später nachschlagen lässt er sich vom Proxmox-Host aus mit:
+
+  ```bash
+  pct exec <CTID> -- grep setup_key /opt/wol-passkey/config.php
+  ```
 - **arm64 ist nicht getestet.** In `ct/wol-passkey.sh` ist `var_arm64` deshalb
   auskommentiert; das Framework fragt dann beim Anlegen nach. Erst nach einem
   echten Test auf `yes` setzen – dann auch `"has_arm": true` in die JSON-Datei
