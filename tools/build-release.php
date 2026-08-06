@@ -37,6 +37,7 @@ $excludes = [
     'README.md',               // Doku, für den Betrieb nicht nötig
     'README_en.md',
     'CHANGELOG.md',
+    'CLAUDE.md',               // Projektanweisungen für Claude Code
     '.gitignore',
     'remote.png',              // ungenutztes Alt-Asset
     'debug-host.php',          // lokales Werkzeug
@@ -45,7 +46,7 @@ $excludes = [
     'auth/devices-data.php',      // zur Laufzeit erzeugte Geräteliste
     'auth/update-check-data.php', // Cache des Update-Hinweises
 ];
-$excludeDirs   = ['.git', '.claude', 'docs', 'dist', 'tools']; // ganze Ordner
+$excludeDirs   = ['.git', '.claude', 'docs', 'dist', 'tools', 'proxmox']; // ganze Ordner
 $excludeGlobs  = ['auth/*.tmp', '*.cmd'];                      // Muster
 
 function is_excluded(string $rel, array $excludes, array $excludeDirs, array $excludeGlobs): bool {

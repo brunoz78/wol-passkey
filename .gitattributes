@@ -1,0 +1,6 @@
+# core.autocrlf=true wandelt beim Auschecken sonst auf CRLF um. Ein Bash-Script
+# mit CRLF startet unter Linux nicht ("#!/usr/bin/env bash\r": not found) - die
+# Proxmox-Dateien werden von hier in den ProxmoxVED-Fork gespiegelt und muessen
+# LF behalten.
+*.sh                text eol=lf
+proxmox/json/*.json text eol=lf

@@ -1,0 +1,48 @@
+{
+  "name": "WoL Passkey",
+  "slug": "wol-passkey",
+  "categories": [
+    4
+  ],
+  "date_created": "2026-08-06",
+  "type": "ct",
+  "updateable": true,
+  "privileged": false,
+  "interface_port": 80,
+  "documentation": "https://github.com/brunoz78/wol-passkey/blob/main/README_en.md",
+  "website": "https://github.com/brunoz78/wol-passkey",
+  "logo": "https://raw.githubusercontent.com/brunoz78/wol-passkey/main/docs/logo.svg",
+  "description": "A lightweight Wake-on-LAN web interface with passkey login (WebAuthn). Flat-file PHP with no database, designed for phones: tap a tile to send the magic packet, and see at a glance which devices are already online.",
+  "install_methods": [
+    {
+      "type": "default",
+      "script": "ct/wol-passkey.sh",
+      "config_path": "/opt/wol-passkey/config.php",
+      "resources": {
+        "cpu": 1,
+        "ram": 512,
+        "hdd": 4,
+        "os": "Debian",
+        "version": "13"
+      }
+    }
+  ],
+  "default_credentials": {
+    "username": null,
+    "password": null
+  },
+  "notes": [
+    {
+      "text": "A random setup key is generated during installation. Read it with `grep setup_key /opt/wol-passkey/config.php`, then open `/setup.php` once to set the login password.",
+      "type": "info"
+    },
+    {
+      "text": "Passkey (WebAuthn) registration requires a secure context. Over plain http://IP only the password login works - put the container behind a reverse proxy with TLS and a hostname to use passkeys.",
+      "type": "warning"
+    },
+    {
+      "text": "The broadcast address is derived from the container's own subnet. Magic packets only reach devices in that subnet; adjust $networkbroadcast in config.php if your targets live elsewhere.",
+      "type": "info"
+    }
+  ]
+}
