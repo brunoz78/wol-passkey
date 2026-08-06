@@ -148,10 +148,16 @@ wird bis dahin über den eigenen Fork, siehe
 
 Neue Projekte (jünger als drei Monate) dürfen dort **ausschliesslich** als
 Kommentar im wöchentlichen *New Project Megathread* vorgestellt werden.
-Eigenständige Beiträge werden entfernt. Ein neuer Thread erscheint jeden
-Freitag, kommentieren kann man an jedem Wochentag. Aktuellen Thread über die
+Eigenständige Beiträge werden entfernt. Aktuellen Thread über die
 [Suche](https://www.reddit.com/r/selfhosted/search/?q=%22New%20Project%20Megathread%20-%22&type=posts&sort=new)
 finden.
+
+**Timing:** Der AutoModerator-Text behauptet einen wöchentlichen Rhythmus, real
+erscheint der Thread etwa alle 14 Tage (Stand 08/2026). Kommentieren ist an
+jedem Wochentag erlaubt. Da sich pro Thread rund 200 Kommentare ansammeln und
+vor allem oben gelesen wird, lohnt es sich, in einem **frischen** Thread zu
+posten – ist der aktuelle schon über eine Woche alt, lieber auf den nächsten
+warten.
 
 Vorgegebene Gliederung: `Project Name`, `Repo/Website Link`, `Description`,
 `Deployment`, `AI Involvement`.
