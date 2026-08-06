@@ -4,6 +4,32 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.3.0] – 2026-08-04
+
+### Hinzugefügt
+- **Online-Status pro Gerät:** Optionales IP-Adress-Feld in der
+  Geräteverwaltung. Ist eine IP hinterlegt, prüft der Server auf der
+  Aufwecken-Seite per TCP-Verbindungsversuch (ein paar gängige Ports,
+  kein `shell_exec()`, keine Root-Rechte nötig) ob das Gerät bereits läuft,
+  und zeigt das mit einem grünen Punkt an der Gerätekachel an
+  (`auth/reachability.php`, `device-status.php`, `assets/device-status.js`).
+- **Proxmox-Installation per Script:** Neuer Ordner `proxmox/` mit den drei
+  Dateien nach der Spezifikation von [community-scripts](https://community-scripts.org)
+  (ct-, install- und json-Datei). Ein Aufruf auf der Proxmox-Shell legt einen
+  Debian-13-LXC mit nginx und PHP-FPM an, rollt das Release-ZIP aus, erzeugt
+  einen zufälligen Setup-Schlüssel und leitet die Broadcast-Adresse aus dem
+  Subnetz des Containers ab. Updates laufen über dieselbe Mechanik und sichern
+  vorher `config.php` sowie die Laufzeitdaten. Anleitung in
+  `proxmox/README.md`.
+- **Projektlogo** (`docs/logo.svg`) für die Metadaten der Script-Sammlung.
+
+### Behoben
+- **Irreführende Passkey-Meldung ohne HTTPS:** Ohne gesicherte Verbindung
+  blendet der Browser `window.PublicKeyCredential` komplett aus. Das wurde als
+  „Dieser Browser unterstützt keine Passkeys" gemeldet, obwohl nur das
+  Zertifikat fehlte. Die beiden Fälle werden jetzt unterschieden und der
+  HTTPS-Hinweis benennt die tatsächliche Ursache.
+
 ## [1.2.0] – 2026-08-04
 
 ### Hinzugefügt

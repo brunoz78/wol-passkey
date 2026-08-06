@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'add') {
             $name = trim($_POST['device_name'] ?? '');
             $mac = devices_normalize_mac(trim($_POST['device_mac'] ?? ''));
+            $ip = devices_normalize_ip($_POST['device_ip'] ?? '');
 
             // preg_match('//u', ...) prüft UTF-8-Gültigkeit ohne mbstring
             if ($name === '' || preg_match('//u', $name) !== 1) {
@@ -24,10 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = t('devices.name_too_long');
             } elseif ($mac === null) {
                 $error = t('devices.mac_invalid');
+            } elseif ($ip === null) {
+                $error = t('devices.ip_invalid');
             } elseif (isset($devices[$name])) {
                 $error = t('devices.exists');
             } else {
-                $devices[$name] = $mac;
+                $devices[$name] = ['mac' => $mac, 'ip' => $ip];
                 if (devices_save($devices)) {
                     $success = t('devices.added', $name);
                 } else {
@@ -42,6 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($devices[$name]);
                 if (devices_save($devices)) {
                     $success = t('devices.removed', $name);
+                } else {
+                    $error = t('devices.save_failed');
+                }
+            }
+        } elseif ($action === 'set_ip') {
+            $name = $_POST['device_name'] ?? '';
+            $ip = devices_normalize_ip($_POST['device_ip'] ?? '');
+
+            if (!isset($devices[$name])) {
+                $error = t('devices.not_found');
+            } elseif ($ip === null) {
+                $error = t('devices.ip_invalid');
+            } else {
+                $devices[$name]['ip'] = $ip;
+                if (devices_save($devices)) {
+                    $success = t('devices.ip_saved', $name);
                 } else {
                     $error = t('devices.save_failed');
                 }
@@ -71,7 +90,7 @@ require __DIR__ . '/partials/head.php';
       <p class="section-label" style="margin-top:16px"><?php te('devices.none'); ?></p>
     <?php else: ?>
       <p class="section-label" style="margin-top:16px"><?php te('devices.your_devices'); ?></p>
-      <?php foreach ($devices as $name => $mac): ?>
+      <?php foreach ($devices as $name => $dev): $mac = $dev['mac']; $ip = $dev['ip']; ?>
         <div class="item">
           <span class="ic"><svg><use href="#i-mon"/></svg></span>
           <span class="txt grow">
@@ -85,6 +104,14 @@ require __DIR__ . '/partials/head.php';
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
             <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg><?php te('devices.remove'); ?></button>
+          </form>
+          <form class="ip-row" method="post" action="devices.php">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
+            <input type="hidden" name="action" value="set_ip" />
+            <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
+            <input type="text" name="device_ip" class="ip-input" value="<?php echo htmlspecialchars($ip, ENT_QUOTES); ?>"
+                   placeholder="<?php te('devices.ip_ph'); ?>" />
+            <button class="icon-btn" type="submit" title="<?php te('devices.ip_save'); ?>"><svg><use href="#i-check"/></svg></button>
           </form>
         </div>
       <?php endforeach; ?>
@@ -102,6 +129,10 @@ require __DIR__ . '/partials/head.php';
       <div class="field">
         <label for="dm"><?php te('devices.mac'); ?></label>
         <input id="dm" type="text" name="device_mac" placeholder="00:11:22:33:44:55" required />
+      </div>
+      <div class="field">
+        <label for="dip"><?php te('devices.ip'); ?></label>
+        <input id="dip" type="text" name="device_ip" placeholder="<?php te('devices.ip_ph'); ?>" />
       </div>
       <div class="mt"><button class="btn" type="submit"><svg><use href="#i-plus"/></svg><?php te('devices.add'); ?></button></div>
     </form>

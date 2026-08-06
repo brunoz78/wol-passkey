@@ -50,10 +50,25 @@ function waT(key) {
   return (window.WOL_I18N && window.WOL_I18N[key]) || key;
 }
 
+/*
+  Prüft, ob Passkeys überhaupt möglich sind, und liefert den Grund als
+  fertigen Text zurück (oder null, wenn alles passt).
+
+  Wichtig: Ohne sicheren Kontext (HTTPS bzw. localhost) blendet der Browser
+  window.PublicKeyCredential komplett aus. Ohne diese Unterscheidung sähe das
+  wie ein zu alter Browser aus, obwohl nur das Zertifikat fehlt.
+*/
+function waUnavailableReason() {
+  if (!window.isSecureContext) return waT('no_secure_context');
+  if (!window.PublicKeyCredential) return waT('no_support');
+  return null;
+}
+
 async function waRegisterPasskey(statusEl, deviceName) {
   try {
-    if (!window.PublicKeyCredential) {
-      throw new Error(waT('no_support'));
+    var unavailable = waUnavailableReason();
+    if (unavailable) {
+      throw new Error(unavailable);
     }
 
     waSetStatus(statusEl, waT('confirm_biometry'), false);
@@ -97,8 +112,9 @@ async function waRegisterPasskey(statusEl, deviceName) {
 
 async function waLoginWithPasskey(statusEl) {
   try {
-    if (!window.PublicKeyCredential) {
-      throw new Error(waT('no_support'));
+    var unavailable = waUnavailableReason();
+    if (unavailable) {
+      throw new Error(unavailable);
     }
 
     var optRes = await fetch('webauthn-login-options.php', { credentials: 'same-origin' });
@@ -169,7 +185,7 @@ function waIsKnownDevice() {
   wird nicht sofort wieder gefragt, sonst käme man nie von der Seite weg.
 */
 function waAutoLoginIfKnownDevice(statusEl) {
-  if (!window.PublicKeyCredential) return;
+  if (waUnavailableReason()) return;
   if (!waIsKnownDevice()) return;
   if (new URLSearchParams(window.location.search).has('logout')) return;
   waLoginWithPasskey(statusEl);

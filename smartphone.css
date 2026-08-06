@@ -352,11 +352,22 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .dev .ind { margin-left: auto; flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--radio); }
 .dev:has(input:checked) .ind { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 45%, transparent 48%); }
 
+/* Online-Status (Punkt an der Geräte-Ikone, siehe assets/device-status.js) */
+.dev .ic { position: relative; }
+.status-dot {
+  position: absolute; right: -2px; bottom: -2px; width: 11px; height: 11px;
+  border-radius: 50%; background: var(--muted); opacity: .5; border: 2px solid var(--card-bg);
+}
+.dev.is-online .status-dot { background: var(--msg-ok-text); opacity: 1; }
+
 /* ---------- Statische Info-Zeile (Passkeys, Geräteliste devices.php) ---------- */
 .item {
-  display: flex; align-items: center; gap: 13px; padding: 14px; margin-bottom: 10px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 13px; padding: 14px; margin-bottom: 10px;
   border-radius: 16px; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
 }
+/* IP-Zeile in der Geräteverwaltung: erzwingt per flex-basis:100% einen Zeilenumbruch unter Name/MAC */
+.item .ip-row { flex: 1 1 100%; display: flex; gap: 8px; margin-top: 2px; }
+.item .ip-row .ip-input { flex: 1; padding: 10px 12px; font-size: 14px; border-radius: 12px; }
 .item .ic { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px; background: var(--chip-bg); color: var(--chip-color); display: flex; align-items: center; justify-content: center; }
 .item .ic svg { width: 19px; height: 19px; }
 .item .txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }

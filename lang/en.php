@@ -91,6 +91,11 @@ return [
     'devices.name'          => 'Device name',
     'devices.name_ph'       => 'e.g. Living room PC',
     'devices.mac'           => 'MAC address',
+    'devices.ip'            => 'IP address',
+    'devices.ip_ph'         => 'e.g. 192.168.1.50 (optional)',
+    'devices.ip_invalid'    => 'The IP address is invalid.',
+    'devices.ip_save'       => 'Save IP address',
+    'devices.ip_saved'      => 'IP address for "%s" saved.',
     'devices.add'           => 'Add device',
 
     // ---------- Passkey management ----------
@@ -116,6 +121,7 @@ return [
 
     // ---------- Messages shown in the browser (JavaScript) ----------
     'js.no_support'          => 'This browser does not support passkeys.',
+    'js.no_secure_context'   => 'Passkeys require a secure connection (HTTPS). This page is served over HTTP – only password login is available here.',
     'js.confirm_biometry'    => 'Please confirm with biometrics on your device …',
     'js.confirm_fingerprint' => 'Please confirm with fingerprint/Face ID …',
     'js.register_prepare'    => 'Could not prepare the registration.',
@@ -125,4 +131,5 @@ return [
     'js.login_failed'        => 'Sign-in failed.',
     'js.login_ok'            => 'Signed in, redirecting …',
     'js.unknown_error'       => 'Unknown error',
+    'js.device_online'       => 'Running',
 ];

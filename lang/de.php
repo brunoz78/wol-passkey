@@ -97,6 +97,11 @@ return [
     'devices.name'          => 'Gerätename',
     'devices.name_ph'       => 'z.B. Wohnzimmer-PC',
     'devices.mac'           => 'MAC-Adresse',
+    'devices.ip'            => 'IP-Adresse',
+    'devices.ip_ph'         => 'z.B. 192.168.1.50 (optional)',
+    'devices.ip_invalid'    => 'Die IP-Adresse ist ungültig.',
+    'devices.ip_save'       => 'IP-Adresse speichern',
+    'devices.ip_saved'      => 'IP-Adresse für "%s" gespeichert.',
     'devices.add'           => 'Gerät hinzufügen',
 
     // ---------- Passkey-Verwaltung ----------
@@ -122,6 +127,7 @@ return [
 
     // ---------- Meldungen im Browser (JavaScript) ----------
     'js.no_support'           => 'Dieser Browser unterstützt keine Passkeys.',
+    'js.no_secure_context'    => 'Passkeys brauchen eine gesicherte Verbindung (HTTPS). Diese Seite läuft über HTTP – hier ist nur die Anmeldung mit Passwort möglich.',
     'js.confirm_biometry'     => 'Bitte Biometrie am Gerät bestätigen …',
     'js.confirm_fingerprint'  => 'Bitte Fingerabdruck/Face ID bestätigen …',
     'js.register_prepare'     => 'Fehler beim Vorbereiten der Registrierung.',
@@ -131,4 +137,5 @@ return [
     'js.login_failed'         => 'Anmeldung fehlgeschlagen.',
     'js.login_ok'             => 'Angemeldet, du wirst weitergeleitet …',
     'js.unknown_error'        => 'Unbekannter Fehler',
+    'js.device_online'        => 'Läuft',
 ];

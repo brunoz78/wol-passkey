@@ -51,10 +51,13 @@ require __DIR__ . '/partials/head.php';
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
         <p class="section-label" style="margin-top:18px"><?php te('index.your_devices'); ?></p>
         <div class="devlist">
-          <?php foreach ($devices as $name => $mac): ?>
-            <label class="dev">
+          <?php foreach ($devices as $name => $dev): $mac = $dev['mac']; $ip = $dev['ip']; ?>
+            <label class="dev"<?php echo $ip !== '' ? ' data-check-name="' . htmlspecialchars($name, ENT_QUOTES) . '"' : ''; ?>>
               <input type="radio" name="wake_machine" value="<?php echo htmlspecialchars($mac, ENT_QUOTES); ?>" required />
-              <span class="ic"><svg><use href="#i-mon"/></svg></span>
+              <span class="ic">
+                <svg><use href="#i-mon"/></svg>
+                <?php if ($ip !== ''): ?><span class="status-dot" aria-hidden="true"></span><?php endif; ?>
+              </span>
               <span class="txt">
                 <span class="nm"><?php echo htmlspecialchars($name); ?></span>
                 <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
@@ -68,4 +71,5 @@ require __DIR__ . '/partials/head.php';
     <?php endif; ?>
 
     <div class="spacer"></div>
+    <script src="assets/device-status.js"></script>
 <?php require __DIR__ . '/partials/foot.php'; ?>

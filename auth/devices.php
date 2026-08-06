@@ -27,6 +27,35 @@ function devices_normalize_mac($mac) {
 }
 
 /*
+  Normalisiert eine IP-Adresse (v4 oder v6). Leerer String = keine IP
+  hinterlegt (gültig, IP ist optional). Liefert null bei ungültiger Eingabe.
+*/
+function devices_normalize_ip($ip) {
+    $ip = trim((string)$ip);
+    if ($ip === '') {
+        return '';
+    }
+    return filter_var($ip, FILTER_VALIDATE_IP) !== false ? $ip : null;
+}
+
+/*
+  Bringt die Geräteliste ins aktuelle Format ['mac' => ..., 'ip' => ...].
+  Ältere Dateien (vor der IP-Erreichbarkeitsprüfung) speicherten pro Gerät
+  nur die MAC-Adresse als String - die werden hier transparent migriert.
+*/
+function devices_normalize_all(array $devices) {
+    $out = [];
+    foreach ($devices as $name => $entry) {
+        if (is_string($entry)) {
+            $out[$name] = ['mac' => $entry, 'ip' => ''];
+        } elseif (is_array($entry)) {
+            $out[$name] = ['mac' => $entry['mac'] ?? '', 'ip' => $entry['ip'] ?? ''];
+        }
+    }
+    return $out;
+}
+
+/*
   Einmalige Übernahme der Geräte aus config.php ($maclist).
   Das include innerhalb der Funktion hält die config-Variablen lokal.
 */
@@ -46,7 +75,7 @@ function devices_seed_from_config() {
 
 function devices_load() {
     if (!is_file(DEVICES_DATA_FILE)) {
-        $seed = devices_seed_from_config();
+        $seed = devices_normalize_all(devices_seed_from_config());
         devices_save($seed); // best effort - bei fehlendem Schreibrecht bleibt der Seed trotzdem nutzbar
         return $seed;
     }
@@ -62,7 +91,7 @@ function devices_load() {
         $data = $json !== false ? json_decode($json, true) : null;
     }
 
-    return is_array($data) ? $data : [];
+    return devices_normalize_all(is_array($data) ? $data : []);
 }
 
 /*
