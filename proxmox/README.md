@@ -23,23 +23,30 @@ Das Framework (`misc/build.func`) ist öffentlich und respektiert die Variable
 dass irgendetwas eingereicht oder freigegeben sein muss.
 
 Der Fork ist bereits eingerichtet:
-[brunoz78/ProxmoxVED](https://github.com/brunoz78/ProxmoxVED), Branch
-`feat/wol-passkey`. Die drei Dateien liegen dort in `ct/`, `install/` und
-`json/`.
+[brunoz78/ProxmoxVED](https://github.com/brunoz78/ProxmoxVED). Die drei Dateien
+liegen auf `main` in `ct/`, `install/` und `json/`.
 
 Installation auf der **Proxmox-Host-Shell**:
 
 ```bash
-BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/feat/wol-passkey; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
 ```
 
 `run.sh` reicht die Basis-URL an alle Folge-Downloads durch. Ohne diesen Umweg
 sieht das Script nicht, von wo es geladen wurde, und würde das Install-Script
 vom Upstream holen (wo es nicht existiert).
 
-Der gleiche Weg ist auch der offizielle Testweg vor einem Pull Request. `main`
-im Fork bleibt bewusst unverändert, damit er sich jederzeit mit dem Upstream
-abgleichen lässt.
+`main` im Fork weicht damit um genau drei Dateien vom Upstream ab; ein Abgleich
+mit `community-scripts/ProxmoxVED` bleibt dadurch konfliktfrei möglich:
+
+```bash
+git remote add upstream https://github.com/community-scripts/ProxmoxVED.git
+git fetch upstream && git merge upstream/main
+```
+
+Für einen späteren Pull Request wäre ein eigener Branch aus dem aktuellen
+Upstream-Stand der saubere Weg – der Branch `feat/wol-passkey` liegt dafür noch
+im Fork.
 
 **Nach Änderungen an den Dateien hier** müssen sie in den Fork gespiegelt und
 gepusht werden – der Ordner in diesem Repo ist die Quelle, der Fork nur die
