@@ -4,6 +4,22 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.1] – 2026-08-07
+
+### Hinzugefügt
+- **Geräte-Reihenfolge per Drag&Drop änderbar:** In der Geräteverwaltung
+  lässt sich die Reihenfolge jetzt per Ziehgriff direkt verschieben (Maus
+  und Touch) - bisher entsprach sie fest der Erfassungsreihenfolge. Wirkt
+  sich auch auf die Aufwecken-Seite aus, da beide dieselbe gespeicherte
+  Reihenfolge nutzen.
+
+### Behoben
+- **Dateiauswahl der Sicherung blieb unübersetzt:** Beschriftung („Datei
+  auswählen" / „Keine ausgewählt") und Pflichtfeld-Meldung kamen vom Browser
+  und richteten sich nach dessen Sprache statt nach der App-Sprache. Die
+  Dateiauswahl hat jetzt eine eigene, übersetzte Beschriftung und zeigt den
+  gewählten Dateinamen an.
+
 ## [1.4.0] – 2026-08-07
 
 ### Hinzugefügt
@@ -135,6 +151,7 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.4.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.1
 [1.4.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.0
 [1.3.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.3.1
 [1.3.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.3.0

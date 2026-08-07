@@ -88,6 +88,8 @@ return [
     'devices.none'          => 'Todavía no se han añadido dispositivos.',
     'devices.your_devices'  => 'Tus dispositivos',
     'devices.remove'        => 'Eliminar',
+    'devices.reorder'       => 'Reordenar (arrastrar)',
+    'devices.reorder_failed'=> 'No se pudo guardar el orden, recarga la página.',
     'devices.confirm'       => '¿Eliminar realmente el dispositivo «%s»?',
     'devices.new'           => 'Nuevo dispositivo',
     'devices.name'          => 'Nombre del dispositivo',
@@ -137,6 +139,8 @@ return [
     'backup.restore_desc'   => 'Sobrescribe config.php y los datos con el contenido del archivo ZIP '
                              . 'subido. Si falta un archivo en el ZIP, se deja tal cual.',
     'backup.file_label'     => 'ZIP de copia de seguridad',
+    'backup.choose_file'    => 'Elegir archivo',
+    'backup.no_file_selected' => 'Ningún archivo',
     'backup.restore_button' => 'Restaurar',
     'backup.restore_confirm'=> '¿Restaurar de verdad? Se sobrescribirán la configuración y los datos existentes.',
     'backup.no_file'        => 'Selecciona un archivo ZIP.',

@@ -89,6 +89,8 @@ return [
     'devices.none'          => 'Aucun appareil ajouté pour l\'instant.',
     'devices.your_devices'  => 'Vos appareils',
     'devices.remove'        => 'Supprimer',
+    'devices.reorder'       => 'Réorganiser (glisser)',
+    'devices.reorder_failed'=> 'L\'ordre n\'a pas pu être enregistré, veuillez recharger la page.',
     'devices.confirm'       => 'Vraiment supprimer l\'appareil « %s » ?',
     'devices.new'           => 'Nouvel appareil',
     'devices.name'          => 'Nom de l\'appareil',
@@ -138,6 +140,8 @@ return [
     'backup.restore_desc'   => 'Écrase config.php ainsi que les données avec le contenu du fichier ZIP '
                              . 'envoyé. Un fichier absent du ZIP reste inchangé.',
     'backup.file_label'     => 'ZIP de sauvegarde',
+    'backup.choose_file'    => 'Choisir un fichier',
+    'backup.no_file_selected' => 'Aucun fichier',
     'backup.restore_button' => 'Restaurer',
     'backup.restore_confirm'=> 'Vraiment restaurer ? La configuration et les données existantes seront écrasées.',
     'backup.no_file'        => 'Veuillez sélectionner un fichier ZIP.',

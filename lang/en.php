@@ -87,6 +87,8 @@ return [
     'devices.none'          => 'No devices added yet.',
     'devices.your_devices'  => 'Your devices',
     'devices.remove'        => 'Remove',
+    'devices.reorder'       => 'Reorder (drag)',
+    'devices.reorder_failed'=> 'Could not save the order, please reload the page.',
     'devices.confirm'       => 'Really remove device "%s"?',
     'devices.new'           => 'New device',
     'devices.name'          => 'Device name',
@@ -135,6 +137,8 @@ return [
     'backup.restore_desc'   => 'Overwrites config.php and the runtime data with the contents of the '
                              . 'uploaded ZIP file. Files missing from the ZIP are left untouched.',
     'backup.file_label'     => 'Backup ZIP',
+    'backup.choose_file'    => 'Choose file',
+    'backup.no_file_selected' => 'None selected',
     'backup.restore_button' => 'Restore',
     'backup.restore_confirm'=> 'Really restore? Existing configuration and data will be overwritten.',
     'backup.no_file'        => 'Please select a ZIP file.',

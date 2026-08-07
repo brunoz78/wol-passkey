@@ -82,7 +82,15 @@ require __DIR__ . '/partials/head.php';
       <input type="hidden" name="action" value="restore" />
       <div class="field">
         <label for="bf"><?php te('backup.file_label'); ?></label>
-        <input id="bf" type="file" name="backup_file" accept=".zip" required />
+        <?php /* Eigenes Bedienelement statt des nativen Datei-Buttons: dessen
+                 Beschriftung kommt vom Browser und liesse sich nicht übersetzen.
+                 Das echte input liegt transparent darüber (nicht display:none -
+                 sonst kann der Browser "required" nicht anzeigen). */ ?>
+        <div class="file-pick">
+          <input id="bf" type="file" name="backup_file" accept=".zip" required />
+          <span class="file-pick-btn"><?php te('backup.choose_file'); ?></span>
+          <span class="file-pick-name" id="bfName"><?php te('backup.no_file_selected'); ?></span>
+        </div>
       </div>
       <div class="mt">
         <button class="btn btn-ghost" type="submit"><svg><use href="#i-upload"/></svg><?php te('backup.restore_button'); ?></button>
@@ -90,4 +98,22 @@ require __DIR__ . '/partials/head.php';
     </form>
 
     <div class="spacer"></div>
+    <script>
+      (function () {
+        var input = document.getElementById('bf');
+        var nameEl = document.getElementById('bfName');
+        if (!input || !nameEl) return;
+        var emptyText = nameEl.textContent;
+        /* Auch die Pflichtfeld-Meldung des Browsers käme sonst in Browsersprache. */
+        var noFileMsg = <?php echo json_encode(t('backup.no_file')); ?>;
+
+        function sync() {
+          var picked = input.files && input.files.length;
+          nameEl.textContent = picked ? input.files[0].name : emptyText;
+          input.setCustomValidity(picked ? '' : noFileMsg);
+        }
+        input.addEventListener('change', sync);
+        sync();
+      })();
+    </script>
 <?php require __DIR__ . '/partials/foot.php'; ?>

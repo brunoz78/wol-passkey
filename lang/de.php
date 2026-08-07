@@ -93,6 +93,8 @@ return [
     'devices.none'          => 'Noch keine Geräte eingetragen.',
     'devices.your_devices'  => 'Deine Geräte',
     'devices.remove'        => 'Entfernen',
+    'devices.reorder'       => 'Reihenfolge ändern (ziehen)',
+    'devices.reorder_failed'=> 'Reihenfolge konnte nicht gespeichert werden, bitte Seite neu laden.',
     'devices.confirm'       => 'Gerät "%s" wirklich entfernen?',
     'devices.new'           => 'Neues Gerät',
     'devices.name'          => 'Gerätename',
@@ -142,6 +144,8 @@ return [
     'backup.restore_desc'   => 'Überschreibt config.php sowie die Laufzeitdaten mit dem Inhalt der '
                              . 'hochgeladenen ZIP-Datei. Fehlt eine Datei im ZIP, bleibt sie unangetastet.',
     'backup.file_label'     => 'Backup-ZIP',
+    'backup.choose_file'    => 'Datei auswählen',
+    'backup.no_file_selected' => 'Keine ausgewählt',
     'backup.restore_button' => 'Wiederherstellen',
     'backup.restore_confirm'=> 'Wirklich wiederherstellen? Bestehende Konfiguration und Daten werden überschrieben.',
     'backup.no_file'        => 'Bitte eine ZIP-Datei auswählen.',
