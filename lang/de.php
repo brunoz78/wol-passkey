@@ -13,6 +13,7 @@ return [
     'nav.wake'        => 'Aufwecken',
     'nav.devices'     => 'Geräte verwalten',
     'nav.passkey'     => 'Passkey verwalten',
+    'nav.backup'      => 'Sicherung',
     'nav.logout'      => 'Abmelden',
     'nav.aria'        => 'Navigation',
     'nav.open'        => 'Menü öffnen',
@@ -108,6 +109,9 @@ return [
     'passkey.title'          => 'Passkey',
     'passkey.brand'          => 'Passkey verwalten',
     'passkey.sub'            => 'Fingerabdruck / Face ID dieses Geräts',
+    'passkey.csrf'           => 'Ungültige Anfrage, bitte erneut versuchen.',
+    'passkey.not_writable'   => 'Der Ordner „auth“ ist für den Webserver nicht beschreibbar – '
+                               . 'Änderungen können so nicht gespeichert werden.',
     'passkey.registered'     => 'Registrierte Passkeys',
     'passkey.created'        => 'registriert am %s',
     'passkey.unnamed'        => 'Unbenannt',
@@ -115,6 +119,35 @@ return [
     'passkey.device_name_ph' => 'z.B. Mein Smartphone',
     'passkey.register'       => 'Passkey registrieren',
     'passkey.default_device' => 'Unbenanntes Gerät',
+    'passkey.remove'         => 'Entfernen',
+    'passkey.confirm'        => 'Passkey "%s" wirklich entfernen?',
+    'passkey.removed'        => 'Passkey "%s" entfernt.',
+    'passkey.not_found'      => 'Passkey nicht gefunden.',
+    'passkey.save_failed'    => 'Speichern fehlgeschlagen: Der Ordner "auth" ist für den Webserver nicht beschreibbar.',
+
+    // ---------- Sicherung / Wiederherstellung ----------
+    'backup.title'          => 'Sicherung',
+    'backup.brand'          => 'Sicherung',
+    'backup.sub'            => 'Konfiguration und Daten sichern oder wiederherstellen',
+    'backup.csrf'           => 'Ungültige Anfrage, bitte erneut versuchen.',
+    'backup.unsupported'    => 'Die PHP-Extension "zip" ist auf diesem Server nicht aktiv - Sicherung und '
+                             . 'Wiederherstellung stehen daher nicht zur Verfügung.',
+    'backup.create_title'   => 'Sicherung erstellen',
+    'backup.create_desc'    => 'Lädt ein ZIP mit config.php sowie den Laufzeitdaten (Login, Passkeys, '
+                             . 'Geräteliste) herunter. Die Datei enthält den Setup-Schlüssel und das '
+                             . 'Passwort-Hash - sicher aufbewahren.',
+    'backup.create'         => 'Sicherung herunterladen',
+    'backup.create_failed'  => 'Sicherung konnte nicht erstellt werden.',
+    'backup.restore_title'  => 'Sicherung wiederherstellen',
+    'backup.restore_desc'   => 'Überschreibt config.php sowie die Laufzeitdaten mit dem Inhalt der '
+                             . 'hochgeladenen ZIP-Datei. Fehlt eine Datei im ZIP, bleibt sie unangetastet.',
+    'backup.file_label'     => 'Backup-ZIP',
+    'backup.restore_button' => 'Wiederherstellen',
+    'backup.restore_confirm'=> 'Wirklich wiederherstellen? Bestehende Konfiguration und Daten werden überschrieben.',
+    'backup.no_file'        => 'Bitte eine ZIP-Datei auswählen.',
+    'backup.invalid_zip'    => 'Kein gültiges Sicherungs-ZIP.',
+    'backup.restore_failed' => 'Wiederherstellen fehlgeschlagen: Datei(en) konnten nicht geschrieben werden.',
+    'backup.restore_ok'     => 'Wiederherstellung erfolgreich. Bereits angemeldete Sitzungen (auch diese) bleiben aktiv.',
 
     // ---------- WebAuthn-Meldungen vom Server ----------
     'wa.not_logged_in'   => 'Nicht angemeldet.',

@@ -67,6 +67,14 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.5h.01"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><path d="M10 13h4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v11"/><path d="M8 9l4 4 4-4"/><path d="M4 19h16"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 21V10"/><path d="M8 14l4-4 4 4"/><path d="M4 19h16"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/></symbol>
   </svg>
 
   <div class="app">
@@ -78,6 +86,7 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
           'index.php'           => ['i-pw',     'nav.wake'],
           'devices.php'         => ['i-mon',    'nav.devices'],
           'register-passkey.php'=> ['i-fp',     'nav.passkey'],
+          'backup.php'          => ['i-archive','nav.backup'],
           'logout.php'          => ['i-logout', 'nav.logout'],
         ];
       ?>
@@ -96,11 +105,17 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
           <?php endforeach; ?>
 
           <div class="nav-sep"></div>
-          <p class="nav-label"><svg><use href="#i-globe"/></svg><?php te('nav.language'); ?></p>
-          <?php foreach ($langs as $code => $label): ?>
-            <a class="lang<?php echo $code === $curLang ? ' active' : ''; ?>" href="?lang=<?php echo urlencode($code); ?>"
-               <?php echo $code === $curLang ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($label); ?></a>
-          <?php endforeach; ?>
+          <details class="nav-lang">
+            <summary class="nav-label">
+              <svg><use href="#i-globe"/></svg><?php te('nav.language'); ?>
+              <span class="nav-lang-cur"><?php echo htmlspecialchars($langs[$curLang] ?? $curLang); ?></span>
+              <svg class="nav-lang-chev"><use href="#i-chevron"/></svg>
+            </summary>
+            <?php foreach ($langs as $code => $label): ?>
+              <a class="lang<?php echo $code === $curLang ? ' active' : ''; ?>" href="?lang=<?php echo urlencode($code); ?>"
+                 <?php echo $code === $curLang ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($label); ?></a>
+            <?php endforeach; ?>
+          </details>
 
           <div class="nav-sep"></div>
           <a href="https://github.com/brunoz78/wol-passkey" target="_blank" rel="noopener">
@@ -108,13 +123,19 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
           </a>
         </nav>
       <?php else: ?>
-        <?php /* Login/Setup haben kein Menü - hier ein kompakter Sprachumschalter. */ ?>
-        <div class="lang-switch" role="group" aria-label="<?php te('lang.aria'); ?>">
-          <?php foreach ($langs as $code => $label): ?>
-            <a href="?lang=<?php echo urlencode($code); ?>" title="<?php echo htmlspecialchars($label); ?>"
-               class="<?php echo $code === $curLang ? 'active' : ''; ?>"><?php echo htmlspecialchars(strtoupper($code)); ?></a>
-          <?php endforeach; ?>
-        </div>
+        <?php /* Login/Setup haben kein Menü - hier ein kompakter Sprachumschalter als Ausklapp-Button. */ ?>
+        <details class="lang-switch">
+          <summary aria-label="<?php te('lang.aria'); ?>" title="<?php echo htmlspecialchars($langs[$curLang] ?? $curLang); ?>">
+            <?php echo htmlspecialchars(strtoupper($curLang)); ?>
+          </summary>
+          <div class="lang-switch-menu" role="group" aria-label="<?php te('lang.aria'); ?>">
+            <?php foreach ($langs as $code => $label): ?>
+              <a href="?lang=<?php echo urlencode($code); ?>"
+                 class="<?php echo $code === $curLang ? 'active' : ''; ?>"
+                 <?php echo $code === $curLang ? 'aria-current="true"' : ''; ?>><?php echo htmlspecialchars($label); ?></a>
+            <?php endforeach; ?>
+          </div>
+        </details>
       <?php endif; ?>
 
       <div class="theme-switch" role="group" aria-label="<?php te('theme.aria'); ?>">

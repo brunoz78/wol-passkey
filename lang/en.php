@@ -8,6 +8,7 @@ return [
     'nav.wake'        => 'Wake up',
     'nav.devices'     => 'Manage devices',
     'nav.passkey'     => 'Manage passkeys',
+    'nav.backup'      => 'Backup',
     'nav.logout'      => 'Sign out',
     'nav.aria'        => 'Navigation',
     'nav.open'        => 'Open menu',
@@ -102,6 +103,8 @@ return [
     'passkey.title'          => 'Passkey',
     'passkey.brand'          => 'Manage passkeys',
     'passkey.sub'            => 'Fingerprint / Face ID of this device',
+    'passkey.csrf'           => 'Invalid request, please try again.',
+    'passkey.not_writable'   => 'The folder "auth" is not writable for the web server – changes cannot be saved.',
     'passkey.registered'     => 'Registered passkeys',
     'passkey.created'        => 'registered on %s',
     'passkey.unnamed'        => 'Unnamed',
@@ -109,6 +112,35 @@ return [
     'passkey.device_name_ph' => 'e.g. My smartphone',
     'passkey.register'       => 'Register passkey',
     'passkey.default_device' => 'Unnamed device',
+    'passkey.remove'         => 'Remove',
+    'passkey.confirm'        => 'Really remove passkey "%s"?',
+    'passkey.removed'        => 'Passkey "%s" removed.',
+    'passkey.not_found'      => 'Passkey not found.',
+    'passkey.save_failed'    => 'Saving failed: the folder "auth" is not writable for the web server.',
+
+    // ---------- Backup / restore ----------
+    'backup.title'          => 'Backup',
+    'backup.brand'          => 'Backup',
+    'backup.sub'            => 'Back up or restore configuration and data',
+    'backup.csrf'           => 'Invalid request, please try again.',
+    'backup.unsupported'    => 'The PHP extension "zip" is not active on this server - backup and restore '
+                             . 'are therefore unavailable.',
+    'backup.create_title'   => 'Create backup',
+    'backup.create_desc'    => 'Downloads a ZIP with config.php and the runtime data (login, passkeys, '
+                             . 'device list). The file contains the setup key and the password hash - '
+                             . 'keep it safe.',
+    'backup.create'         => 'Download backup',
+    'backup.create_failed'  => 'The backup could not be created.',
+    'backup.restore_title'  => 'Restore backup',
+    'backup.restore_desc'   => 'Overwrites config.php and the runtime data with the contents of the '
+                             . 'uploaded ZIP file. Files missing from the ZIP are left untouched.',
+    'backup.file_label'     => 'Backup ZIP',
+    'backup.restore_button' => 'Restore',
+    'backup.restore_confirm'=> 'Really restore? Existing configuration and data will be overwritten.',
+    'backup.no_file'        => 'Please select a ZIP file.',
+    'backup.invalid_zip'    => 'Not a valid backup ZIP.',
+    'backup.restore_failed' => 'Restore failed: file(s) could not be written.',
+    'backup.restore_ok'     => 'Restore successful. Already signed-in sessions (including this one) remain active.',
 
     // ---------- WebAuthn messages from the server ----------
     'wa.not_logged_in'    => 'Not signed in.',

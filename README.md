@@ -28,13 +28,15 @@ Drei umschaltbare Designs (Standard ist **Hell**):
   auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch
 - 🎨 **Drei Designs**: Hell, Dunkel und Bunt – jederzeit über den Umschalter oben rechts
   wählbar, die Wahl wird pro Browser gemerkt
-- 🌍 **Mehrsprachig**: Deutsch und Englisch, umschaltbar im Hamburger-Menü;
-  beim ersten Besuch wird die Browsersprache erkannt. Weitere Sprachen sind
-  leicht ergänzbar (siehe [Sprache hinzufügen](#eine-sprache-hinzufügen))
+- 🌍 **Mehrsprachig**: Deutsch, Englisch, Französisch und Spanisch, umschaltbar
+  im Hamburger-Menü; beim ersten Besuch wird die Browsersprache erkannt.
+  Weitere Sprachen sind leicht ergänzbar (siehe [Sprache hinzufügen](#eine-sprache-hinzufügen))
 - 📱 **Für Smartphones optimiert**: grosse Buttons, antippbare Gerätekacheln,
   Navigation im Hamburger-Menü
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
   ohne Dateien zu editieren
+- 💾 **Sicherung & Wiederherstellung**: Konfiguration und Laufzeitdaten als ZIP
+  herunterladen und bei Bedarf wieder einspielen
 - 🔁 **Reverse-Proxy-tauglich**: funktioniert hinter gängigen Reverse Proxies
   (Nginx Proxy Manager, Traefik, Caddy, der Reverse-Proxy in Synology DSM u.ä.)
 - 🗂️ **Keine Datenbank**: alle Daten liegen in selbstschützenden Dateien im Ordner `auth/`
@@ -115,6 +117,19 @@ So aktualisierst du von Hand:
    erhalten
 
 Ein Blick ins [CHANGELOG.md](CHANGELOG.md) lohnt sich vor dem Update.
+
+## Sicherung & Wiederherstellung
+
+Im Hamburger-Menü unter **„Sicherung"** lässt sich `config.php` sowie die
+Laufzeitdaten (Login-Passwort, Passkeys, Geräteliste) als ZIP herunterladen -
+praktisch vor einem Update, einem Server-Umzug oder einfach als
+Sicherheitsnetz. Die ZIP-Datei enthält den Setup-Schlüssel und das
+Passwort-Hash und sollte entsprechend sicher aufbewahrt werden.
+
+Über dieselbe Seite lässt sich eine zuvor heruntergeladene ZIP-Datei auch
+wieder einspielen; enthält sie nur einzelne Dateien, bleiben die übrigen
+unangetastet. Das setzt die PHP-Extension `zip` voraus - fehlt sie, zeigt die
+Seite einen entsprechenden Hinweis.
 
 ## Betrieb hinter einem Reverse Proxy
 

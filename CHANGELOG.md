@@ -4,6 +4,43 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.0] – 2026-08-07
+
+### Hinzugefügt
+- **Sicherung & Wiederherstellung:** Neuer Menüpunkt „Sicherung", über den sich
+  `config.php` sowie die Laufzeitdaten (`auth/data.php`, `auth/devices-data.php`
+  - Login-Passwort, Passkeys, Geräteliste) als ZIP herunterladen und aus einer
+  ZIP-Datei wiederherstellen lassen (`auth/backup.php`, `backup.php`). Fehlt
+  eine Datei im ZIP, bleibt sie beim Wiederherstellen unangetastet. Ohne die
+  PHP-Extension `zip` zeigt die Seite einen entsprechenden Hinweis.
+- **Französisch und Spanisch:** Zwei weitere Sprachen (`lang/fr.php`,
+  `lang/es.php`), in `i18n_languages()` registriert - insgesamt vier
+  Sprachen: Deutsch, Englisch, Französisch, Spanisch.
+- **Sprachauswahl als Untermenü:** Der Sprachbereich im Hamburger-Menü ist
+  jetzt ein Ausklapp-Untermenü (zeigt kollabiert nur die aktuelle Sprache),
+  der kompakte Umschalter auf Login/Setup ein Dropdown-Button statt einer
+  Reihe von Kürzeln - bleibt damit übersichtlich, auch wenn später weitere
+  Sprachen dazukommen.
+- **Passkey löschen:** Registrierte Passkeys lassen sich in „Passkey
+  verwalten" jetzt auch wieder entfernen (Papierkorb-Symbol, mit
+  Bestätigungsdialog) - bisher liessen sie sich nur auflisten und neu
+  registrieren.
+
+### Geändert
+- **Online-Status besser sichtbar:** Der grüne Punkt an der Gerätekachel
+  (siehe [1.3.0]) war sehr klein - er ist jetzt grösser und hat einen
+  dezenten Leuchteffekt.
+
+## [1.3.2] – 2026-08-07
+
+### Behoben
+- **MAC-Adresse in der Geräteverwaltung überdeckt:** Auf schmalen Bildschirmen
+  (Smartphone-Breite) liess der "Entfernen"-Button neben Gerätename und MAC
+  zu wenig Platz - die MAC-Adresse wurde vom Button teilweise überdeckt. Der
+  Button zeigt jetzt nur noch das Papierkorb-Symbol (wie schon der
+  Speichern-Button bei der IP-Adresse), was genug Platz für die volle
+  MAC-Adresse schafft.
+
 ## [1.3.1] – 2026-08-06
 
 ### Behoben
@@ -98,6 +135,9 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.4.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.0
+[1.3.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.3.1
+[1.3.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.3.0
 [1.2.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.2.0
 [1.1.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.1
 [1.1.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.1.0

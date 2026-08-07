@@ -30,13 +30,15 @@ Three switchable themes (**Light** is the default):
   on known devices the prompt starts automatically when the page opens
 - 🎨 **Three themes**: Light, Dark and Vivid – switchable any time via the toggle in
   the top right; the choice is remembered per browser
-- 🌍 **Multilingual**: German and English, switchable from the hamburger menu; on your
-  first visit the browser language is detected. More languages are easy to add
-  (see [Adding a language](#adding-a-language))
+- 🌍 **Multilingual**: German, English, French and Spanish, switchable from the hamburger
+  menu; on your first visit the browser language is detected. More languages are easy
+  to add (see [Adding a language](#adding-a-language))
 - 📱 **Optimised for phones**: large buttons, tappable device tiles, navigation in a
   hamburger menu
 - ⚙️ **Device management in the browser**: add and remove target devices (name + MAC)
   without editing files
+- 💾 **Backup & restore**: download configuration and runtime data as a ZIP and
+  restore it whenever needed
 - 🔁 **Reverse-proxy friendly**: works behind common reverse proxies
   (Nginx Proxy Manager, Traefik, Caddy, the reverse proxy in Synology DSM, etc.)
 - 🗂️ **No database**: all data lives in self-protecting files in the `auth/` folder
@@ -112,6 +114,17 @@ To update manually:
    stay untouched; your login password, passkeys and device list are preserved
 
 It's worth checking [CHANGELOG.md](CHANGELOG.md) before updating.
+
+## Backup & restore
+
+The hamburger menu's **"Backup"** page lets you download `config.php` and the
+runtime data (login password, passkeys, device list) as a ZIP file – handy
+before an update, a server move, or just as a safety net. The ZIP contains the
+setup key and the password hash, so keep it somewhere safe.
+
+The same page can restore a previously downloaded ZIP; if it only contains
+some of the files, the rest are left untouched. This requires the PHP
+extension `zip` – if it's missing, the page shows a notice.
 
 ## Running behind a reverse proxy
 

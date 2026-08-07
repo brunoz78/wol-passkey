@@ -25,6 +25,8 @@ function i18n_languages() {
     return [
         'de' => 'Deutsch',
         'en' => 'English',
+        'fr' => 'Français',
+        'es' => 'Español',
     ];
 }
 
