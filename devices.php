@@ -103,7 +103,7 @@ require __DIR__ . '/partials/head.php';
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
-            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg><?php te('devices.remove'); ?></button>
+            <button class="icon-btn" type="submit" aria-label="<?php te('devices.remove'); ?>" title="<?php te('devices.remove'); ?>"><svg><use href="#i-trash"/></svg></button>
           </form>
           <form class="ip-row" method="post" action="devices.php">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
