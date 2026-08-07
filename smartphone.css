@@ -340,17 +340,30 @@ input[type="text"], input[type="password"] {
 input[type="text"]::placeholder, input[type="password"]::placeholder { color: var(--input-placeholder); }
 input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-input[type="file"] {
-  width: 100%; border-radius: 14px; padding: 10px; font-family: inherit; font-size: 13px;
-  background: var(--input-bg); border: 1px solid var(--input-border); color: var(--muted);
+/* Datei-Auswahl mit eigener Beschriftung (backup.php). Der native Button von
+   input[type=file] wird vom Browser beschriftet und liesse sich nicht
+   übersetzen - deshalb liegt das echte input transparent über der eigenen
+   Darstellung, statt es auszublenden (display:none wuerde "required" brechen). */
+.file-pick {
+  position: relative; display: flex; align-items: center; gap: 12px;
+  border-radius: 14px; padding: 10px;
+  background: var(--input-bg); border: 1px solid var(--input-border);
 }
-input[type="file"]::file-selector-button, input[type="file"]::-webkit-file-upload-button {
-  border: none; border-radius: 10px; padding: 9px 14px; margin-right: 12px;
-  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
-  background: var(--chip-bg); color: var(--chip-color); transition: background .15s, color .15s;
+.file-pick input[type="file"] {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
 }
-input[type="file"]::file-selector-button:hover, input[type="file"]::-webkit-file-upload-button:hover {
-  background: var(--accent-grad); color: var(--on-accent);
+.file-pick-btn {
+  flex: 0 0 auto; border-radius: 10px; padding: 9px 14px;
+  font-size: 13px; font-weight: 600;
+  background: var(--chip-bg); color: var(--chip-color);
+  transition: background .15s, color .15s;
+}
+.file-pick:hover .file-pick-btn { background: var(--accent-grad); color: var(--on-accent); }
+.file-pick input[type="file"]:focus-visible ~ .file-pick-btn { outline: 2px solid var(--accent); outline-offset: 1px; }
+.file-pick-name {
+  min-width: 0; font-size: 13px; color: var(--muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
 .section-label { font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 0 10px 4px; text-align: left; }
@@ -398,6 +411,21 @@ input[type="file"]::file-selector-button:hover, input[type="file"]::-webkit-file
 .item .ip-row .ip-input { flex: 1; padding: 10px 12px; font-size: 14px; border-radius: 12px; }
 .item .ic { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px; background: var(--chip-bg); color: var(--chip-color); display: flex; align-items: center; justify-content: center; }
 .item .ic svg { width: 19px; height: 19px; }
+/* Ziehgriff zum Umsortieren per Drag&Drop (devices.php, assets/device-reorder.js) */
+.drag-handle {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: 34px; height: 44px; border-radius: 8px; color: var(--muted);
+  cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.drag-handle:active { cursor: grabbing; background: var(--ghost-bg); }
+.drag-handle svg { width: 16px; height: 16px; }
+/* Platzhalter, der beim Ziehen an der Ursprungsstelle in der Liste bleibt */
+.item.drag-placeholder { opacity: .35; }
+/* Schwebende Kopie, die dem Finger/Cursor folgt (position:fixed, per transform bewegt) */
+.drag-ghost {
+  position: fixed; top: 0; left: 0; z-index: 100; pointer-events: none;
+  margin: 0; box-shadow: 0 16px 34px rgba(0,0,0,.32); will-change: transform;
+}
 .item .txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
 .item .nm { font-weight: 700; color: var(--dev-text); }
 .item .mac { font-size: 11px; font-family: ui-monospace, "Cascadia Code", monospace; color: var(--mac); margin-top: 2px; }

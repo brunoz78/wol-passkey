@@ -75,6 +75,10 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <path d="M12 21V10"/><path d="M8 14l4-4 4 4"/><path d="M4 19h16"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
+      <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+      <circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></symbol>
   </svg>
 
   <div class="app">

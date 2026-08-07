@@ -65,6 +65,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = t('devices.save_failed');
                 }
             }
+        } elseif ($action === 'reorder') {
+            $order = $_POST['order'] ?? [];
+            // Sicherheits-Gegenprobe: die gepostete Reihenfolge muss exakt dieselbe
+            // Menge an Namen enthalten wie aktuell gespeichert (z.B. falls in einem
+            // anderen Tab zwischenzeitlich ein Gerät gelöscht wurde) - sonst lieber
+            // nichts speichern statt Geräte zu verlieren.
+            $current = array_keys($devices);
+            $posted = is_array($order) ? array_values($order) : [];
+            sort($current);
+            $postedSorted = $posted;
+            sort($postedSorted);
+            if ($posted === [] || $current !== $postedSorted) {
+                $error = t('devices.reorder_failed');
+            } else {
+                $reordered = [];
+                foreach ($posted as $k) {
+                    $reordered[$k] = $devices[$k];
+                }
+                if (devices_save($reordered)) {
+                    $devices = $reordered;
+                } else {
+                    $error = t('devices.save_failed');
+                }
+            }
         }
     }
 }
@@ -90,8 +114,10 @@ require __DIR__ . '/partials/head.php';
       <p class="section-label" style="margin-top:16px"><?php te('devices.none'); ?></p>
     <?php else: ?>
       <p class="section-label" style="margin-top:16px"><?php te('devices.your_devices'); ?></p>
+      <div class="devlist-manage" id="deviceList" data-csrf="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>">
       <?php foreach ($devices as $name => $dev): $mac = $dev['mac']; $ip = $dev['ip']; ?>
-        <div class="item">
+        <div class="item" data-name="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
+          <span class="drag-handle" aria-label="<?php te('devices.reorder'); ?>" title="<?php te('devices.reorder'); ?>"><svg><use href="#i-grip"/></svg></span>
           <span class="ic"><svg><use href="#i-mon"/></svg></span>
           <span class="txt grow">
             <span class="nm"><?php echo htmlspecialchars($name); ?></span>
@@ -115,6 +141,7 @@ require __DIR__ . '/partials/head.php';
           </form>
         </div>
       <?php endforeach; ?>
+      </div>
     <?php endif; ?>
 
     <hr />
@@ -138,4 +165,5 @@ require __DIR__ . '/partials/head.php';
     </form>
 
     <div class="spacer"></div>
+    <script src="assets/device-reorder.js"></script>
 <?php require __DIR__ . '/partials/foot.php'; ?>
