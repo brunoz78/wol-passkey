@@ -12,7 +12,7 @@ require_once dirname(__DIR__) . '/config.php';
 // Installierte Version. Bei jedem Release zusammen mit CHANGELOG.md und dem
 // Git-Tag hochzählen - der Update-Hinweis (auth/update-check.php) vergleicht
 // dagegen die neueste GitHub-Release.
-define('WOL_VERSION', '1.4.2');
+define('WOL_VERSION', '1.4.3');
 
 // Woher/wie oft der Update-Hinweis prüft (siehe auth/update-check.php).
 define('WOL_UPDATE_REPO', 'brunoz78/wol-passkey');

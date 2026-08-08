@@ -4,6 +4,11 @@ require_once __DIR__ . '/auth/devices.php';
 require_once __DIR__ . '/auth/reachability.php';
 require_login();
 
+// Session sofort wieder freigeben: Der Browser fragt für jede Gerätekachel
+// parallel an, PHPs Session-Sperre würde die Anfragen sonst nacheinander
+// abarbeiten und die Wartezeiten aufaddieren.
+session_write_close();
+
 /*
   Liefert den Online-Status eines Geräts als JSON, wird per JS von
   assets/device-status.js für jede Gerätekachel mit hinterlegter IP

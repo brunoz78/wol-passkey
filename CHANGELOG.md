@@ -4,6 +4,25 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.3] – 2026-08-08
+
+### Behoben
+- **Ausgeschaltete Geräte wurden als online angezeigt:** Die Erreichbarkeits-
+  prüfung schloss bisher aus einem *schnellen* Fehlschlag, dass das Gerät läuft
+  und nur der Port zu ist. Das trifft im selben Subnetz aber nicht zu: Bekommt
+  der Kernel auf seine ARP-Anfrage keine Antwort, merkt er sich das Gerät eine
+  Weile als „failed" und beantwortet weitere Verbindungsversuche sofort selbst
+  mit „no route to host" - genauso schnell wie eine echte Ablehnung. Als
+  laufend gilt jetzt nur noch, was das Zielgerät selbst beantwortet hat
+  (Verbindung angenommen oder ausdrücklich abgelehnt).
+
+### Geändert
+- Die Ports werden gleichzeitig statt nacheinander geprüft, und
+  `device-status.php` gibt die Session sofort wieder frei. Ohne das würde die
+  korrigierte Prüfung deutlich länger dauern, weil ein ausgeschaltetes Gerät
+  jetzt immer ins Zeitlimit läuft und PHPs Session-Sperre die parallelen
+  Abfragen der Gerätekacheln hintereinander abgearbeitet hätte.
+
 ## [1.4.2] – 2026-08-08
 
 ### Behoben
@@ -170,6 +189,7 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.4.3]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.3
 [1.4.2]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.2
 [1.4.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.1
 [1.4.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.0
