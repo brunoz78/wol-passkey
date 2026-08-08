@@ -4,6 +4,25 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.2] – 2026-08-08
+
+### Behoben
+- **MAC-Adresse wurde wieder überdeckt:** Der in 1.4.1 hinzugekommene Ziehgriff
+  brauchte so viel Breite, dass die MAC-Adresse auf schmalen Bildschirmen erneut
+  vom „Entfernen"-Button angeschnitten wurde (derselbe Fehler wie in 1.3.2).
+  Abstände und Symbolgrösse in der Liste sind jetzt knapper, und die MAC-Adresse
+  wird notfalls sauber gekürzt statt unter den Button zu rutschen.
+
+### Geändert
+- **Eigene Desktop-Ansicht:** Ab 1000px Fensterbreite bleibt das Menü
+  dauerhaft als Seitenleiste offen (der Hamburger entfällt), der Inhalt
+  bekommt eine angenehmere Breite. Bisher war am grossen Bildschirm
+  einfach das Smartphone-Layout in der Mitte zu sehen. Login und Setup
+  haben kein Menü und bleiben unverändert zentriert; bis 999px ändert
+  sich nichts.
+- Screenshots aktualisiert und um die Sicherungs-Seite ergänzt; die englische
+  Dokumentation zeigt jetzt die englische Oberfläche statt der deutschen.
+
 ## [1.4.1] – 2026-08-07
 
 ### Hinzugefügt
@@ -151,6 +170,7 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Installations-ZIP als Release-Asset (`wol-passkey-<version>.zip`) sowie ein
   Build-Skript (`tools/build-release.php`) samt Windows-Starter.
 
+[1.4.2]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.2
 [1.4.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.1
 [1.4.0]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.4.0
 [1.3.1]: https://github.com/brunoz78/wol-passkey/releases/tag/v1.3.1

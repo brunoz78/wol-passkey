@@ -14,13 +14,11 @@ Three switchable themes (**Light** is the default):
 
 | Light | Dark | Vivid |
 |:---:|:---:|:---:|
-| ![Light theme](docs/screenshots/theme-daylight.png) | ![Dark theme](docs/screenshots/theme-midnight.png) | ![Vivid theme](docs/screenshots/theme-vivid.png) |
+| ![Light theme](docs/screenshots/theme-daylight-en.png) | ![Dark theme](docs/screenshots/theme-midnight-en.png) | ![Vivid theme](docs/screenshots/theme-vivid-en.png) |
 
-| Passkey login | Manage devices | Manage passkeys |
-|:---:|:---:|:---:|
-| ![Login](docs/screenshots/screen-login.png) | ![Device management](docs/screenshots/screen-devices.png) | ![Passkey management](docs/screenshots/screen-passkey.png) |
-
-*(The screenshots show the German interface.)*
+| Passkey login | Manage devices | Manage passkeys | Backup |
+|:---:|:---:|:---:|:---:|
+| ![Login](docs/screenshots/screen-login-en.png) | ![Device management](docs/screenshots/screen-devices-en.png) | ![Passkey management](docs/screenshots/screen-passkey-en.png) | ![Backup](docs/screenshots/screen-backup-en.png) |
 
 ## Features
 

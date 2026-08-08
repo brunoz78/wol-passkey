@@ -402,19 +402,22 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .dev.is-online .status-dot { background: var(--msg-ok-text); opacity: 1; box-shadow: 0 0 6px 1px var(--msg-ok-text); }
 
 /* ---------- Statische Info-Zeile (Passkeys, Geräteliste devices.php) ---------- */
+/* gap bewusst knapper als bei den Geraete-Kacheln: hier teilen sich Ziehgriff,
+   Icon, Name/MAC und Entfernen-Button eine Zeile - bei 320px Breite braucht die
+   MAC-Adresse (11px Monospace, ~110px) sonst mehr Platz als uebrig bleibt. */
 .item {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 13px; padding: 14px; margin-bottom: 10px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 9px; padding: 14px; margin-bottom: 10px;
   border-radius: 16px; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
 }
 /* IP-Zeile in der Geräteverwaltung: erzwingt per flex-basis:100% einen Zeilenumbruch unter Name/MAC */
 .item .ip-row { flex: 1 1 100%; display: flex; gap: 8px; margin-top: 2px; }
 .item .ip-row .ip-input { flex: 1; padding: 10px 12px; font-size: 14px; border-radius: 12px; }
-.item .ic { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px; background: var(--chip-bg); color: var(--chip-color); display: flex; align-items: center; justify-content: center; }
-.item .ic svg { width: 19px; height: 19px; }
+.item .ic { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 10px; background: var(--chip-bg); color: var(--chip-color); display: flex; align-items: center; justify-content: center; }
+.item .ic svg { width: 17px; height: 17px; }
 /* Ziehgriff zum Umsortieren per Drag&Drop (devices.php, assets/device-reorder.js) */
 .drag-handle {
   display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
-  width: 34px; height: 44px; border-radius: 8px; color: var(--muted);
+  width: 30px; height: 44px; border-radius: 8px; color: var(--muted);
   cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none;
 }
 .drag-handle:active { cursor: grabbing; background: var(--ghost-bg); }
@@ -429,6 +432,11 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .item .txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
 .item .nm { font-weight: 700; color: var(--dev-text); }
 .item .mac { font-size: 11px; font-family: ui-monospace, "Cascadia Code", monospace; color: var(--mac); margin-top: 2px; }
+/* Sicherheitsnetz nur fuer die Geraeteliste: sollte der Platz je doch nicht
+   reichen (anderer Monospace-Font o.ae.), wird die MAC sauber gekuerzt statt
+   unter den Entfernen-Button zu rutschen. Auf der Passkey-Seite steht in
+   derselben Klasse ein laengerer Text ("registriert am ..."), der umbrechen darf. */
+#deviceList .item .mac { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .item .grow { flex: 1; }
 
 /* kleiner Icon-Button (z.B. Entfernen) */
@@ -471,3 +479,29 @@ hr { border: none; border-top: 1px solid var(--divider); margin: 20px 0; }
 .links a { color: var(--link); text-decoration: none; font-weight: 600; }
 .links a:hover { text-decoration: underline; }
 .links .sep { opacity: .5; margin: 0 4px; }
+
+/* ---------- Desktop: Menü als feste Seitenleiste ----------
+   Am grossen Bildschirm bleibt das Ausklappmenü dauerhaft offen; der Hamburger
+   entfällt. Steht bewusst am Dateiende, damit es die Menü-Regeln oben
+   überschreibt (gleiche Spezifität, spätere Regel gewinnt).
+   Login und Setup haben kein Hauptmenü - :has() sorgt dafür, dass dort nichts
+   verschoben wird. Bis 999px bleibt alles wie auf dem Smartphone. */
+@media (min-width: 1000px) {
+  body:has(.nav-menu) { padding-left: 250px; }
+
+  .nav-menu {
+    transform: none;
+    width: 250px; max-width: none;
+    box-shadow: none;
+    border-right: 1px solid var(--card-border);
+    overflow-y: auto;   /* viele Sprachen + ausgeklapptes Untermenü */
+  }
+  /* Auf-/Zuklappen wird nicht mehr gebraucht */
+  .hamburger, .nav-close { display: none; }
+  .nav-overlay { display: none !important; }
+
+  body:has(.nav-menu) .topbar { justify-content: flex-end; }
+
+  .app { max-width: 620px; padding: 30px 30px 48px; }
+  .brand h1 { font-size: 38px; }
+}

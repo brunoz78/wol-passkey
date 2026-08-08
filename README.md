@@ -16,9 +16,9 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 |:---:|:---:|:---:|
 | ![Design Hell](docs/screenshots/theme-daylight.png) | ![Design Dunkel](docs/screenshots/theme-midnight.png) | ![Design Bunt](docs/screenshots/theme-vivid.png) |
 
-| Login mit Passkey | Geräte verwalten | Passkeys verwalten |
-|:---:|:---:|:---:|
-| ![Login](docs/screenshots/screen-login.png) | ![Geräteverwaltung](docs/screenshots/screen-devices.png) | ![Passkey-Verwaltung](docs/screenshots/screen-passkey.png) |
+| Login mit Passkey | Geräte verwalten | Passkeys verwalten | Sicherung |
+|:---:|:---:|:---:|:---:|
+| ![Login](docs/screenshots/screen-login.png) | ![Geräteverwaltung](docs/screenshots/screen-devices.png) | ![Passkey-Verwaltung](docs/screenshots/screen-passkey.png) | ![Sicherung](docs/screenshots/screen-backup.png) |
 
 ## Funktionen
 
