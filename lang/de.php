@@ -20,6 +20,7 @@ return [
     'nav.close'       => 'Menü schließen',
     'nav.language'    => 'Sprache',
     'nav.about'       => 'Über (Version %s)',
+    'nav.check_update' => 'Jetzt nach Updates suchen',
 
     // ---------- Update-Hinweis ----------
     'update.available' => 'Update verfügbar: Version %s',
@@ -180,4 +181,8 @@ return [
     'js.unknown_error'        => 'Unbekannter Fehler',
     'js.device_online'        => 'Läuft',
     'js.auto_off'             => 'Automatische Abfrage ausgeschaltet. Du kannst dich mit dem Passwort anmelden oder oben auf „Mit Passkey anmelden“ tippen.',
+    'js.update_checking'      => 'Suche läuft …',
+    'js.update_uptodate'      => 'Du hast die aktuelle Version.',
+    'js.update_available'     => 'Update verfügbar: Version {v}',
+    'js.update_check_failed'  => 'Prüfung fehlgeschlagen (keine Internetverbindung?)',
 ];

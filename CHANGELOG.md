@@ -11,58 +11,21 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
   die Abfrage beim Öffnen der Loginseite immer von selbst. Am Handy ist das
   bequem, am Desktop stört es, wenn man sich lieber mit dem Passwort anmeldet.
   Unter dem Passkey-Knopf steht jetzt „Beim Öffnen automatisch fragen" - die
-  Einstellung gilt pro Gerät und Browser.
-
-### Behoben
-- **Abbruch der automatischen Abfrage sah aus wie ein Fehler:** Schloss man das
-  Passkey-Fenster des Betriebssystems, erschien die rote Meldung „Abgebrochen
-  oder Zeitlimit überschritten". Wer die Abfrage gar nicht gestartet hat, hat
-  auch nichts falsch gemacht: Es kommt jetzt ein neutraler Hinweis, und die
-  automatische Abfrage schaltet sich auf diesem Gerät ab. Bricht man eine
-  selbst gestartete Abfrage ab, erscheint weiterhin die bisherige Meldung.
-- **Nach dem Abmelden blieb die automatische Abfrage dauerhaft aus:**
-  `logout.php` hängt `?logout=1` an die Adresse, damit direkt nach dem
-  Abmelden nicht sofort wieder nach dem Passkey gefragt wird. Der Parameter
-  blieb danach aber in der Adresse stehen - und Mobilbrowser stellen beim
-  Neustart den letzten Tab samt Adresse wieder her. Dadurch kam die Abfrage
-  auf diesem Gerät nie wieder von selbst, obwohl die Einstellung an war. Der
-  Parameter wird jetzt nach dem Laden aus der Adresse entfernt; gemeint war
-  immer "dieses eine Mal", nicht "diese Adresse für immer".
-- **Abfrage kam nicht, wenn der Tab nur nach vorne geholt wurde:** Öffnet man
-  die Seite über eine Verknüpfung auf dem Startbildschirm, holt der Browser
-  häufig nur den noch offenen Tab der letzten Sitzung nach vorne, statt die
-  Seite neu zu laden. Damit lief der Startcode kein zweites Mal und die
-  Abfrage erschien erst nach einem manuellen Neuladen. Die Seite
-  reagiert jetzt zusätzlich darauf, wenn sie wieder sichtbar wird, den
-  Fokus bekommt oder aus dem Ruhezustand zurückkehrt.
-- **Hängengebliebene Abfrage blockierte alle weiteren:** Geht die Seite in den
-  Hintergrund, während eine Passkey-Abfrage läuft, beendet vor allem Android
-  die Abfrage oft nie. Die interne Sperre gegen doppelte Abfragen blieb
-  dadurch dauerhaft gesetzt, und beim Zurückkehren kam nie wieder eine
-  Abfrage - nur ein Neuladen half. Solche Abfragen werden jetzt beim
-  Zurückkehren erkannt und abgeräumt.
-- **Fehlschlag ohne Fenster-Fokus schaltete die Abfrage ab:** Ohne Fokus lehnt
-  Chrome eine Passkey-Abfrage mit demselben Fehler ab wie ein Abbruch durch
-  den Nutzer. Das hätte die automatische Abfrage fälschlich ausgeschaltet;
-  dieser Fall bleibt jetzt folgenlos und wird beim nächsten Fokus erneut
-  versucht.
-- **Zwei gleichzeitige Passkey-Abfragen:** Drückte man den Knopf, während die
-  automatische Abfrage noch offen war, startete eine zweite - Chrome und Brave
-  weisen die aber sofort mit „NotAllowedError" ab, ohne Dialog. Das sah aus
-  wie ein sofortiger Abbruch durch den Nutzer. Ein Klick bricht eine laufende
-  Abfrage jetzt sauber ab (`AbortController`), statt eine zweite danebenzu-
-  stellen; die abgelöste Abfrage zeigt keine Meldung und ändert keine
-  Einstellung.
+  Einstellung gilt pro Gerät und Browser. Sie funktioniert zuverlässig auch
+  beim Wechsel zwischen Tabs, im Hintergrund und bei mehreren gleichzeitigen
+  Anmeldeversuchen.
+- **Manueller Update-Check:** Im Menü gibt es jetzt „Jetzt nach Updates
+  suchen" - fragt sofort bei GitHub nach, statt bis zu 24h auf den
+  automatischen Hinweis zu warten.
 
   Randnotiz für alle, die eine Verknüpfung auf dem Startbildschirm
   angelegt haben: Wurde sie in einem Moment erstellt, in dem die Adresse
   noch `?logout=1` enthielt, speichert Android das dauerhaft mit - jeder
-  Tipp auf das Icon würde dann fälschlich als "gerade abgemeldet" gelten.
-  Die Verknüpfung einmal neu anlegen (von der reinen Adresse ohne Zusatz)
-  behebt das.
-- **Alte Meldung blieb beim Klick stehen:** Der Knopf räumt die vorherige
-  Meldung jetzt weg, bevor er startet - sonst wirkte eine ältere Fehlermeldung
-  wie die Antwort auf den gerade erfolgten Klick.
+  Tipp auf das Icon würde dann fälschlich als "gerade abgemeldet" gelten und
+  die automatische Passkey-Abfrage bliebe aus. Die Verknüpfung einmal neu
+  anlegen (von der reinen Adresse ohne Zusatz) behebt das.
+
+### Behoben
 - **Browser behielten alte JS- und CSS-Dateien:** Der Webserver liefert diese
   Dateien ohne Cache-Header aus, Browser durften sie deshalb beliebig lange
   behalten. Nach einem Update entstand so eine Mischung aus neuem PHP und

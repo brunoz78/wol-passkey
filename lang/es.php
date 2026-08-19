@@ -15,6 +15,7 @@ return [
     'nav.close'       => 'Cerrar menú',
     'nav.language'    => 'Idioma',
     'nav.about'       => 'Acerca de (versión %s)',
+    'nav.check_update' => 'Buscar actualizaciones ahora',
 
     // ---------- Aviso de actualización ----------
     'update.available' => 'Actualización disponible: versión %s',
@@ -175,4 +176,8 @@ return [
     'js.unknown_error'        => 'Error desconocido',
     'js.device_online'        => 'En línea',
     'js.auto_off'             => 'Solicitud automática desactivada. Inicia sesión con la contraseña o toca «Iniciar sesión con clave de acceso» arriba.',
+    'js.update_checking'      => 'Buscando …',
+    'js.update_uptodate'      => 'Tienes la última versión.',
+    'js.update_available'     => 'Actualización disponible: versión {v}',
+    'js.update_check_failed'  => 'Búsqueda fallida (¿sin conexión a internet?)',
 ];

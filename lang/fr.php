@@ -15,6 +15,7 @@ return [
     'nav.close'       => 'Fermer le menu',
     'nav.language'    => 'Langue',
     'nav.about'       => 'À propos (version %s)',
+    'nav.check_update' => 'Rechercher des mises à jour',
 
     // ---------- Notice de mise à jour ----------
     'update.available' => 'Mise à jour disponible : version %s',
@@ -176,4 +177,8 @@ return [
     'js.unknown_error'        => 'Erreur inconnue',
     'js.device_online'        => 'En ligne',
     'js.auto_off'             => 'Demande automatique désactivée. Connectez-vous avec le mot de passe ou touchez « Se connecter avec une clé d’accès » ci-dessus.',
+    'js.update_checking'      => 'Recherche en cours …',
+    'js.update_uptodate'      => 'Vous avez la dernière version.',
+    'js.update_available'     => 'Mise à jour disponible : version {v}',
+    'js.update_check_failed'  => 'Échec de la recherche (pas de connexion internet ?)',
 ];

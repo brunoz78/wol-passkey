@@ -15,6 +15,7 @@ return [
     'nav.close'       => 'Close menu',
     'nav.language'    => 'Language',
     'nav.about'       => 'About (version %s)',
+    'nav.check_update' => 'Check for updates now',
 
     // ---------- Update notice ----------
     'update.available' => 'Update available: version %s',
@@ -173,4 +174,8 @@ return [
     'js.unknown_error'       => 'Unknown error',
     'js.device_online'       => 'Running',
     'js.auto_off'            => 'Automatic prompt turned off. Sign in with your password, or tap "Sign in with passkey" above.',
+    'js.update_checking'     => 'Checking …',
+    'js.update_uptodate'     => 'You have the latest version.',
+    'js.update_available'    => 'Update available: version {v}',
+    'js.update_check_failed' => 'Check failed (no internet connection?)',
 ];

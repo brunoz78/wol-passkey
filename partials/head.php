@@ -125,6 +125,10 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
           <a href="https://github.com/brunoz78/wol-passkey" target="_blank" rel="noopener">
             <svg><use href="#i-info"/></svg><?php te('nav.about', WOL_VERSION); ?>
           </a>
+          <button type="button" class="nav-menu-btn" id="waUpdateCheckBtn"
+                  data-csrf="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>">
+            <svg><use href="#i-spark"/></svg><span id="waUpdateCheckLabel"><?php te('nav.check_update'); ?></span>
+          </button>
         </nav>
       <?php else: ?>
         <?php /* Login/Setup haben kein Menü - hier ein kompakter Sprachumschalter als Ausklapp-Button. */ ?>

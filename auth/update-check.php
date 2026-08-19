@@ -61,6 +61,26 @@ function wol_update_fetch_latest() {
 }
 
 /**
+ * Wie wol_update_check(), fragt aber immer sofort die GitHub-API ab statt
+ * den Cache zu verwenden - für den manuellen "Jetzt prüfen"-Knopf im Menü
+ * (siehe update-check.php). Liefert null bei Netzwerkfehlern; der alte Cache
+ * bleibt in dem Fall unangetastet.
+ */
+function wol_update_check_now() {
+    $latest = wol_update_fetch_latest();
+    if ($latest === null) {
+        return null;
+    }
+    $cache = ['checked_at' => time(), 'version' => $latest['version'], 'url' => $latest['url']];
+    wol_update_cache_save($cache);
+    return [
+        'available' => version_compare($cache['version'], WOL_VERSION, '>'),
+        'latest'    => $cache['version'],
+        'url'       => $cache['url'],
+    ];
+}
+
+/**
  * Liefert ['available' => bool, 'latest' => string, 'url' => string]
  * oder null, wenn (noch) keine Information vorliegt (z.B. erster Aufruf ohne
  * Internetzugang). Greift nur auf die GitHub-API zu, wenn der Cache fehlt
