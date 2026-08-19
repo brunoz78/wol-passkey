@@ -88,7 +88,7 @@ require __DIR__ . '/partials/head.php';
 
     <div class="spacer"></div>
 
-    <script src="assets/webauthn-client.js"></script>
+    <script src="<?php echo asset('assets/webauthn-client.js'); ?>"></script>
     <script>
       const waDefaultDeviceName = <?php echo json_encode(t('passkey.default_device')); ?>;
       function waDoRegister() {

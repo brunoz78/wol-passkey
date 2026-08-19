@@ -51,6 +51,7 @@ return [
     'login.or_password'    => 'oder mit Passwort',
     'login.password'       => 'Passwort',
     'login.submit'         => 'Anmelden',
+    'login.auto_ask'       => 'Beim Öffnen automatisch fragen',
 
     // ---------- Setup ----------
     'setup.title'        => 'Setup',
@@ -178,4 +179,5 @@ return [
     'js.err_origin'           => 'Die Adresse dieser Seite passt nicht zum Passkey. Ein Passkey gilt immer nur für genau einen Hostnamen.',
     'js.unknown_error'        => 'Unbekannter Fehler',
     'js.device_online'        => 'Läuft',
+    'js.auto_off'             => 'Automatische Abfrage ausgeschaltet. Du kannst dich mit dem Passwort anmelden oder oben auf „Mit Passkey anmelden“ tippen.',
 ];

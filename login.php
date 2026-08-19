@@ -50,6 +50,10 @@ require __DIR__ . '/partials/head.php';
     <button class="btn" type="button" onclick="waLoginWithPasskey(document.getElementById('waStatus'))">
       <svg><use href="#i-fp"/></svg><?php te('login.with_passkey'); ?>
     </button>
+    <label class="autoask" id="waAutoAsk" hidden>
+      <input type="checkbox" id="waAutoAskBox" />
+      <span><?php te('login.auto_ask'); ?></span>
+    </label>
     <div id="waStatus"></div>
 
     <div class="divider"><?php te('login.or_password'); ?></div>
@@ -65,12 +69,22 @@ require __DIR__ . '/partials/head.php';
 
     <div class="spacer"></div>
 
-    <script src="assets/webauthn-client.js"></script>
+    <script src="<?php echo asset('assets/webauthn-client.js'); ?>"></script>
+    <script>
+      // Kästchen für die automatische Abfrage einblenden - nur auf Geräten,
+      // die überhaupt schon einen Passkey benutzt haben.
+      waInitAutoAsk();
+    </script>
     <?php if ($_SERVER['REQUEST_METHOD'] === 'GET'): ?>
     <script>
-      // Automatisch nach dem Passkey fragen, wenn dieses Gerät schon einen hat.
-      // Nur beim normalen Seitenaufruf - nicht nach einem Passwort-Fehlversuch.
+      // Automatisch nach dem Passkey fragen, wenn dieses Gerät schon einen hat
+      // und die Abfrage nicht abgeschaltet wurde. Nur beim normalen
+      // Seitenaufruf - nicht nach einem Passwort-Fehlversuch.
       waAutoLoginIfKnownDevice(document.getElementById('waStatus'));
+
+      // Und noch einmal, wenn der Browser die Seite später nur wieder in den
+      // Vordergrund holt, ohne sie neu zu laden.
+      waWatchReturn(document.getElementById('waStatus'));
     </script>
     <?php endif; ?>
 <?php require __DIR__ . '/partials/foot.php'; ?>

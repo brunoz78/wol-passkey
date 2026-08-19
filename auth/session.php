@@ -46,3 +46,16 @@ function csrf_token() {
 function csrf_check($token) {
     return !empty($_SESSION['csrf_token']) && is_string($token) && hash_equals($_SESSION['csrf_token'], $token);
 }
+
+/*
+  Pfad einer statischen Datei mit angehängter Versionsnummer.
+
+  Der Webserver liefert JS und CSS ohne Cache-Header aus - Browser dürfen die
+  Dateien deshalb beliebig lange behalten. Nach einem Update entstand so eine
+  Mischung aus neuem PHP und alter JS-Datei, die schwer zu durchschauende
+  Fehler verursacht. Die Versionsnummer im Pfad erzwingt bei jeder neuen
+  Version ein frisches Laden.
+*/
+function asset($pfad) {
+    return htmlspecialchars($pfad . '?v=' . WOL_VERSION, ENT_QUOTES);
+}

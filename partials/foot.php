@@ -1,4 +1,4 @@
   </div><!-- .app -->
-  <script src="assets/theme.js"></script>
+  <script src="<?php echo asset('assets/theme.js'); ?>"></script>
 </body>
 </html>

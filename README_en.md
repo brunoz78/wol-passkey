@@ -25,7 +25,8 @@ Three switchable themes (**Light** is the default):
 - 🖥️ **Wake on LAN**: wakes machines on your home network via magic packet (UDP broadcast)
 - 🔐 **Login protection**: password login with lockout after too many failed attempts
 - 👆 **Passkeys (WebAuthn)**: sign in with fingerprint/Face ID, registered per device;
-  on known devices the prompt starts automatically when the page opens
+  on known devices the prompt starts automatically when the page opens - this
+  can be switched off per device if you prefer the password there
 - 🎨 **Three themes**: Light, Dark and Vivid – switchable any time via the toggle in
   the top right; the choice is remembered per browser
 - 🌍 **Multilingual**: German, English, French and Spanish, switchable from the hamburger

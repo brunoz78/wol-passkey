@@ -46,6 +46,7 @@ return [
     'login.or_password'    => 'or use your password',
     'login.password'       => 'Password',
     'login.submit'         => 'Sign in',
+    'login.auto_ask'       => 'Ask automatically when the page opens',
 
     // ---------- Setup ----------
     'setup.title'        => 'Setup',
@@ -171,4 +172,5 @@ return [
     'js.err_origin'          => 'This page address does not match the passkey. A passkey is always tied to one exact hostname.',
     'js.unknown_error'       => 'Unknown error',
     'js.device_online'       => 'Running',
+    'js.auto_off'            => 'Automatic prompt turned off. Sign in with your password, or tap "Sign in with passkey" above.',
 ];

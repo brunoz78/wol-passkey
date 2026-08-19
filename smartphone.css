@@ -321,6 +321,12 @@ body {
 a.btn { text-decoration: none; }
 .btn-ghost { background: var(--ghost-bg); color: var(--ghost-text); border: 1px solid var(--ghost-border); box-shadow: none; }
 .btn-wake { background: var(--wake-grad); color: #fff; box-shadow: var(--wake-shadow); font-size: 18px; padding: 18px; }
+/* Solange kein Gerät ausgewählt ist (siehe assets/wake-select.js) */
+.btn-wake:disabled {
+  background: var(--ghost-bg); color: var(--muted); box-shadow: none;
+  cursor: not-allowed; opacity: .7;
+}
+.btn-wake:disabled:active { transform: none; }
 .mt { margin-top: 14px; }
 
 /* ---------- Trenner "oder mit Passwort" ---------- */
@@ -504,4 +510,20 @@ hr { border: none; border-top: 1px solid var(--divider); margin: 20px 0; }
 
   .app { max-width: 620px; padding: 30px 30px 48px; }
   .brand h1 { font-size: 38px; }
+}
+
+/* Kästchen "Beim Öffnen automatisch fragen" auf der Loginseite */
+.autoask {
+  display: flex; align-items: center; gap: 8px;
+  margin: -6px 0 6px; padding: 7px 4px;
+  font-size: 13px; color: var(--muted); cursor: pointer;
+}
+.autoask input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; flex: 0 0 auto; }
+.autoask[hidden] { display: none; }
+
+/* Neutrale Meldung: weder Erfolg noch Fehler (z.B. abgebrochene Passkey-Abfrage) */
+.messageInfo {
+  border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 600;
+  text-align: center; margin: 6px 0;
+  background: var(--chip-bg); color: var(--chip-color); border: 1px solid transparent;
 }

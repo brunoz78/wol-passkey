@@ -46,6 +46,7 @@ return [
     'login.or_password'    => 'ou avec un mot de passe',
     'login.password'       => 'Mot de passe',
     'login.submit'         => 'Se connecter',
+    'login.auto_ask'       => 'Demander automatiquement à l’ouverture',
 
     // ---------- Configuration initiale ----------
     'setup.title'        => 'Configuration',
@@ -174,4 +175,5 @@ return [
     'js.err_origin'           => 'L\'adresse de cette page ne correspond pas à la clé d\'accès. Une clé d\'accès n\'est valable que pour un seul nom d\'hôte.',
     'js.unknown_error'        => 'Erreur inconnue',
     'js.device_online'        => 'En ligne',
+    'js.auto_off'             => 'Demande automatique désactivée. Connectez-vous avec le mot de passe ou touchez « Se connecter avec une clé d’accès » ci-dessus.',
 ];

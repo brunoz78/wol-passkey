@@ -66,10 +66,11 @@ require __DIR__ . '/partials/head.php';
             </label>
           <?php endforeach; ?>
         </div>
-        <div class="mt"><button class="btn btn-wake" type="submit"><svg><use href="#i-pw"/></svg><?php te('index.wake'); ?></button></div>
+        <div class="mt"><button class="btn btn-wake" type="submit" id="wakeBtn" disabled><svg><use href="#i-pw"/></svg><?php te('index.wake'); ?></button></div>
       </form>
     <?php endif; ?>
 
     <div class="spacer"></div>
-    <script src="assets/device-status.js"></script>
+    <script src="<?php echo asset('assets/device-status.js'); ?>"></script>
+    <script src="<?php echo asset('assets/wake-select.js'); ?>"></script>
 <?php require __DIR__ . '/partials/foot.php'; ?>

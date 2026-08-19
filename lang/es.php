@@ -46,6 +46,7 @@ return [
     'login.or_password'    => 'o con contraseña',
     'login.password'       => 'Contraseña',
     'login.submit'         => 'Iniciar sesión',
+    'login.auto_ask'       => 'Preguntar automáticamente al abrir',
 
     // ---------- Configuración inicial ----------
     'setup.title'        => 'Configuración',
@@ -173,4 +174,5 @@ return [
     'js.err_origin'           => 'La dirección de esta página no coincide con la clave de acceso. Una clave de acceso solo es válida para un único nombre de host.',
     'js.unknown_error'        => 'Error desconocido',
     'js.device_online'        => 'En línea',
+    'js.auto_off'             => 'Solicitud automática desactivada. Inicia sesión con la contraseña o toca «Iniciar sesión con clave de acceso» arriba.',
 ];

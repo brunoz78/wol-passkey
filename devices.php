@@ -165,5 +165,5 @@ require __DIR__ . '/partials/head.php';
     </form>
 
     <div class="spacer"></div>
-    <script src="assets/device-reorder.js"></script>
+    <script src="<?php echo asset('assets/device-reorder.js'); ?>"></script>
 <?php require __DIR__ . '/partials/foot.php'; ?>

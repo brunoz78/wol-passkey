@@ -15,7 +15,7 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <link rel="stylesheet" href="smartphone.css" />
+  <link rel="stylesheet" href="<?php echo asset('smartphone.css'); ?>" />
   <title><?php echo htmlspecialchars($sitename . $titleSuffix); ?></title>
   <script>
     /* Theme vor dem Rendern setzen, damit es nicht kurz aufblitzt. */

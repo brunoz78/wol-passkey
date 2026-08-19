@@ -25,7 +25,8 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 - 🖥️ **Wake on LAN**: weckt Rechner im Heimnetz per Magic Packet (UDP-Broadcast)
 - 🔐 **Login-Schutz**: Passwort-Login mit Sperre nach zu vielen Fehlversuchen
 - 👆 **Passkeys (WebAuthn)**: Anmeldung per Fingerabdruck/Face ID, pro Gerät registrierbar;
-  auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch
+  auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch -
+  pro Gerät abschaltbar, wenn man sich dort lieber mit dem Passwort anmeldet
 - 🎨 **Drei Designs**: Hell, Dunkel und Bunt – jederzeit über den Umschalter oben rechts
   wählbar, die Wahl wird pro Browser gemerkt
 - 🌍 **Mehrsprachig**: Deutsch, Englisch, Französisch und Spanisch, umschaltbar
