@@ -29,12 +29,16 @@ liegen auf `main` in `ct/`, `install/` und `json/`.
 Installation auf der **Proxmox-Host-Shell**:
 
 ```bash
-BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+COMMUNITY_SCRIPTS_URL=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main bash -c "$(curl -fsSL https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main/ct/wol-passkey.sh)"
 ```
 
-`run.sh` reicht die Basis-URL an alle Folge-Downloads durch. Ohne diesen Umweg
-sieht das Script nicht, von wo es geladen wurde, und würde das Install-Script
-vom Upstream holen (wo es nicht existiert).
+Seit der Aufteilung des Frameworks in ein eigenes `core`-Repo bootet jedes
+`ct/*.sh` die Engine (`build.func` & Co.) selbst direkt aus
+`community-scripts/core` - ein Umweg über `misc/run.sh` (das es nicht mehr
+gibt) ist nicht mehr nötig. `COMMUNITY_SCRIPTS_URL` sagt der Engine nur noch,
+woher die **App-eigenen** Dateien (`ct/`, `install/`, `json/`) kommen sollen -
+ohne die Variable würde sie dafür den Upstream nehmen, wo `wol-passkey`
+(noch) nicht existiert.
 
 `main` im Fork weicht damit um genau drei Dateien vom Upstream ab; ein Abgleich
 mit `community-scripts/ProxmoxVED` bleibt dadurch konfliktfrei möglich:
