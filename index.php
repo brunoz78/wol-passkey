@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/devices.php';
+require_once __DIR__ . '/auth/log.php';
 require_login();
 
 /*
@@ -13,19 +14,31 @@ require __DIR__ . '/wol.php';
 $devices = devices_load();
 
 // WOL-Verarbeitung
-$wakeResult = null;
-$wakeError  = null;
+$wakeLabel    = null; // Name (oder MAC) des aufgeweckten Geräts für die Erfolgsmeldung
+$wakeWaitName = null; // gesetzt, wenn der Status danach per JS abgefragt werden kann
+$wakeError    = null;
 $wakemachine = $_GET['wake_machine'] ?? '';
 
 if ($wakemachine !== '' && $wakemachine !== '-1') {
     if (!csrf_check($_GET['csrf_token'] ?? '')) {
         $wakeError = t('index.csrf');
     } else {
-        ob_start();
-        $ok = WakeOnLan($networkbroadcast, $wakemachine, $port);
-        $wolOutput = ob_get_clean(); // technische Ausgabe von wol.php (Port/MAC/Daten)
+        $wakeName = null;
+        $wakeIp   = '';
+        foreach ($devices as $name => $dev) {
+            if (strcasecmp($dev['mac'], $wakemachine) === 0) {
+                $wakeName = (string)$name;
+                $wakeIp   = $dev['ip'];
+                break;
+            }
+        }
+        $ok = WakeOnLan($networkbroadcast, $wakemachine, $port, $wakeIp);
+        wol_log($ok ? 'wake' : 'wake_failed', ['device' => $wakeName ?? $wakemachine, 'ip' => wol_client_ip()]);
         if ($ok) {
-            $wakeResult = $wolOutput;
+            $wakeLabel = $wakeName ?? $wakemachine;
+            if ($wakeName !== null && $wakeIp !== '') {
+                $wakeWaitName = $wakeName;
+            }
         } else {
             $wakeError = t('index.wake_failed');
         }
@@ -39,8 +52,11 @@ require __DIR__ . '/partials/head.php';
 ?>
     <?php if ($wakeError !== null): ?>
       <div class="messageNOK"><?php echo htmlspecialchars($wakeError); ?></div>
-    <?php elseif ($wakeResult !== null): ?>
-      <div class="messageOK"><?php te('index.wake_sent', $wakemachine); ?></div>
+    <?php elseif ($wakeLabel !== null): ?>
+      <div class="messageOK"><?php te('index.wake_sent', $wakeLabel); ?></div>
+      <?php if ($wakeWaitName !== null): ?>
+        <div id="wakeWait" data-wait-name="<?php echo htmlspecialchars($wakeWaitName, ENT_QUOTES); ?>" hidden></div>
+      <?php endif; ?>
     <?php endif; ?>
 
     <?php if (count($devices) === 0): ?>
@@ -61,6 +77,7 @@ require __DIR__ . '/partials/head.php';
               <span class="txt">
                 <span class="nm"><?php echo htmlspecialchars($name); ?></span>
                 <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
+                <?php if ($ip !== ''): ?><span class="since" hidden></span><?php endif; ?>
               </span>
               <span class="ind"></span>
             </label>

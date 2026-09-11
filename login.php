@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/store.php';
+require_once __DIR__ . '/auth/log.php';
 
 if (is_logged_in()) {
     header('Location: index.php');
@@ -25,15 +26,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
         auth_save($data);
         $_SESSION['authenticated'] = true;
         session_regenerate_id(true);
+        wol_log('login', ['method' => 'password', 'ip' => wol_client_ip()]);
         header('Location: index.php');
         exit;
     } else {
         $data['failed_attempts'] = (int)$data['failed_attempts'] + 1;
-        if ($data['failed_attempts'] >= AUTH_MAX_ATTEMPTS) {
+        $locked = $data['failed_attempts'] >= AUTH_MAX_ATTEMPTS;
+        if ($locked) {
             $data['locked_until'] = time() + AUTH_LOCKOUT_SECONDS;
             $data['failed_attempts'] = 0;
         }
         auth_save($data);
+        wol_log('login_failed', ['ip' => wol_client_ip()]);
+        if ($locked) {
+            wol_log('login_locked', ['ip' => wol_client_ip(), 'minutes' => (int)ceil(AUTH_LOCKOUT_SECONDS / 60)]);
+        }
         $error = t('login.wrong_password');
     }
 }

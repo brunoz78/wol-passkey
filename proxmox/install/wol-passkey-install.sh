@@ -69,6 +69,32 @@ $STD systemctl enable nginx
 $STD systemctl restart nginx
 msg_ok "Created Service"
 
+msg_info "Creating Background Check"
+# Records online/offline changes every minute, independent of page visits.
+# Must run as www-data: files it creates in auth/ have to stay writable for the web server.
+cat <<EOF >/etc/systemd/system/wol-passkey-check.service
+[Unit]
+Description=WoL Passkey device status check
+
+[Service]
+Type=oneshot
+User=www-data
+ExecStart=/usr/bin/php /opt/wol-passkey/cron.php
+EOF
+cat <<EOF >/etc/systemd/system/wol-passkey-check.timer
+[Unit]
+Description=Run WoL Passkey device status check every minute
+
+[Timer]
+OnCalendar=minutely
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
+EOF
+systemctl enable -q --now wol-passkey-check.timer
+msg_ok "Created Background Check"
+
 motd_ssh
 customize
 cleanup_lxc

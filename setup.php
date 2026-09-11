@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/store.php';
+require_once __DIR__ . '/auth/log.php';
 
 $error = null;
 $success = null;
@@ -33,6 +34,7 @@ if (!$setupKeyMissing && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['locked_until'] = 0;
             if (auth_save($data)) {
                 $success = t('setup.saved');
+                wol_log('password_set', ['ip' => wol_client_ip()]);
             } else {
                 $error = t('setup.save_failed');
             }

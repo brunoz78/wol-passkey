@@ -13,54 +13,59 @@ Version 1.0 - 2014.11.01
 flush();
 include 'config.php';
  
-function WakeOnLan($addr, $mac, $socket_number){
+/*
+  Schickt das Magic Packet an mehrere Ziele statt nur an eines: an die
+  Broadcast-Adresse aus config.php, an den allgemeinen Broadcast
+  255.255.255.255 und - falls eine IPv4 hinterlegt ist - direkt an das Gerät,
+  jeweils auf dem eingestellten Port sowie auf 9 und 7. Manche Netzwerkkarten
+  und Switches verschlucken ein einzelnes Paket; der direkte Versand hilft,
+  wenn das Gerät in einem anderen Subnetz liegt und der Router Unicast-WoL
+  weiterleitet. Gilt als erfolgreich, sobald mindestens ein Paket rausging -
+  der direkte Versand scheitert bei einem schlafenden Gerät im selben Netz
+  regelmässig, weil niemand auf die ARP-Anfrage antwortet.
+*/
+function WakeOnLan($addr, $mac, $socket_number, $device_ip = '') {
 
 	if (strlen($mac) != 17)
 		return FALSE;
 
-	if (preg_match('/[^A-Fa-f0-9:]/',$mac)) 
+	if (preg_match('/[^A-Fa-f0-9:]/',$mac))
 		return FALSE;
 
 	$addr_byte = explode(':', $mac);
 	$hw_addr   = '';
-	
-	for ($a=0; $a <6; $a++) 
+
+	for ($a=0; $a <6; $a++)
 		$hw_addr .= chr(hexdec($addr_byte[$a]));
-	
+
 	$msg = chr(255).chr(255).chr(255).chr(255).chr(255).chr(255);
-	
-	for ($a = 1; $a <= 16; $a++) 
+
+	for ($a = 1; $a <= 16; $a++)
 		$msg .= $hw_addr;
-	
+
+	$hosts = [$addr, '255.255.255.255'];
+	if (filter_var($device_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false)
+		$hosts[] = $device_ip;
+	$hosts = array_unique($hosts);
+	$ports = array_unique([(int)$socket_number, 9, 7]);
+
 	$s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-	
-	if ($s == FALSE) {
-		echo "<div class=\"messageNOK\">Can't create socket!</div>\n";
-		echo "Error: '".socket_last_error($s)."' - " . socket_strerror(socket_last_error($s));
+	if ($s === FALSE)
 		return FALSE;
-	} 
-	else {
-		$opt_ret = socket_set_option($s, SOL_SOCKET, SO_BROADCAST, TRUE);
-	
-		if ($opt_ret < 0) {
-			echo "setsockopt() failed, error: " . strerror($opt_ret) . "<br />\n";
-			return FALSE;
-		}
-	
-		if (socket_sendto($s, $msg, strlen($msg), 0, $addr, $socket_number)) {
-			$content = bin2hex($msg);
-			echo "<hr />\n";
-			echo "<div class=\"messageOK\">Magic Packet gesendet!</div>\n";
-			echo "<b>Port:</b> ".$socket_number." <b>MAC:</b> ".$_GET['wake_machine']." <b>Daten:</b>\n";
-			echo "<textarea readonly class=\"textarea\" name=\"content\" >".$content."</textarea><br />\n";
-			socket_close($s);
-			return TRUE;
-		}
-		else {
-			echo "<div class=\"messageNOK\">Magic Packet fehlgeschlagen!</div>\n";
-			return FALSE;
-		} 
+
+	if (!socket_set_option($s, SOL_SOCKET, SO_BROADCAST, TRUE)) {
+		socket_close($s);
+		return FALSE;
 	}
+
+	$sent = 0;
+	foreach ($hosts as $host)
+		foreach ($ports as $p)
+			if (@socket_sendto($s, $msg, strlen($msg), 0, $host, $p) !== FALSE)
+				$sent++;
+
+	socket_close($s);
+	return $sent > 0;
 }
  
 function PopulateMACList($maclist) {

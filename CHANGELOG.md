@@ -4,6 +4,44 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.5.0] – 2026-09-11
+
+### Hinzugefügt
+- **Verlauf:** Neue Seite im Menü. Sie zeigt, wann welches Gerät aufgeweckt
+  wurde, Anmeldungen mit Passwort oder Passkey, falsche Passwörter und
+  Sperren, Online-/Offline-Wechsel sowie hinzugefügte oder entfernte Geräte,
+  Passkeys und das Setzen des Passworts. Mit Filtern, Zeiten in der Zeitzone
+  des Browsers und gespeichert in `auth/log-data.php` (die letzten 500
+  Einträge). Hinter einem Reverse Proxy wird die echte Adresse des Aufrufers
+  protokolliert, aber nur wenn die Anfrage aus dem eigenen Netz kommt.
+- **Seit wann läuft ein Gerät:** Die Gerätekacheln zeigen „Läuft seit
+  3 Std. 12 Min." bzw. „Offline seit 2 Tg.".
+- **Hintergrundprüfung (`cron.php`):** Sie prüft jede Minute alle Geräte mit
+  IP, unabhängig davon, ob jemand die Seite offen hat. Erst damit sind die
+  Zeiten genau. Ohne sie wird der Status nur bei Seitenaufrufen erfasst: Die
+  Kacheln zeigen dann ehrlich „spätestens seit 14:32", und der Verlauf weist
+  auf die fehlende Prüfung hin. Im Proxmox-LXC richtet das Script sie als
+  systemd-Timer ein, auch bei bestehenden Containern mit dem nächsten
+  `update`. Überall sonst genügt eine Zeile in der Crontab (siehe README).
+- **Rückmeldung nach dem Aufwecken:** Ist beim Gerät eine IP hinterlegt, fragt
+  die Seite nach dem Aufwecken bis zu 3 Minuten lang nach und meldet, sobald
+  es erreichbar ist - statt nur „Aufwecken gesendet". Die Meldung nennt jetzt
+  den Gerätenamen statt der MAC-Adresse.
+
+### Geändert
+- **Magic Packet an mehrere Ziele:** Bisher ging genau ein Paket an die
+  Broadcast-Adresse aus `config.php`. Jetzt zusätzlich an 255.255.255.255 und
+  - falls eine IPv4 hinterlegt ist - direkt an das Gerät, jeweils auf dem
+  eingestellten Port sowie auf 9 und 7. Manche Netzwerkkarten und Switches
+  verschlucken ein einzelnes Paket; der direkte Versand hilft bei Geräten in
+  einem anderen Subnetz, wenn der Router Unicast-WoL weiterleitet.
+
+### Behoben
+- **README zeigte ein veraltetes Proxmox-Installationskommando:** Der Befehl
+  mit `misc/run.sh` funktioniert seit der Umstellung des Frameworks auf
+  `community-scripts/core` nicht mehr. Die README zeigt jetzt denselben Aufruf
+  wie `proxmox/README.md`.
+
 ## [1.4.4] – 2026-08-08
 
 ### Hinzugefügt

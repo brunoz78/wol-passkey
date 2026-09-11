@@ -10,6 +10,11 @@ auth/*.tmp
 # Cache des Update-Hinweises (auth/update-check.php)
 auth/update-check-data.php
 
+# Verlauf und Online-Stand der Geräte (auth/log.php, auth/status.php) samt Sperrdateien
+auth/log-data.php
+auth/status-data.php
+auth/*.lock
+
 # Lokale Werkzeuge
 .claude/
 debug-host.php

@@ -22,7 +22,9 @@ Drei umschaltbare Designs (Standard ist **Hell**):
 
 ## Funktionen
 
-- 🖥️ **Wake on LAN**: weckt Rechner im Heimnetz per Magic Packet (UDP-Broadcast)
+- 🖥️ **Wake on LAN**: weckt Rechner im Heimnetz per Magic Packet (UDP-Broadcast,
+  zur Sicherheit an mehrere Adressen und Ports); ist eine IP hinterlegt, meldet
+  die Seite anschliessend, sobald das Gerät erreichbar ist
 - 🔐 **Login-Schutz**: Passwort-Login mit Sperre nach zu vielen Fehlversuchen
 - 👆 **Passkeys (WebAuthn)**: Anmeldung per Fingerabdruck/Face ID, pro Gerät registrierbar;
   auf bekannten Geräten startet die Abfrage beim Öffnen der Seite automatisch -
@@ -36,6 +38,10 @@ Drei umschaltbare Designs (Standard ist **Hell**):
   Navigation im Hamburger-Menü
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
   ohne Dateien zu editieren
+- 📜 **Verlauf**: wer wann welches Gerät aufgeweckt hat, Anmeldungen und
+  Fehlversuche, Online-/Offline-Wechsel sowie Änderungen an Geräten und Passkeys
+- ⏱️ **Laufzeit-Anzeige**: jede Gerätekachel zeigt, seit wann das Gerät läuft
+  oder aus ist (genau mit eingerichteter [Hintergrundprüfung](#hintergrundprüfung))
 - 💾 **Sicherung & Wiederherstellung**: Konfiguration und Laufzeitdaten als ZIP
   herunterladen und bei Bedarf wieder einspielen
 - 🔁 **Reverse-Proxy-tauglich**: funktioniert hinter gängigen Reverse Proxies
@@ -89,15 +95,42 @@ erzeugt einen zufälligen Setup-Schlüssel und leitet die Broadcast-Adresse aus
 dem Subnetz des Containers ab:
 
 ```bash
-BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+COMMUNITY_SCRIPTS_URL=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main bash -c "$(curl -fsSL https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main/ct/wol-passkey.sh)"
 ```
 
 Der Setup-Schlüssel wird am Ende angezeigt; danach direkt mit Schritt 4 oben
-weiter. Spätere Updates laufen mit `update` im Container.
+weiter. Spätere Updates laufen mit `update` im Container. Die
+[Hintergrundprüfung](#hintergrundprüfung) ist im Container bereits eingerichtet.
 
 Das Script nutzt das Framework von [community-scripts](https://community-scripts.org),
 liegt aber in einem eigenen Fork und ist **nicht** Teil der offiziellen
 Sammlung. Aufbau und Hintergründe: [`proxmox/README.md`](proxmox/README.md).
+
+## Hintergrundprüfung
+
+Damit die App weiss, seit wann ein Gerät läuft oder aus ist, muss `cron.php`
+einmal pro Minute laufen – auch wenn niemand die Seite offen hat. Ohne diese
+Prüfung wird der Status nur bei Seitenaufrufen erfasst; die Kacheln zeigen
+dann „seit spätestens …", und der Verlauf weist darauf hin.
+
+- **Proxmox-LXC** (Script oben): bereits eingerichtet, als systemd-Timer
+  `wol-passkey-check.timer`
+- **Linux-Server, VM, Raspberry Pi:** als Webserver-Benutzer in die Crontab
+  eintragen, z.B. mit `sudo crontab -u www-data -e`:
+
+  ```
+  * * * * * php /var/www/wol-passkey/cron.php
+  ```
+- **NAS mit Aufgabenplaner** (z.B. Synology DSM): eine regelmässig wiederholte
+  Aufgabe mit demselben Befehl anlegen, wenn möglich als Webserver-Benutzer
+  (bei Synology `http`). Je nach PHP-Paket heisst der Befehl z.B. `php82`
+  statt `php`.
+- **Docker:** per Cron auf dem Host, z.B.
+  `* * * * * docker exec -u www-data <container> php /var/www/html/cron.php`
+
+**Nicht als root ausführen:** Sonst gehören die Datendateien in `auth/` danach
+root, und die Webseite kann sie nicht mehr ändern. `cron.php` verweigert in
+diesem Fall den Start.
 
 ## Aktualisieren
 
@@ -112,10 +145,10 @@ So aktualisierst du von Hand:
 1. Das neue Installations-ZIP von der Releases-Seite herunterladen und entpacken
 2. Den **Inhalt** des Ordners auf den Webserver hochladen und dabei alle
    vorhandenen Dateien überschreiben
-3. Fertig – `config.php` sowie die selbst erzeugten Daten in `auth/data.php`
-   und `auth/devices-data.php` sind **nicht** im Installations-ZIP enthalten
-   und bleiben unangetastet; Login-Passwort, Passkeys und Geräteliste bleiben
-   erhalten
+3. Fertig – `config.php` sowie die selbst erzeugten Daten in `auth/`
+   (`data.php`, `devices-data.php`, `log-data.php`, `status-data.php`) sind
+   **nicht** im Installations-ZIP enthalten und bleiben unangetastet;
+   Login-Passwort, Passkeys, Geräteliste und Verlauf bleiben erhalten
 
 Ein Blick ins [CHANGELOG.md](CHANGELOG.md) lohnt sich vor dem Update.
 

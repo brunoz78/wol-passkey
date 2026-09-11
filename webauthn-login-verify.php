@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/store.php';
+require_once __DIR__ . '/auth/log.php';
 require_once __DIR__ . '/lib/webauthn/src/WebAuthn.php';
 
 header('Content-Type: application/json');
@@ -53,6 +54,7 @@ try {
     unset($_SESSION['webauthn_challenge']);
     $_SESSION['authenticated'] = true;
     session_regenerate_id(true);
+    wol_log('login', ['method' => 'passkey', 'name' => (string)($cred['name'] ?? ''), 'ip' => wol_client_ip()]);
 
     echo json_encode(['success' => true, 'redirect' => 'index.php']);
 } catch (Throwable $e) {

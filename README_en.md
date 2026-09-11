@@ -22,7 +22,9 @@ Three switchable themes (**Light** is the default):
 
 ## Features
 
-- 🖥️ **Wake on LAN**: wakes machines on your home network via magic packet (UDP broadcast)
+- 🖥️ **Wake on LAN**: wakes machines on your home network via magic packet (UDP broadcast,
+  sent to several addresses and ports for reliability); if an IP is stored, the page
+  then tells you as soon as the device is reachable
 - 🔐 **Login protection**: password login with lockout after too many failed attempts
 - 👆 **Passkeys (WebAuthn)**: sign in with fingerprint/Face ID, registered per device;
   on known devices the prompt starts automatically when the page opens - this
@@ -36,6 +38,10 @@ Three switchable themes (**Light** is the default):
   hamburger menu
 - ⚙️ **Device management in the browser**: add and remove target devices (name + MAC)
   without editing files
+- 📜 **History**: who woke which device when, sign-ins and failed attempts,
+  online/offline changes and changes to devices and passkeys
+- ⏱️ **Uptime display**: every device tile shows how long the device has been
+  running or off (precise once the [background check](#background-check) is set up)
 - 💾 **Backup & restore**: download configuration and runtime data as a ZIP and
   restore it whenever needed
 - 🔁 **Reverse-proxy friendly**: works behind common reverse proxies
@@ -85,15 +91,41 @@ a Debian container with nginx and PHP-FPM, installs the app, generates a random
 setup key and derives the broadcast address from the container's own subnet:
 
 ```bash
-BASE=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main; curl -fsSL "$BASE/misc/run.sh" | bash -s -- "$BASE" ct/wol-passkey.sh
+COMMUNITY_SCRIPTS_URL=https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main bash -c "$(curl -fsSL https://raw.githubusercontent.com/brunoz78/ProxmoxVED/main/ct/wol-passkey.sh)"
 ```
 
 The setup key is printed at the end; continue with step 4 above. Later updates
-are done by running `update` inside the container.
+are done by running `update` inside the container. The
+[background check](#background-check) is already set up in the container.
 
 The script builds on the [community-scripts](https://community-scripts.org)
 framework, but lives in a personal fork and is **not** part of the official
 collection. Details: [`proxmox/README.md`](proxmox/README.md).
+
+## Background check
+
+For the app to know how long a device has been running or off, `cron.php`
+has to run once a minute – even when nobody has the page open. Without it,
+the status is only recorded on page visits; the tiles then show
+"since … at the latest", and the history page points this out.
+
+- **Proxmox LXC** (script above): already set up, as the systemd timer
+  `wol-passkey-check.timer`
+- **Linux server, VM, Raspberry Pi:** add it to the web server user's crontab,
+  e.g. with `sudo crontab -u www-data -e`:
+
+  ```
+  * * * * * php /var/www/wol-passkey/cron.php
+  ```
+- **NAS with a task scheduler** (e.g. Synology DSM): create a recurring task
+  with the same command, ideally as the web server user (`http` on Synology).
+  Depending on the PHP package the command may be e.g. `php82` instead of `php`.
+- **Docker:** via cron on the host, e.g.
+  `* * * * * docker exec -u www-data <container> php /var/www/html/cron.php`
+
+**Do not run it as root:** otherwise the data files in `auth/` end up owned by
+root and the web page can no longer change them. `cron.php` refuses to start
+in that case.
 
 ## Updating
 
@@ -108,9 +140,10 @@ To update manually:
 1. Download the new installation ZIP from the releases page and extract it
 2. Upload the **contents** of the folder to your web server, overwriting all
    existing files
-3. Done – `config.php` and the self-generated data in `auth/data.php` and
-   `auth/devices-data.php` are **not** included in the installation ZIP and
-   stay untouched; your login password, passkeys and device list are preserved
+3. Done – `config.php` and the self-generated data in `auth/` (`data.php`,
+   `devices-data.php`, `log-data.php`, `status-data.php`) are **not** included
+   in the installation ZIP and stay untouched; your login password, passkeys,
+   device list and history are preserved
 
 It's worth checking [CHANGELOG.md](CHANGELOG.md) before updating.
 

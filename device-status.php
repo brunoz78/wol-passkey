@@ -2,6 +2,7 @@
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/devices.php';
 require_once __DIR__ . '/auth/reachability.php';
+require_once __DIR__ . '/auth/status.php';
 require_login();
 
 // Session sofort wieder freigeben: Der Browser fragt für jede Gerätekachel
@@ -29,4 +30,12 @@ if (!is_string($name) || !isset($devices[$name]) || $devices[$name]['ip'] === ''
 }
 
 $online = device_is_reachable($devices[$name]['ip']);
-echo json_encode(['status' => $online ? 'online' : 'offline']);
+$state = status_record($name, $online);
+
+// Dauer statt Zeitpunkt: So rechnet der Browser nicht mit seiner eigenen,
+// womöglich abweichenden Uhr.
+echo json_encode([
+    'status'  => $online ? 'online' : 'offline',
+    'since_s' => max(0, time() - (int)$state['since']),
+    'exact'   => (bool)$state['exact'],
+]);

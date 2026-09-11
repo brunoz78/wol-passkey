@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/devices.php';
+require_once __DIR__ . '/auth/status.php';
 require_login();
 
 $error = '';
@@ -33,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $devices[$name] = ['mac' => $mac, 'ip' => $ip];
                 if (devices_save($devices)) {
                     $success = t('devices.added', $name);
+                    wol_log('device_added', ['device' => $name, 'ip' => wol_client_ip()]);
                 } else {
                     $error = t('devices.save_failed');
                 }
@@ -45,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($devices[$name]);
                 if (devices_save($devices)) {
                     $success = t('devices.removed', $name);
+                    status_forget($name);
+                    wol_log('device_removed', ['device' => $name, 'ip' => wol_client_ip()]);
                 } else {
                     $error = t('devices.save_failed');
                 }

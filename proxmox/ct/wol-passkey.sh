@@ -35,13 +35,17 @@ function update_script() {
   fi
 
   if check_for_gh_release "wol-passkey" "brunoz78/wol-passkey"; then
-    msg_info "Stopping Nginx"
+    msg_info "Stopping Services"
     systemctl stop nginx
-    msg_ok "Stopped Nginx"
+    # Timer only exists on containers installed after it was introduced.
+    systemctl stop wol-passkey-check.timer 2>/dev/null || true
+    msg_ok "Stopped Services"
 
     create_backup /opt/wol-passkey/config.php \
       /opt/wol-passkey/auth/data.php \
-      /opt/wol-passkey/auth/devices-data.php
+      /opt/wol-passkey/auth/devices-data.php \
+      /opt/wol-passkey/auth/log-data.php \
+      /opt/wol-passkey/auth/status-data.php
 
     CLEAN_INSTALL=1 fetch_and_deploy_gh_release "wol-passkey" "brunoz78/wol-passkey" "prebuild" "latest" "/opt/wol-passkey" "wol-passkey-*.zip"
 
@@ -52,10 +56,37 @@ function update_script() {
     chmod 640 /opt/wol-passkey/config.php
     msg_ok "Restored Permissions"
 
-    msg_info "Starting Nginx"
+    if [[ ! -f /etc/systemd/system/wol-passkey-check.timer ]]; then
+      msg_info "Creating Background Check"
+      cat <<EOF >/etc/systemd/system/wol-passkey-check.service
+[Unit]
+Description=WoL Passkey device status check
+
+[Service]
+Type=oneshot
+User=www-data
+ExecStart=/usr/bin/php /opt/wol-passkey/cron.php
+EOF
+      cat <<EOF >/etc/systemd/system/wol-passkey-check.timer
+[Unit]
+Description=Run WoL Passkey device status check every minute
+
+[Timer]
+OnCalendar=minutely
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
+EOF
+      systemctl daemon-reload
+      msg_ok "Created Background Check"
+    fi
+
+    msg_info "Starting Services"
     systemctl restart php8.4-fpm
     systemctl start nginx
-    msg_ok "Started Nginx"
+    systemctl enable -q --now wol-passkey-check.timer
+    msg_ok "Started Services"
     msg_ok "Updated successfully!"
   fi
   exit

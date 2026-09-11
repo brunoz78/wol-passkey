@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth/session.php';
 require_once __DIR__ . '/auth/store.php';
+require_once __DIR__ . '/auth/log.php';
 require_login();
 
 $error = '';
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['credentials'] = array_values($data['credentials']);
             if (auth_save($data)) {
                 $success = t('passkey.removed', $name);
+                wol_log('passkey_removed', ['name' => $name, 'ip' => wol_client_ip()]);
             } else {
                 $error = t('passkey.save_failed');
             }

@@ -417,6 +417,37 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   border-radius: 50%; background: var(--muted); opacity: .5; border: 2.5px solid var(--card-bg);
 }
 .dev.is-online .status-dot { background: var(--msg-ok-text); opacity: 1; box-shadow: 0 0 6px 1px var(--msg-ok-text); }
+/* "Läuft seit ..." unter der MAC-Adresse */
+.dev .since { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.dev.is-online .since { color: var(--msg-ok-text); }
+
+/* ---------- Verlauf (log.php, assets/log.js) ---------- */
+.log-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 12px; }
+.log-filter a {
+  padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none;
+  background: var(--ghost-bg); color: var(--ghost-text); border: 1px solid var(--ghost-border);
+}
+.log-filter a.active { background: var(--accent-grad); color: var(--on-accent); border-color: transparent; }
+.loglist {
+  list-style: none; margin: 0; padding: 0 0 4px; overflow: hidden;
+  border-radius: 16px; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
+}
+.logday { font-size: 12px; font-weight: 700; color: var(--muted); padding: 12px 14px 4px; text-align: left; }
+.logrow { display: flex; align-items: center; gap: 11px; padding: 9px 14px; }
+.logrow + .logrow { border-top: 1px solid var(--card-border); }
+.logrow .ic {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--chip-bg); color: var(--chip-color);
+}
+.logrow .ic svg { width: 15px; height: 15px; }
+.logrow.tone-ok .ic { background: var(--msg-ok-bg); color: var(--msg-ok-text); }
+.logrow.tone-bad .ic { background: var(--msg-err-bg); color: var(--msg-err-text); }
+.logrow.tone-muted .ic { background: var(--ghost-bg); color: var(--muted); }
+.logrow .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; text-align: left; }
+.logrow .lx { font-size: 14px; font-weight: 600; color: var(--dev-text); overflow-wrap: anywhere; }
+.logrow .ld { font-size: 12px; color: var(--muted); margin-top: 1px; overflow-wrap: anywhere; }
+.logrow .lt { flex: 0 0 auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 /* ---------- Statische Info-Zeile (Passkeys, Geräteliste devices.php) ---------- */
 /* gap bewusst knapper als bei den Geraete-Kacheln: hier teilen sich Ziehgriff,
@@ -538,3 +569,4 @@ hr { border: none; border-top: 1px solid var(--divider); margin: 20px 0; }
   text-align: center; margin: 6px 0;
   background: var(--chip-bg); color: var(--chip-color); border: 1px solid transparent;
 }
+.messageInfo a { color: inherit; font-weight: 700; }

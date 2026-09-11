@@ -45,9 +45,11 @@ $excludes = [
     'auth/data.php',              // zur Laufzeit erzeugte Nutzerdaten
     'auth/devices-data.php',      // zur Laufzeit erzeugte Geräteliste
     'auth/update-check-data.php', // Cache des Update-Hinweises
+    'auth/log-data.php',          // Verlauf
+    'auth/status-data.php',       // Online-/Offline-Stand der Geräte
 ];
 $excludeDirs   = ['.git', '.claude', 'docs', 'dist', 'tools', 'proxmox']; // ganze Ordner
-$excludeGlobs  = ['auth/*.tmp', '*.cmd'];                      // Muster
+$excludeGlobs  = ['auth/*.tmp', 'auth/*.lock', '*.cmd'];       // Muster
 
 function is_excluded(string $rel, array $excludes, array $excludeDirs, array $excludeGlobs): bool {
     foreach ($excludeDirs as $d) {
