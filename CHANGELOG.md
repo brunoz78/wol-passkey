@@ -4,6 +4,22 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.0] – 2026-09-28
+
+### Hinzugefügt
+- **Zeitgesteuertes Aufwecken:** Neue Seite „Zeitplan" im Menü. Pro Gerät
+  lassen sich Uhrzeit und Wochentage festlegen, z.B. Mo–Fr um 07:30, auch
+  mehrere Einträge pro Gerät. Ausgeführt wird das von der Hintergrundprüfung
+  (`cron.php`) – ohne sie passiert nichts, worauf die Seite deutlich hinweist.
+  Ein Gerät, das nachweislich schon läuft, wird nicht geweckt; verpasste
+  Zeitpunkte werden nicht nachgeholt, damit ein Rechner nicht Stunden später
+  unvermittelt startet. Die Zeitpläne stehen im Verlauf und werden bei der
+  Sicherung mitgenommen, weil sie am Gerät hängen.
+- **Zeitzone einstellbar:** Neu `$timezone` in der `config.php`. Ohne Eintrag
+  wird die Zeitzone des Servers übernommen (Linux: `/etc/timezone`), sonst
+  bleibt es bei UTC. Das betrifft die Zeitpläne und die Zeitangaben im
+  Verlauf; die Seite „Zeitplan" zeigt die Serverzeit zur Kontrolle an.
+
 ## [1.5.0] – 2026-09-11
 
 ### Hinzugefügt

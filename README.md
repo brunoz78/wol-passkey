@@ -38,6 +38,9 @@ Drei umschaltbare Designs (Standard ist **Hell**):
   Navigation im Hamburger-Menü
 - ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
   ohne Dateien zu editieren
+- ⏰ **Zeitgesteuertes Aufwecken**: pro Gerät Uhrzeit und Wochentage festlegen,
+  z.B. Mo–Fr um 07:30. Läuft das Gerät schon, passiert nichts
+  (braucht die [Hintergrundprüfung](#hintergrundprüfung))
 - 📜 **Verlauf**: wer wann welches Gerät aufgeweckt hat, Anmeldungen und
   Fehlversuche, Online-/Offline-Wechsel sowie Änderungen an Geräten und Passkeys
 - ⏱️ **Laufzeit-Anzeige**: jede Gerätekachel zeigt, seit wann das Gerät läuft
@@ -108,8 +111,9 @@ Sammlung. Aufbau und Hintergründe: [`proxmox/README.md`](proxmox/README.md).
 
 ## Hintergrundprüfung
 
-Damit die App weiss, seit wann ein Gerät läuft oder aus ist, muss `cron.php`
-einmal pro Minute laufen – auch wenn niemand die Seite offen hat. Ohne diese
+Damit die App weiss, seit wann ein Gerät läuft oder aus ist und damit
+Zeitpläne ausgeführt werden, muss `cron.php` einmal pro Minute laufen – auch
+wenn niemand die Seite offen hat. Ohne diese
 Prüfung wird der Status nur bei Seitenaufrufen erfasst; die Kacheln zeigen
 dann „seit spätestens …", und der Verlauf weist darauf hin.
 
@@ -131,6 +135,11 @@ dann „seit spätestens …", und der Verlauf weist darauf hin.
 **Nicht als root ausführen:** Sonst gehören die Datendateien in `auth/` danach
 root, und die Webseite kann sie nicht mehr ändern. `cron.php` verweigert in
 diesem Fall den Start.
+
+**Zeitzone prüfen:** Ohne Einstellung läuft PHP oft auf UTC, ein Zeitplan
+„07:30" wäre in Mitteleuropa dann erst um 09:30 dran. Die Seite „Zeitplan"
+zeigt unten die Serverzeit an. Stimmt sie nicht, in der `config.php`
+`$timezone = "Europe/Zurich";` eintragen (leer = Zeitzone des Servers).
 
 ## Aktualisieren
 

@@ -38,6 +38,9 @@ Three switchable themes (**Light** is the default):
   hamburger menu
 - ⚙️ **Device management in the browser**: add and remove target devices (name + MAC)
   without editing files
+- ⏰ **Scheduled wake-ups**: set a time and weekdays per device, e.g. Mon–Fri
+  at 07:30. Nothing happens if the device is already running
+  (requires the [background check](#background-check))
 - 📜 **History**: who woke which device when, sign-ins and failed attempts,
   online/offline changes and changes to devices and passkeys
 - ⏱️ **Uptime display**: every device tile shows how long the device has been
@@ -104,8 +107,9 @@ collection. Details: [`proxmox/README.md`](proxmox/README.md).
 
 ## Background check
 
-For the app to know how long a device has been running or off, `cron.php`
-has to run once a minute – even when nobody has the page open. Without it,
+For the app to know how long a device has been running or off, and to run
+scheduled wake-ups, `cron.php` has to run once a minute – even when nobody has
+the page open. Without it,
 the status is only recorded on page visits; the tiles then show
 "since … at the latest", and the history page points this out.
 
@@ -126,6 +130,12 @@ the status is only recorded on page visits; the tiles then show
 **Do not run it as root:** otherwise the data files in `auth/` end up owned by
 root and the web page can no longer change them. `cron.php` refuses to start
 in that case.
+
+**Check the time zone:** without a setting PHP often runs on UTC, so a
+schedule of "07:30" would fire at 09:30 in Central Europe. The "Schedule"
+page shows the server time at the bottom. If it is wrong, set
+`$timezone = "Europe/Zurich";` in `config.php` (empty = the server's own
+time zone).
 
 ## Updating
 

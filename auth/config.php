@@ -12,7 +12,23 @@ require_once dirname(__DIR__) . '/config.php';
 // Installierte Version. Bei jedem Release zusammen mit CHANGELOG.md und dem
 // Git-Tag hochzählen - der Update-Hinweis (auth/update-check.php) vergleicht
 // dagegen die neueste GitHub-Release.
-define('WOL_VERSION', '1.5.0');
+define('WOL_VERSION', '1.6.0');
+
+/*
+  Zeitzone für Zeitpläne (schedule.php) und Zeitangaben im Verlauf.
+  PHP läuft ohne Einstellung auf UTC - dann wäre ein Zeitplan "07:30" in
+  Mitteleuropa erst um 09:30 dran. Vorrang hat $timezone aus config.php;
+  fehlt der Eintrag, wird die Zeitzone des Systems übernommen (Linux:
+  /etc/timezone), sonst bleibt es bei UTC.
+*/
+$waZone = isset($timezone) && is_string($timezone) ? trim($timezone) : '';
+if ($waZone === '' && is_readable('/etc/timezone')) {
+    $waZone = trim((string)@file_get_contents('/etc/timezone'));
+}
+if ($waZone !== '' && in_array($waZone, timezone_identifiers_list(), true)) {
+    date_default_timezone_set($waZone);
+}
+define('WOL_TIMEZONE', date_default_timezone_get());
 
 // Woher/wie oft der Update-Hinweis prüft (siehe auth/update-check.php).
 define('WOL_UPDATE_REPO', 'brunoz78/wol-passkey');

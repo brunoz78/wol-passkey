@@ -75,6 +75,8 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
       <path d="M12 21V10"/><path d="M8 14l4-4 4 4"/><path d="M4 19h16"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
     <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -94,6 +96,7 @@ $titleSuffix = isset($page_title) && $page_title !== '' ? ' – ' . $page_title 
           'index.php'           => ['i-pw',     'nav.wake'],
           'devices.php'         => ['i-mon',    'nav.devices'],
           'register-passkey.php'=> ['i-fp',     'nav.passkey'],
+          'schedule.php'        => ['i-clock',  'nav.schedule'],
           'log.php'             => ['i-history','nav.log'],
           'backup.php'          => ['i-archive','nav.backup'],
           'logout.php'          => ['i-logout', 'nav.logout'],

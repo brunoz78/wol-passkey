@@ -48,9 +48,15 @@ function log_view(array $e) {
     $p = is_array($e['p'] ?? null) ? $e['p'] : [];
     $dev = (string)($p['device'] ?? '');
     $name = (string)($p['name'] ?? '') !== '' ? (string)$p['name'] : t('passkey.unnamed');
+    $plan = (string)($p['schedule'] ?? '');
     switch ($e['type'] ?? '') {
-        case 'wake':            return [t('log.wake', $dev), 'i-pw', 'ok'];
+        case 'wake':
+            return $plan !== ''
+                ? [t('log.wake_schedule', $dev, $plan), 'i-clock', 'ok']
+                : [t('log.wake', $dev), 'i-pw', 'ok'];
         case 'wake_failed':     return [t('log.wake_failed', $dev), 'i-pw', 'bad'];
+        case 'schedule_added':   return [t('log.schedule_added', $plan, $dev), 'i-clock', ''];
+        case 'schedule_removed': return [t('log.schedule_removed', $plan, $dev), 'i-clock', ''];
         case 'login':
             return ($p['method'] ?? '') === 'passkey'
                 ? [t('log.login_passkey', $name), 'i-fp', 'ok']

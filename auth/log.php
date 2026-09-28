@@ -17,7 +17,8 @@ define('WOL_LOG_CATEGORIES', [
     'wake'    => ['wake', 'wake_failed'],
     'access'  => ['login', 'login_failed', 'login_locked'],
     'status'  => ['online', 'offline'],
-    'changes' => ['device_added', 'device_removed', 'passkey_added', 'passkey_removed', 'password_set', 'log_cleared'],
+    'changes' => ['device_added', 'device_removed', 'schedule_added', 'schedule_removed',
+                  'passkey_added', 'passkey_removed', 'password_set', 'log_cleared'],
 ]);
 
 function wol_log($type, array $params = []) {

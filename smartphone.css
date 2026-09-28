@@ -357,6 +357,27 @@ input[type="text"], input[type="password"] {
 input[type="text"]::placeholder, input[type="password"]::placeholder { color: var(--input-placeholder); }
 input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
+/* ---------- Zeitplan (schedule.php) ---------- */
+.field > .label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px 4px; }
+.field select, input[type="time"] {
+  width: 100%; border-radius: 14px; padding: 14px; font-family: inherit; font-size: 16px;
+  background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text);
+}
+select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Sieben Schalter sollen auch auf 320px Breite in eine Zeile passen */
+.daypick { display: flex; flex-wrap: wrap; gap: 5px; }
+.day { position: relative; cursor: pointer; }
+.day input { position: absolute; opacity: 0; width: 0; height: 0; }
+.day span {
+  display: block; text-align: center;
+  padding: 10px 9px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  background: var(--ghost-bg); color: var(--ghost-text); border: 1px solid var(--ghost-border);
+}
+.day:has(input:checked) span { background: var(--accent-grad); color: var(--on-accent); border-color: transparent; }
+.day input:focus-visible ~ span { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Uhrzeit und Wochentage eines Eintrags in der Liste */
+.item .plan { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
 /* Datei-Auswahl mit eigener Beschriftung (backup.php). Der native Button von
    input[type=file] wird vom Browser beschriftet und liesse sich nicht
    übersetzen - deshalb liegt das echte input transparent über der eigenen

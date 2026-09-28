@@ -11,7 +11,9 @@ Version 1.0 - 2014.11.01
 
 
 flush();
-include 'config.php';
+// __DIR__, damit die Datei auch von der Kommandozeile (cron.php) aus geht,
+// wo das Arbeitsverzeichnis ein beliebiges sein kann.
+require_once __DIR__ . '/config.php';
  
 /*
   Schickt das Magic Packet an mehrere Ziele statt nur an eines: an die

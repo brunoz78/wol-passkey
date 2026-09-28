@@ -20,6 +20,11 @@ $setup_key = "BITTE-EIGENEN-SCHLUESSEL-EINTRAGEN";
 // UDP-Port für das Magic Packet. Üblich ist Port 9.
 $port = 9;
 
+// Zeitzone für die Zeitpläne (Seite "Zeitplan") und die Zeiten im Verlauf.
+// Leer lassen = Zeitzone des Servers übernehmen. Sonst einen Namen aus der
+// PHP-Liste eintragen, z.B. "Europe/Zurich" oder "Europe/Berlin".
+$timezone = "";
+
 // Broadcast-Adresse deines Heimnetzes.
 // Beispiel: Netz 192.168.1.x  ->  192.168.1.255
 $networkbroadcast = "192.168.1.255";

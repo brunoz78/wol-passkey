@@ -39,7 +39,8 @@ function devices_normalize_ip($ip) {
 }
 
 /*
-  Bringt die Geräteliste ins aktuelle Format ['mac' => ..., 'ip' => ...].
+  Bringt die Geräteliste ins aktuelle Format
+  ['mac' => ..., 'ip' => ..., 'schedules' => [['time' => 'HH:MM', 'days' => [1..7]], ...]].
   Ältere Dateien (vor der IP-Erreichbarkeitsprüfung) speicherten pro Gerät
   nur die MAC-Adresse als String - die werden hier transparent migriert.
 */
@@ -47,9 +48,36 @@ function devices_normalize_all(array $devices) {
     $out = [];
     foreach ($devices as $name => $entry) {
         if (is_string($entry)) {
-            $out[$name] = ['mac' => $entry, 'ip' => ''];
+            $out[$name] = ['mac' => $entry, 'ip' => '', 'schedules' => []];
         } elseif (is_array($entry)) {
-            $out[$name] = ['mac' => $entry['mac'] ?? '', 'ip' => $entry['ip'] ?? ''];
+            $out[$name] = [
+                'mac'       => $entry['mac'] ?? '',
+                'ip'        => $entry['ip'] ?? '',
+                'schedules' => devices_normalize_schedules($entry['schedules'] ?? []),
+            ];
+        }
+    }
+    return $out;
+}
+
+/* Verwirft alles, was kein gültiger Zeitplan ist (siehe auth/schedule.php). */
+function devices_normalize_schedules($schedules) {
+    $out = [];
+    foreach ((array)$schedules as $s) {
+        if (!is_array($s)) {
+            continue;
+        }
+        $time = is_string($s['time'] ?? null) && preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $s['time']) ? $s['time'] : null;
+        $days = [];
+        foreach ((array)($s['days'] ?? []) as $d) {
+            $d = (int)$d;
+            if ($d >= 1 && $d <= 7 && !in_array($d, $days, true)) {
+                $days[] = $d;
+            }
+        }
+        sort($days);
+        if ($time !== null && $days !== []) {
+            $out[] = ['time' => $time, 'days' => $days];
         }
     }
     return $out;
