@@ -38,6 +38,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = t('sched.save_failed');
             }
         }
+    } elseif ($action === 'update') {
+        $index = (int)($_POST['index'] ?? -1);
+        $wanted = devices_normalize_schedules([[
+            'time' => $_POST['time'] ?? '',
+            'days' => $_POST['days'] ?? [],
+        ]]);
+        $others = $devices[$name]['schedules'];
+        unset($others[$index]);
+
+        if (!isset($devices[$name]['schedules'][$index])) {
+            $error = t('sched.not_found');
+        } elseif ($wanted === []) {
+            $error = t('sched.invalid');
+        } elseif (in_array($wanted[0], $others, true)) {
+            $error = t('sched.exists');
+        } else {
+            $devices[$name]['schedules'][$index] = $wanted[0];
+            usort($devices[$name]['schedules'], function ($a, $b) {
+                return strcmp($a['time'], $b['time']);
+            });
+            if (devices_save($devices)) {
+                $success = t('sched.changed', $name);
+                wol_log('schedule_changed', ['device' => $name, 'schedule' => $wanted[0]['time'], 'ip' => wol_client_ip()]);
+            } else {
+                $error = t('sched.save_failed');
+            }
+        }
     } elseif ($action === 'delete') {
         $index = (int)($_POST['index'] ?? -1);
         if (!isset($devices[$name]['schedules'][$index])) {
@@ -85,22 +112,47 @@ require __DIR__ . '/partials/head.php';
     <?php else: ?>
       <p class="section-label" style="margin-top:16px"><?php te('sched.planned'); ?></p>
       <?php $any = false; ?>
-      <?php foreach ($devices as $name => $dev): foreach ($dev['schedules'] as $i => $s): $any = true; ?>
-        <div class="item">
-          <span class="ic"><svg><use href="#i-clock"/></svg></span>
-          <span class="txt grow">
-            <span class="nm"><?php echo htmlspecialchars($name); ?></span>
-            <span class="plan"><?php echo htmlspecialchars($s['time'] . ' · ' . schedule_days_label($s['days'])); ?></span>
-          </span>
-          <form method="post" action="schedule.php"
+      <?php foreach ($devices as $name => $dev): foreach ($dev['schedules'] as $i => $s): $any = true; $id = 'p' . md5($name . '#' . $i); ?>
+        <details class="item planitem">
+          <summary>
+            <span class="ic"><svg><use href="#i-clock"/></svg></span>
+            <span class="txt grow">
+              <span class="nm"><?php echo htmlspecialchars($name); ?></span>
+              <span class="plan"><?php echo htmlspecialchars($s['time'] . ' · ' . schedule_days_label($s['days'])); ?></span>
+            </span>
+            <svg class="plan-chev"><use href="#i-chevron"/></svg>
+          </summary>
+
+          <form class="plan-edit" method="post" action="schedule.php">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
+            <input type="hidden" name="action" value="update" />
+            <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
+            <input type="hidden" name="index" value="<?php echo (int)$i; ?>" />
+            <label class="label" for="<?php echo $id; ?>t"><?php te('sched.time'); ?></label>
+            <input id="<?php echo $id; ?>t" type="time" name="time" value="<?php echo htmlspecialchars($s['time'], ENT_QUOTES); ?>" required />
+            <span class="label"><?php te('sched.days'); ?></span>
+            <div class="daypick">
+              <?php for ($d = 1; $d <= 7; $d++): ?>
+                <label class="day">
+                  <input type="checkbox" name="days[]" value="<?php echo $d; ?>"<?php echo in_array($d, $s['days'], true) ? ' checked' : ''; ?> />
+                  <span><?php te('sched.d' . $d); ?></span>
+                </label>
+              <?php endfor; ?>
+            </div>
+            <div class="plan-actions">
+              <button class="icon-btn" type="submit"><svg><use href="#i-check"/></svg><?php te('sched.save'); ?></button>
+            </div>
+          </form>
+
+          <form class="plan-del" method="post" action="schedule.php"
                 onsubmit="return confirm(<?php echo htmlspecialchars(json_encode(t('sched.confirm', $s['time'], $name)), ENT_QUOTES); ?>);">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
             <input type="hidden" name="index" value="<?php echo (int)$i; ?>" />
-            <button class="icon-btn" type="submit" aria-label="<?php te('sched.remove'); ?>" title="<?php te('sched.remove'); ?>"><svg><use href="#i-trash"/></svg></button>
+            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg><?php te('sched.remove'); ?></button>
           </form>
-        </div>
+        </details>
       <?php endforeach; endforeach; ?>
       <?php if (!$any): ?>
         <p class="hint"><?php te('sched.none'); ?></p>

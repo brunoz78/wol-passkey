@@ -56,6 +56,7 @@ function log_view(array $e) {
                 : [t('log.wake', $dev), 'i-pw', 'ok'];
         case 'wake_failed':     return [t('log.wake_failed', $dev), 'i-pw', 'bad'];
         case 'schedule_added':   return [t('log.schedule_added', $plan, $dev), 'i-clock', ''];
+        case 'schedule_changed':  return [t('log.schedule_changed', $dev, $plan), 'i-clock', ''];
         case 'schedule_removed': return [t('log.schedule_removed', $plan, $dev), 'i-clock', ''];
         case 'login':
             return ($p['method'] ?? '') === 'passkey'

@@ -4,6 +4,14 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.1] – 2026-09-28
+
+### Hinzugefügt
+- **Zeitpläne bearbeiten:** Bisher liess sich ein gespeicherter Eintrag nur
+  löschen und neu anlegen. Jetzt klappt ein Tippen auf den Eintrag die
+  Bearbeitung auf, in der sich Uhrzeit und Wochentage ändern lassen. Die
+  Änderung steht auch im Verlauf.
+
 ## [1.6.0] – 2026-09-28
 
 ### Hinzugefügt

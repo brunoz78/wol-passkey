@@ -12,7 +12,7 @@ require_once dirname(__DIR__) . '/config.php';
 // Installierte Version. Bei jedem Release zusammen mit CHANGELOG.md und dem
 // Git-Tag hochzählen - der Update-Hinweis (auth/update-check.php) vergleicht
 // dagegen die neueste GitHub-Release.
-define('WOL_VERSION', '1.6.0');
+define('WOL_VERSION', '1.6.1');
 
 /*
   Zeitzone für Zeitpläne (schedule.php) und Zeitangaben im Verlauf.
