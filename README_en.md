@@ -36,8 +36,8 @@ Three switchable themes (**Light** is the default):
   to add (see [Adding a language](#adding-a-language))
 - 📱 **Optimised for phones**: large buttons, tappable device tiles, navigation in a
   hamburger menu
-- ⚙️ **Device management in the browser**: add and remove target devices (name + MAC)
-  without editing files
+- ⚙️ **Device management in the browser**: add, edit and remove target devices
+  (name, MAC, IP) without editing files
 - ⏰ **Scheduled wake-ups**: set a time and weekdays per device, e.g. Mon–Fri
   at 07:30. Nothing happens if the device is already running
   (requires the [background check](#background-check))

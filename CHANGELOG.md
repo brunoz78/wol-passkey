@@ -4,6 +4,15 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.2] – 2026-10-09
+
+### Geändert
+- **Geräte nachträglich bearbeiten:** Name, MAC- und IP-Adresse eines
+  gespeicherten Geräts lassen sich jetzt ändern – bisher half nur Löschen und
+  neu Erfassen. Ein Tippen auf den Eintrag klappt die Bearbeitung auf. Beim
+  Umbenennen bleiben Position in der Liste, Zeitpläne und die Online-Historie
+  des Geräts erhalten; die Änderung steht im Verlauf.
+
 ## [1.6.1] – 2026-09-28
 
 ### Hinzugefügt

@@ -53,20 +53,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = t('devices.save_failed');
                 }
             }
-        } elseif ($action === 'set_ip') {
-            $name = $_POST['device_name'] ?? '';
+        } elseif ($action === 'update') {
+            $old = (string)($_POST['device_name'] ?? '');
+            $name = trim($_POST['new_name'] ?? '');
+            $mac = devices_normalize_mac(trim($_POST['device_mac'] ?? ''));
             $ip = devices_normalize_ip($_POST['device_ip'] ?? '');
 
-            if (!isset($devices[$name])) {
+            if (!isset($devices[$old])) {
                 $error = t('devices.not_found');
+            } elseif ($name === '' || preg_match('//u', $name) !== 1) {
+                $error = t('devices.name_required');
+            } elseif (strlen($name) > 40) {
+                $error = t('devices.name_too_long');
+            } elseif ($mac === null) {
+                $error = t('devices.mac_invalid');
             } elseif ($ip === null) {
                 $error = t('devices.ip_invalid');
+            } elseif ($name !== $old && isset($devices[$name])) {
+                $error = t('devices.exists');
             } else {
-                $devices[$name]['ip'] = $ip;
-                if (devices_save($devices)) {
-                    $success = t('devices.ip_saved', $name);
-                } else {
+                // Der Gerätename ist der Schlüssel der Liste. Beim Umbenennen
+                // wird sie deshalb neu aufgebaut, damit das Gerät an seiner
+                // Position bleibt (unset + neuer Eintrag würde es ans Ende
+                // schieben). Zeitpläne hängen am Eintrag und wandern mit.
+                $updated = [];
+                foreach ($devices as $key => $dev) {
+                    if ($key === $old) {
+                        $dev['mac'] = $mac;
+                        $dev['ip'] = $ip;
+                        $updated[$name] = $dev;
+                    } else {
+                        $updated[$key] = $dev;
+                    }
+                }
+                if (!devices_save($updated)) {
                     $error = t('devices.save_failed');
+                } elseif ($name !== $old) {
+                    status_rename($old, $name);
+                    $success = t('devices.renamed', $old, $name);
+                    wol_log('device_renamed', ['device' => $old, 'name' => $name, 'ip' => wol_client_ip()]);
+                } else {
+                    $success = t('devices.changed', $name);
+                    wol_log('device_changed', ['device' => $name, 'ip' => wol_client_ip()]);
                 }
             }
         } elseif ($action === 'reorder') {
@@ -119,31 +147,45 @@ require __DIR__ . '/partials/head.php';
     <?php else: ?>
       <p class="section-label" style="margin-top:16px"><?php te('devices.your_devices'); ?></p>
       <div class="devlist-manage" id="deviceList" data-csrf="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>">
-      <?php foreach ($devices as $name => $dev): $mac = $dev['mac']; $ip = $dev['ip']; ?>
-        <div class="item" data-name="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
-          <span class="drag-handle" aria-label="<?php te('devices.reorder'); ?>" title="<?php te('devices.reorder'); ?>"><svg><use href="#i-grip"/></svg></span>
-          <span class="ic"><svg><use href="#i-mon"/></svg></span>
-          <span class="txt grow">
-            <span class="nm"><?php echo htmlspecialchars($name); ?></span>
-            <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
-          </span>
+      <?php foreach ($devices as $name => $dev): $mac = $dev['mac']; $ip = $dev['ip']; $id = 'd' . md5($name); ?>
+        <details class="item foldable" data-name="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
+          <summary>
+            <span class="drag-handle" aria-label="<?php te('devices.reorder'); ?>" title="<?php te('devices.reorder'); ?>"><svg><use href="#i-grip"/></svg></span>
+            <span class="ic"><svg><use href="#i-mon"/></svg></span>
+            <span class="txt grow">
+              <span class="nm"><?php echo htmlspecialchars($name); ?></span>
+              <span class="mac"><?php echo htmlspecialchars($mac); ?></span>
+            </span>
+            <svg class="fold-chev"><use href="#i-chevron"/></svg>
+          </summary>
+
+          <form class="fold-edit" method="post" action="devices.php">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
+            <input type="hidden" name="action" value="update" />
+            <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
+            <label class="label" for="<?php echo $id; ?>n"><?php te('devices.name'); ?></label>
+            <input id="<?php echo $id; ?>n" type="text" name="new_name" maxlength="40"
+                   value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" required />
+            <label class="label" for="<?php echo $id; ?>m"><?php te('devices.mac'); ?></label>
+            <input id="<?php echo $id; ?>m" type="text" name="device_mac" placeholder="00:11:22:33:44:55"
+                   value="<?php echo htmlspecialchars($mac, ENT_QUOTES); ?>" required />
+            <label class="label" for="<?php echo $id; ?>i"><?php te('devices.ip'); ?></label>
+            <input id="<?php echo $id; ?>i" type="text" name="device_ip"
+                   value="<?php echo htmlspecialchars($ip, ENT_QUOTES); ?>" placeholder="<?php te('devices.ip_ph'); ?>" />
+            <div class="fold-actions">
+              <button class="icon-btn" type="submit"><svg><use href="#i-check"/></svg><?php te('devices.save'); ?></button>
+            </div>
+          </form>
+
           <?php /* json_encode liefert ein gültiges JS-String-Literal, auch bei Anführungszeichen im Namen. */ ?>
-          <form method="post" action="devices.php"
+          <form class="fold-del" method="post" action="devices.php"
                 onsubmit="return confirm(<?php echo htmlspecialchars(json_encode(t('devices.confirm', $name)), ENT_QUOTES); ?>);">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
-            <button class="icon-btn" type="submit" aria-label="<?php te('devices.remove'); ?>" title="<?php te('devices.remove'); ?>"><svg><use href="#i-trash"/></svg></button>
+            <button class="icon-btn" type="submit"><svg><use href="#i-trash"/></svg><?php te('devices.remove'); ?></button>
           </form>
-          <form class="ip-row" method="post" action="devices.php">
-            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
-            <input type="hidden" name="action" value="set_ip" />
-            <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
-            <input type="text" name="device_ip" class="ip-input" value="<?php echo htmlspecialchars($ip, ENT_QUOTES); ?>"
-                   placeholder="<?php te('devices.ip_ph'); ?>" />
-            <button class="icon-btn" type="submit" title="<?php te('devices.ip_save'); ?>"><svg><use href="#i-check"/></svg></button>
-          </form>
-        </div>
+        </details>
       <?php endforeach; ?>
       </div>
     <?php endif; ?>

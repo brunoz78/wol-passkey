@@ -13,6 +13,9 @@
   }
 
   function startDrag(item, e) {
+    // Aufgeklappte Bearbeitung einklappen, sonst zieht man eine riesige Kachel
+    // durch die Liste und die Treffer-Mitten der Nachbarn passen nicht mehr.
+    item.removeAttribute('open');
     var rect = item.getBoundingClientRect();
     dragEl = item;
     startX = e.clientX;
@@ -101,6 +104,12 @@
     handle.addEventListener('pointerdown', function (e) {
       e.preventDefault();
       startDrag(item, e);
+    });
+    // Der Griff liegt in der summary-Zeile des aufklappbaren Eintrags - ohne das
+    // wuerde jedes Ziehen den Eintrag zusaetzlich auf- oder zuklappen.
+    handle.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
     });
   });
 })();

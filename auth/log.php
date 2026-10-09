@@ -17,7 +17,8 @@ define('WOL_LOG_CATEGORIES', [
     'wake'    => ['wake', 'wake_failed'],
     'access'  => ['login', 'login_failed', 'login_locked'],
     'status'  => ['online', 'offline'],
-    'changes' => ['device_added', 'device_removed', 'schedule_added', 'schedule_changed', 'schedule_removed',
+    'changes' => ['device_added', 'device_changed', 'device_renamed', 'device_removed',
+                  'schedule_added', 'schedule_changed', 'schedule_removed',
                   'passkey_added', 'passkey_removed', 'password_set', 'log_cleared'],
 ]);
 

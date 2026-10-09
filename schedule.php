@@ -113,17 +113,17 @@ require __DIR__ . '/partials/head.php';
       <p class="section-label" style="margin-top:16px"><?php te('sched.planned'); ?></p>
       <?php $any = false; ?>
       <?php foreach ($devices as $name => $dev): foreach ($dev['schedules'] as $i => $s): $any = true; $id = 'p' . md5($name . '#' . $i); ?>
-        <details class="item planitem">
+        <details class="item foldable">
           <summary>
             <span class="ic"><svg><use href="#i-clock"/></svg></span>
             <span class="txt grow">
               <span class="nm"><?php echo htmlspecialchars($name); ?></span>
               <span class="plan"><?php echo htmlspecialchars($s['time'] . ' · ' . schedule_days_label($s['days'])); ?></span>
             </span>
-            <svg class="plan-chev"><use href="#i-chevron"/></svg>
+            <svg class="fold-chev"><use href="#i-chevron"/></svg>
           </summary>
 
-          <form class="plan-edit" method="post" action="schedule.php">
+          <form class="fold-edit" method="post" action="schedule.php">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="update" />
             <input type="hidden" name="device_name" value="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>" />
@@ -139,12 +139,12 @@ require __DIR__ . '/partials/head.php';
                 </label>
               <?php endfor; ?>
             </div>
-            <div class="plan-actions">
+            <div class="fold-actions">
               <button class="icon-btn" type="submit"><svg><use href="#i-check"/></svg><?php te('sched.save'); ?></button>
             </div>
           </form>
 
-          <form class="plan-del" method="post" action="schedule.php"
+          <form class="fold-del" method="post" action="schedule.php"
                 onsubmit="return confirm(<?php echo htmlspecialchars(json_encode(t('sched.confirm', $s['time'], $name)), ENT_QUOTES); ?>);">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
             <input type="hidden" name="action" value="delete" />

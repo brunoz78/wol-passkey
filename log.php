@@ -67,6 +67,8 @@ function log_view(array $e) {
         case 'online':          return [t('log.online', $dev), 'i-mon', 'ok'];
         case 'offline':         return [t('log.offline', $dev), 'i-mon', 'muted'];
         case 'device_added':    return [t('log.device_added', $dev), 'i-plus', ''];
+        case 'device_changed':  return [t('log.device_changed', $dev), 'i-mon', ''];
+        case 'device_renamed':  return [t('log.device_renamed', $dev, $name), 'i-mon', ''];
         case 'device_removed':  return [t('log.device_removed', $dev), 'i-trash', ''];
         case 'passkey_added':   return [t('log.passkey_added', $name), 'i-fp', ''];
         case 'passkey_removed': return [t('log.passkey_removed', $name), 'i-trash', ''];

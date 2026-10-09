@@ -36,8 +36,8 @@ Drei umschaltbare Designs (Standard ist **Hell**):
   Weitere Sprachen sind leicht ergänzbar (siehe [Sprache hinzufügen](#eine-sprache-hinzufügen))
 - 📱 **Für Smartphones optimiert**: grosse Buttons, antippbare Gerätekacheln,
   Navigation im Hamburger-Menü
-- ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name + MAC) hinzufügen und entfernen,
-  ohne Dateien zu editieren
+- ⚙️ **Geräteverwaltung im Browser**: Zielgeräte (Name, MAC, IP) hinzufügen, nachträglich
+  ändern und entfernen, ohne Dateien zu editieren
 - ⏰ **Zeitgesteuertes Aufwecken**: pro Gerät Uhrzeit und Wochentage festlegen,
   z.B. Mo–Fr um 07:30. Läuft das Gerät schon, passiert nichts
   (braucht die [Hintergrundprüfung](#hintergrundprüfung))

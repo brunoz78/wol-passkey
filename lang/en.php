@@ -77,7 +77,7 @@ return [
     // ---------- Device management ----------
     'devices.title'         => 'Devices',
     'devices.brand'         => 'Manage devices',
-    'devices.sub'           => 'Add or remove target devices',
+    'devices.sub'           => 'Add, edit or remove target devices',
     'devices.csrf'          => 'Invalid request, please try again.',
     'devices.name_required' => 'Please enter a device name.',
     'devices.name_too_long' => 'The device name must not exceed 40 characters.',
@@ -101,8 +101,9 @@ return [
     'devices.ip'            => 'IP address',
     'devices.ip_ph'         => 'e.g. 192.168.1.50 (optional)',
     'devices.ip_invalid'    => 'The IP address is invalid.',
-    'devices.ip_save'       => 'Save IP address',
-    'devices.ip_saved'      => 'IP address for "%s" saved.',
+    'devices.save'          => 'Save',
+    'devices.changed'       => 'Device "%s" saved.',
+    'devices.renamed'       => 'Device "%s" is now called "%s".',
     'devices.add'           => 'Add device',
 
     // ---------- Passkey management ----------
@@ -228,6 +229,8 @@ return [
     'log.offline'          => '%s is offline',
     'log.device_added'     => 'Device "%s" added',
     'log.device_removed'   => 'Device "%s" removed',
+    'log.device_changed'   => 'Device "%s" changed',
+    'log.device_renamed'   => 'Device "%s" renamed to "%s"',
     'log.passkey_added'    => 'Passkey "%s" registered',
     'log.passkey_removed'  => 'Passkey "%s" removed',
     'log.password_set'     => 'Login password set',

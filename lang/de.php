@@ -82,7 +82,7 @@ return [
     // ---------- Geräteverwaltung ----------
     'devices.title'         => 'Geräte',
     'devices.brand'         => 'Geräte verwalten',
-    'devices.sub'           => 'Zielgeräte hinzufügen oder entfernen',
+    'devices.sub'           => 'Zielgeräte hinzufügen, ändern oder entfernen',
     'devices.csrf'          => 'Ungültige Anfrage, bitte erneut versuchen.',
     'devices.name_required' => 'Bitte einen Gerätenamen angeben.',
     'devices.name_too_long' => 'Der Gerätename darf höchstens 40 Zeichen lang sein.',
@@ -107,8 +107,9 @@ return [
     'devices.ip'            => 'IP-Adresse',
     'devices.ip_ph'         => 'z.B. 192.168.1.50 (optional)',
     'devices.ip_invalid'    => 'Die IP-Adresse ist ungültig.',
-    'devices.ip_save'       => 'IP-Adresse speichern',
-    'devices.ip_saved'      => 'IP-Adresse für "%s" gespeichert.',
+    'devices.save'          => 'Speichern',
+    'devices.changed'       => 'Gerät "%s" gespeichert.',
+    'devices.renamed'       => 'Gerät "%s" heißt jetzt "%s".',
     'devices.add'           => 'Gerät hinzufügen',
 
     // ---------- Passkey-Verwaltung ----------
@@ -235,6 +236,8 @@ return [
     'log.offline'          => '%s ist offline',
     'log.device_added'     => 'Gerät "%s" hinzugefügt',
     'log.device_removed'   => 'Gerät "%s" entfernt',
+    'log.device_changed'   => 'Gerät "%s" geändert',
+    'log.device_renamed'   => 'Gerät "%s" umbenannt in "%s"',
     'log.passkey_added'    => 'Passkey "%s" registriert',
     'log.passkey_removed'  => 'Passkey "%s" entfernt',
     'log.password_set'     => 'Login-Passwort gesetzt',

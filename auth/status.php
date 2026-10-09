@@ -61,6 +61,29 @@ function status_finish_run(array $names) {
     });
 }
 
+/*
+  Zieht den gemerkten Stand auf einen neuen Gerätenamen um (Umbenennen in
+  devices.php). Ohne das würde das Gerät als unbekannt gelten und "online
+  seit ..." neu bei null anfangen. Die Zeitplan-Markierung wandert mit, damit
+  ein Plan, der in dieser Minute schon ausgelöst hat, nicht erneut feuert.
+*/
+function status_rename($old, $new) {
+    return wol_datafile_update(WOL_STATUS_FILE, function ($data) use ($old, $new) {
+        if (!isset($data['devices'][$old]) && !isset($data['fired'][$old])) {
+            return null;
+        }
+        if (isset($data['devices'][$old])) {
+            $data['devices'][$new] = $data['devices'][$old];
+            unset($data['devices'][$old]);
+        }
+        if (isset($data['fired'][$old])) {
+            $data['fired'][$new] = $data['fired'][$old];
+            unset($data['fired'][$old]);
+        }
+        return $data;
+    });
+}
+
 function status_forget($name) {
     return wol_datafile_update(WOL_STATUS_FILE, function ($data) use ($name) {
         if (!isset($data['devices'][$name])) {

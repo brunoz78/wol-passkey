@@ -78,7 +78,7 @@ return [
     // ---------- Gestion des appareils ----------
     'devices.title'         => 'Appareils',
     'devices.brand'         => 'Gérer les appareils',
-    'devices.sub'           => 'Ajouter ou supprimer des appareils cibles',
+    'devices.sub'           => 'Ajouter, modifier ou supprimer des appareils cibles',
     'devices.csrf'          => 'Requête invalide, veuillez réessayer.',
     'devices.name_required' => 'Veuillez indiquer un nom d\'appareil.',
     'devices.name_too_long' => 'Le nom de l\'appareil ne doit pas dépasser 40 caractères.',
@@ -103,8 +103,9 @@ return [
     'devices.ip'            => 'Adresse IP',
     'devices.ip_ph'         => 'p. ex. 192.168.1.50 (facultatif)',
     'devices.ip_invalid'    => 'L\'adresse IP est invalide.',
-    'devices.ip_save'       => 'Enregistrer l\'adresse IP',
-    'devices.ip_saved'      => 'Adresse IP enregistrée pour « %s ».',
+    'devices.save'          => 'Enregistrer',
+    'devices.changed'       => 'Appareil « %s » enregistré.',
+    'devices.renamed'       => 'L\'appareil « %s » s\'appelle désormais « %s ».',
     'devices.add'           => 'Ajouter un appareil',
 
     // ---------- Gestion des clés d'accès ----------
@@ -231,6 +232,8 @@ return [
     'log.offline'          => '%s est hors ligne',
     'log.device_added'     => 'Appareil « %s » ajouté',
     'log.device_removed'   => 'Appareil « %s » supprimé',
+    'log.device_changed'   => 'Appareil « %s » modifié',
+    'log.device_renamed'   => 'Appareil « %s » renommé en « %s »',
     'log.passkey_added'    => 'Clé d’accès « %s » enregistrée',
     'log.passkey_removed'  => 'Clé d’accès « %s » supprimée',
     'log.password_set'     => 'Mot de passe de connexion défini',

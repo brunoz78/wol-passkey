@@ -77,7 +77,7 @@ return [
     // ---------- Gestión de dispositivos ----------
     'devices.title'         => 'Dispositivos',
     'devices.brand'         => 'Gestionar dispositivos',
-    'devices.sub'           => 'Añadir o eliminar dispositivos de destino',
+    'devices.sub'           => 'Añadir, editar o eliminar dispositivos de destino',
     'devices.csrf'          => 'Solicitud no válida, vuelve a intentarlo.',
     'devices.name_required' => 'Indica un nombre de dispositivo.',
     'devices.name_too_long' => 'El nombre del dispositivo no puede superar los 40 caracteres.',
@@ -102,8 +102,9 @@ return [
     'devices.ip'            => 'Dirección IP',
     'devices.ip_ph'         => 'p. ej. 192.168.1.50 (opcional)',
     'devices.ip_invalid'    => 'La dirección IP no es válida.',
-    'devices.ip_save'       => 'Guardar dirección IP',
-    'devices.ip_saved'      => 'Dirección IP guardada para «%s».',
+    'devices.save'          => 'Guardar',
+    'devices.changed'       => 'Dispositivo «%s» guardado.',
+    'devices.renamed'       => 'El dispositivo «%s» ahora se llama «%s».',
     'devices.add'           => 'Añadir dispositivo',
 
     // ---------- Gestión de claves de acceso ----------
@@ -230,6 +231,8 @@ return [
     'log.offline'          => '%s está fuera de línea',
     'log.device_added'     => 'Dispositivo «%s» añadido',
     'log.device_removed'   => 'Dispositivo «%s» eliminado',
+    'log.device_changed'   => 'Dispositivo «%s» modificado',
+    'log.device_renamed'   => 'Dispositivo «%s» renombrado a «%s»',
     'log.passkey_added'    => 'Clave de acceso «%s» registrada',
     'log.passkey_removed'  => 'Clave de acceso «%s» eliminada',
     'log.password_set'     => 'Contraseña de inicio de sesión establecida',
