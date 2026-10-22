@@ -4,6 +4,18 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.3] – 2026-10-22
+
+### Geändert
+- **Proxmox: PHP-Updates laufen beim „update“ mit.** Der `update`-Befehl im
+  Container hat bisher nur die Anwendung aktualisiert. Neu bringt er auch PHP
+  auf den aktuellen Stand und startet PHP-FPM neu – ohne diesen Neustart
+  würden die laufenden Prozesse weiter den alten Code ausführen. Anlass war
+  die Sicherheitslücke PHP2Shell (CVE-2026-109618/109619). An der Anwendung
+  selbst ändert sich nichts.
+- Der Abschnitt zum Reverse Proxy in der Doku beschreibt jetzt die
+  Proxmox-Installation statt eines Unterordner-Setups.
+
 ## [1.6.2] – 2026-10-09
 
 ### Geändert
