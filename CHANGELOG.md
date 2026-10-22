@@ -16,6 +16,14 @@ die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 - Der Abschnitt zum Reverse Proxy in der Doku beschreibt jetzt die
   Proxmox-Installation statt eines Unterordner-Setups.
 
+### Hinweis für Installationen ohne Proxmox
+Auf einem NAS, einem eigenen Webserver oder in einer anderen Umgebung **muss
+PHP selbst aktualisiert werden** – über die Paketverwaltung des Systems, das
+Hersteller-Update oder den Hoster. Die Anwendung kann das nicht übernehmen.
+PHP2Shell ist in 8.5.12, 8.4.27, 8.3.36 und 8.2.35 behoben; 8.1 und älter
+erhalten keinen Fix mehr. Nach dem Update den PHP-Dienst neu starten, sonst
+laufen die bereits gestarteten Prozesse weiter mit dem alten Code.
+
 ## [1.6.2] – 2026-10-09
 
 ### Geändert
