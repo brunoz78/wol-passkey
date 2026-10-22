@@ -34,6 +34,17 @@ function update_script() {
     exit
   fi
 
+  # PHP comes from the Sury repo and is never touched by the app update itself.
+  # Doing it here keeps security fixes one command away. Upgrading cli and fpm
+  # is enough: every other php8.4-* package depends on php8.4-common at the
+  # exact version, so apt pulls the whole set along. The restart is mandatory -
+  # without it the running workers keep serving requests with the old code.
+  msg_info "Updating PHP"
+  $STD apt update
+  $STD apt install --only-upgrade -y php8.4-cli php8.4-fpm
+  systemctl restart php8.4-fpm
+  msg_ok "Updated PHP ($(php -r "echo PHP_VERSION;"))"
+
   if check_for_gh_release "wol-passkey" "brunoz78/wol-passkey"; then
     msg_info "Stopping Services"
     systemctl stop nginx
