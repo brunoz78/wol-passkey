@@ -170,24 +170,35 @@ extension `zip` – if it's missing, the page shows a notice.
 
 ## Running behind a reverse proxy
 
-Passkeys are bound to the domain shown in the browser. For the server to know that
-domain, the proxy has to pass along two headers:
+Passkeys are bound to the domain shown in the browser, so the server has to know
+that domain. It reads it from `X-Forwarded-Host` and falls back to the regular
+`Host` header when that one is missing.
 
-**Nginx Proxy Manager** (custom location or the Advanced tab):
+**Nginx Proxy Manager:** nothing to configure. NPM forwards `Host` and
+`X-Forwarded-Proto` on its own. Just point *Details → Forward Hostname/IP* at the
+server – for the Proxmox LXC that is the container IP on port 80. Leave the
+Advanced tab empty.
+
+**Proxies that do not pass the original host** need two headers. Hand-written
+nginx example:
 
 ```nginx
 location / {
-    proxy_pass http://192.168.1.10/wol/;
+    proxy_pass http://192.168.1.50/;
     proxy_set_header X-Forwarded-Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
-Set the same two headers on other reverse proxies. Example for **Synology DSM**:
-Control Panel → Login Portal → Advanced → Reverse Proxy → edit the entry →
-Custom Header → `X-Forwarded-Host` = `$host` and `X-Forwarded-Proto` = `$scheme`.
+Example for **Synology DSM**: Control Panel → Login Portal → Advanced →
+Reverse Proxy → edit the entry → Custom Header → `X-Forwarded-Host` = `$host`
+and `X-Forwarded-Proto` = `$scheme`.
 
-Without these headers, registering a passkey fails with the error
+If the application lives in a **subfolder** (e.g. under `/wol/` on a NAS), append
+that path to `proxy_pass`, i.e. `http://192.168.1.50/wol/`. That is not the case for
+the Proxmox LXC, where its own nginx serves the app straight from the web root.
+
+Without those headers, registering a passkey fails with the error
 *"The relying party ID is not a registrable domain suffix of, nor equal to the
 current domain"*.
 

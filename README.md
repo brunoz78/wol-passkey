@@ -176,25 +176,36 @@ Seite einen entsprechenden Hinweis.
 
 ## Betrieb hinter einem Reverse Proxy
 
-Passkeys sind an die Domain gebunden, die im Browser steht. Damit der Server
-diese Domain kennt, muss der Proxy zwei Header mitschicken:
+Passkeys sind an die Domain gebunden, die im Browser steht. Der Server muss
+diese Domain also kennen. Er liest sie aus `X-Forwarded-Host` und, falls der
+Header fehlt, aus dem normalen `Host`-Header.
 
-**Nginx Proxy Manager** (Custom Location bzw. Advanced-Tab):
+**Nginx Proxy Manager:** Hier ist nichts einzutragen. NPM reicht `Host` und
+`X-Forwarded-Proto` von sich aus weiter. Es genügt, unter *Details → Forward
+Hostname/IP* die Adresse des Servers einzutragen – beim Proxmox-LXC also die
+Container-IP und Port 80. Der Advanced-Tab bleibt leer.
+
+**Proxies, die den Original-Host nicht weitergeben**, brauchen zwei Header.
+Beispiel für nginx von Hand:
 
 ```nginx
 location / {
-    proxy_pass http://192.168.1.10/wol/;
+    proxy_pass http://192.168.1.50/;
     proxy_set_header X-Forwarded-Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
-Bei anderen Reverse Proxies dieselben zwei Header setzen. Beispiel
-**Synology DSM**: Systemsteuerung → Anmeldeportal → Erweitert → Reverse Proxy →
-Eintrag bearbeiten → Benutzerdefinierte Kopfzeile → `X-Forwarded-Host` = `$host`
-und `X-Forwarded-Proto` = `$scheme`.
+Beispiel **Synology DSM**: Systemsteuerung → Anmeldeportal → Erweitert →
+Reverse Proxy → Eintrag bearbeiten → Benutzerdefinierte Kopfzeile →
+`X-Forwarded-Host` = `$host` und `X-Forwarded-Proto` = `$scheme`.
 
-Ohne diese Header erscheint bei der Passkey-Registrierung die Fehlermeldung
+Liegt die Anwendung in einem **Unterordner** (z.B. unter `/wol/` auf einem NAS),
+gehört dieser Pfad ans Ende von `proxy_pass`, also `http://192.168.1.50/wol/`. Beim
+Proxmox-LXC ist das nicht der Fall: Dort liefert der eigene nginx die App direkt
+im Wurzelverzeichnis aus.
+
+Ohne die Header erscheint bei der Passkey-Registrierung die Fehlermeldung
 *„The relying party ID is not a registrable domain suffix of, nor equal to the
 current domain"*.
 
