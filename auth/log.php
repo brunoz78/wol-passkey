@@ -15,7 +15,7 @@ define('WOL_LOG_MAX', 500);
 // Eintragstypen je Filter auf der Verlaufsseite
 define('WOL_LOG_CATEGORIES', [
     'wake'    => ['wake', 'wake_failed'],
-    'access'  => ['login', 'login_failed', 'login_locked'],
+    'access'  => ['login', 'login_failed', 'login_locked', 'setup_failed', 'setup_locked'],
     'status'  => ['online', 'offline'],
     'changes' => ['device_added', 'device_changed', 'device_renamed', 'device_removed',
                   'schedule_added', 'schedule_changed', 'schedule_removed',

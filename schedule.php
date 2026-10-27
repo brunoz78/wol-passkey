@@ -13,72 +13,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $name = (string)($_POST['device_name'] ?? '');
 
+    /*
+      Prüfung und Änderung laufen gemeinsam in devices_update(), also unter
+      der Dateisperre: Ein Zeitplan hängt am Geräteeintrag, und ein zweiter
+      offener Tab (oder die Geräteseite) dürfte die Änderung nicht
+      dazwischen überschreiben.
+    */
+    $outcome = '';
+    $time = '';
+
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = t('sched.csrf');
-    } elseif (!isset($devices[$name])) {
-        $error = t('sched.not_found');
-    } elseif ($action === 'add') {
-        $wanted = devices_normalize_schedules([[
-            'time' => $_POST['time'] ?? '',
-            'days' => $_POST['days'] ?? [],
-        ]]);
-        if ($wanted === []) {
-            $error = t('sched.invalid');
-        } elseif (in_array($wanted[0], $devices[$name]['schedules'], true)) {
-            $error = t('sched.exists');
-        } else {
-            $devices[$name]['schedules'][] = $wanted[0];
-            usort($devices[$name]['schedules'], function ($a, $b) {
-                return strcmp($a['time'], $b['time']);
-            });
-            if (devices_save($devices)) {
-                $success = t('sched.added', $name);
-                wol_log('schedule_added', ['device' => $name, 'schedule' => $wanted[0]['time'], 'ip' => wol_client_ip()]);
-            } else {
-                $error = t('sched.save_failed');
-            }
-        }
-    } elseif ($action === 'update') {
+    } elseif ($action === 'add' || $action === 'update' || $action === 'delete') {
         $index = (int)($_POST['index'] ?? -1);
         $wanted = devices_normalize_schedules([[
             'time' => $_POST['time'] ?? '',
             'days' => $_POST['days'] ?? [],
         ]]);
-        $others = $devices[$name]['schedules'];
-        unset($others[$index]);
 
-        if (!isset($devices[$name]['schedules'][$index])) {
+        $ok = devices_update(function ($devices) use ($action, $name, $index, $wanted, &$outcome, &$time) {
+            if (!isset($devices[$name])) {
+                $outcome = 'not_found';
+                return null;
+            }
+            $plans = $devices[$name]['schedules'];
+
+            if ($action === 'delete') {
+                if (!isset($plans[$index])) {
+                    $outcome = 'not_found';
+                    return null;
+                }
+                $time = $plans[$index]['time'];
+                array_splice($plans, $index, 1);
+                $outcome = 'removed';
+            } else {
+                if ($action === 'update' && !isset($plans[$index])) {
+                    $outcome = 'not_found';
+                    return null;
+                }
+                if ($wanted === []) {
+                    $outcome = 'invalid';
+                    return null;
+                }
+                // Beim Ändern zählt der eigene Eintrag nicht als Dublette.
+                $others = $plans;
+                if ($action === 'update') {
+                    unset($others[$index]);
+                }
+                if (in_array($wanted[0], $others, true)) {
+                    $outcome = 'exists';
+                    return null;
+                }
+                if ($action === 'update') {
+                    $plans[$index] = $wanted[0];
+                    $outcome = 'changed';
+                } else {
+                    $plans[] = $wanted[0];
+                    $outcome = 'added';
+                }
+                $time = $wanted[0]['time'];
+                usort($plans, function ($a, $b) {
+                    return strcmp($a['time'], $b['time']);
+                });
+            }
+
+            $devices[$name]['schedules'] = array_values($plans);
+            return $devices;
+        });
+
+        if ($outcome === 'not_found') {
             $error = t('sched.not_found');
-        } elseif ($wanted === []) {
+        } elseif ($outcome === 'invalid') {
             $error = t('sched.invalid');
-        } elseif (in_array($wanted[0], $others, true)) {
+        } elseif ($outcome === 'exists') {
             $error = t('sched.exists');
-        } else {
-            $devices[$name]['schedules'][$index] = $wanted[0];
-            usort($devices[$name]['schedules'], function ($a, $b) {
-                return strcmp($a['time'], $b['time']);
-            });
-            if (devices_save($devices)) {
-                $success = t('sched.changed', $name);
-                wol_log('schedule_changed', ['device' => $name, 'schedule' => $wanted[0]['time'], 'ip' => wol_client_ip()]);
-            } else {
-                $error = t('sched.save_failed');
-            }
+        } elseif (!$ok) {
+            $error = t('sched.save_failed');
+        } elseif ($outcome === 'added') {
+            $success = t('sched.added', $name);
+            wol_log('schedule_added', ['device' => $name, 'schedule' => $time, 'ip' => wol_client_ip()]);
+        } elseif ($outcome === 'changed') {
+            $success = t('sched.changed', $name);
+            wol_log('schedule_changed', ['device' => $name, 'schedule' => $time, 'ip' => wol_client_ip()]);
+        } elseif ($outcome === 'removed') {
+            $success = t('sched.removed', $name);
+            wol_log('schedule_removed', ['device' => $name, 'schedule' => $time, 'ip' => wol_client_ip()]);
         }
-    } elseif ($action === 'delete') {
-        $index = (int)($_POST['index'] ?? -1);
-        if (!isset($devices[$name]['schedules'][$index])) {
-            $error = t('sched.not_found');
-        } else {
-            $time = $devices[$name]['schedules'][$index]['time'];
-            array_splice($devices[$name]['schedules'], $index, 1);
-            if (devices_save($devices)) {
-                $success = t('sched.removed', $name);
-                wol_log('schedule_removed', ['device' => $name, 'schedule' => $time, 'ip' => wol_client_ip()]);
-            } else {
-                $error = t('sched.save_failed');
-            }
-        }
+    } else {
+        $error = t('sched.not_found');
     }
     $devices = devices_load();
 }

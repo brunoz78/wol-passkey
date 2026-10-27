@@ -67,6 +67,7 @@ return [
                           . 'Das Passwort kann so nicht gespeichert werden – bitte dem Web-Benutzer '
                           . '(Gruppe „http“) Schreibrechte auf den Ordner „auth“ geben.',
     'setup.key_wrong'    => 'Setup-Schlüssel ist falsch.',
+    'setup.too_many'       => 'Zu viele Fehlversuche. Bitte in %d Minute(n) erneut versuchen.',
     'setup.pw_too_short' => 'Das Passwort muss mindestens 8 Zeichen lang sein.',
     'setup.pw_mismatch'  => 'Die beiden Passwörter stimmen nicht überein.',
     'setup.saved'        => 'Passwort erfolgreich gesetzt. Du kannst dich jetzt einloggen.',
@@ -166,6 +167,7 @@ return [
     'wa.no_passkey'      => 'Kein Passkey übermittelt.',
     'wa.unknown_passkey' => 'Dieser Passkey ist hier nicht registriert.',
     'wa.save_failed'     => 'Speichern fehlgeschlagen: Ordner "auth" ist für den Webserver nicht beschreibbar.',
+    'wa.failed'          => 'Der Vorgang ist fehlgeschlagen. Bitte Seite neu laden und erneut versuchen.',
 
     // ---------- Zeitplan (schedule.php) ----------
     'sched.title'        => 'Zeitplan',
@@ -232,6 +234,8 @@ return [
     'log.login_passkey'    => 'Anmeldung mit Passkey "%s"',
     'log.login_failed'     => 'Falsches Passwort',
     'log.login_locked'     => 'Anmeldung für %d Minuten gesperrt (zu viele Fehlversuche)',
+    'log.setup_failed'     => 'Falscher Setup-Schlüssel',
+    'log.setup_locked'     => 'Setup für %d Minuten gesperrt (zu viele Fehlversuche)',
     'log.online'           => '%s ist online',
     'log.offline'          => '%s ist offline',
     'log.device_added'     => 'Gerät "%s" hinzugefügt',

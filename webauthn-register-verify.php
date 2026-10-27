@@ -15,7 +15,7 @@ if (!is_logged_in()) {
 try {
     $post = json_decode(file_get_contents('php://input'));
     if (!$post) {
-        throw new Exception(t('wa.bad_request'));
+        throw new WolUserMessage(t('wa.bad_request'));
     }
 
     $clientDataJSON = !empty($post->clientDataJSON) ? base64_decode($post->clientDataJSON) : null;
@@ -24,28 +24,38 @@ try {
     $deviceName = isset($post->deviceName) && is_string($post->deviceName) ? substr(trim($post->deviceName), 0, 60) : t('passkey.default_device');
 
     if (!$challenge) {
-        throw new Exception(t('wa.no_reg_request'));
+        throw new WolUserMessage(t('wa.no_reg_request'));
     }
 
     $webauthn = new \lbuchs\WebAuthn\WebAuthn(WEBAUTHN_RP_NAME, WEBAUTHN_RP_ID);
     $result = $webauthn->processCreate($clientDataJSON, $attestationObject, $challenge, true, true, false, false);
 
-    $data = auth_load();
-    $data['credentials'][] = [
+    $entry = [
         'id' => base64_encode($result->credentialId),
         'publicKey' => base64_encode($result->credentialPublicKey),
         'signCount' => $result->signatureCounter ?? 0,
         'name' => $deviceName !== '' ? $deviceName : t('passkey.default_device'),
         'createdAt' => date('Y-m-d H:i'),
     ];
-    if (!auth_save($data)) {
-        throw new Exception(t('wa.save_failed'));
+
+    // Anhängen unter der Sperre (siehe auth_update in auth/store.php), damit
+    // eine parallele Änderung den neuen Passkey nicht überschreibt.
+    $saved = auth_update(function ($data) use ($entry) {
+        $data['credentials'][] = $entry;
+        return $data;
+    });
+    if (!$saved) {
+        throw new WolUserMessage(t('wa.save_failed'));
     }
 
     unset($_SESSION['webauthn_challenge']);
-    wol_log('passkey_added', ['name' => end($data['credentials'])['name'], 'ip' => wol_client_ip()]);
+    wol_log('passkey_added', ['name' => $entry['name'], 'ip' => wol_client_ip()]);
 
     echo json_encode(['success' => true]);
-} catch (Throwable $e) {
+} catch (WolUserMessage $e) {
     echo json_encode(['success' => false, 'msg' => $e->getMessage()]);
+} catch (Throwable $e) {
+    // Unerwartete Ausnahme: Wortlaut nur ins Fehlerprotokoll, nicht zum Browser.
+    error_log('wol-passkey: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'msg' => t('wa.failed')]);
 }

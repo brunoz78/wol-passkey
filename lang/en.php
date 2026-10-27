@@ -62,6 +62,7 @@ return [
                           . 'be saved. Please grant write permission on the folder "auth" to the web '
                           . 'server user (usually group "http").',
     'setup.key_wrong'    => 'The setup key is incorrect.',
+    'setup.too_many'       => 'Too many failed attempts. Please try again in %d minute(s).',
     'setup.pw_too_short' => 'The password must be at least 8 characters long.',
     'setup.pw_mismatch'  => 'The two passwords do not match.',
     'setup.saved'        => 'Password set successfully. You can sign in now.',
@@ -159,6 +160,7 @@ return [
     'wa.no_passkey'       => 'No passkey was submitted.',
     'wa.unknown_passkey'  => 'This passkey is not registered here.',
     'wa.save_failed'      => 'Saving failed: the folder "auth" is not writable for the web server.',
+    'wa.failed'          => 'The operation failed. Please reload the page and try again.',
 
     // ---------- Schedule (schedule.php) ----------
     'sched.title'        => 'Schedule',
@@ -225,6 +227,8 @@ return [
     'log.login_passkey'    => 'Signed in with passkey "%s"',
     'log.login_failed'     => 'Wrong password',
     'log.login_locked'     => 'Sign-in locked for %d minutes (too many failed attempts)',
+    'log.setup_failed'     => 'Wrong setup key',
+    'log.setup_locked'     => 'Setup locked for %d minutes (too many failed attempts)',
     'log.online'           => '%s is online',
     'log.offline'          => '%s is offline',
     'log.device_added'     => 'Device "%s" added',

@@ -11,8 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = t('devices.csrf');
     } else {
-        $devices = devices_load();
+        // Alle Aktionen ändern die Liste abhängig von ihrem aktuellen Stand.
+        // Deshalb laufen Prüfung und Änderung gemeinsam in devices_update(),
+        // also unter der Dateisperre - sonst könnte ein zweiter offener Tab
+        // die Änderung dazwischen überschreiben.
         $action = $_POST['action'] ?? '';
+        $outcome = '';
 
         if ($action === 'add') {
             $name = trim($_POST['device_name'] ?? '');
@@ -28,30 +32,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = t('devices.mac_invalid');
             } elseif ($ip === null) {
                 $error = t('devices.ip_invalid');
-            } elseif (isset($devices[$name])) {
-                $error = t('devices.exists');
             } else {
-                $devices[$name] = ['mac' => $mac, 'ip' => $ip];
-                if (devices_save($devices)) {
+                $ok = devices_update(function ($devices) use ($name, $mac, $ip, &$outcome) {
+                    if (isset($devices[$name])) {
+                        $outcome = 'exists';
+                        return null;
+                    }
+                    $devices[$name] = ['mac' => $mac, 'ip' => $ip];
+                    $outcome = 'added';
+                    return $devices;
+                });
+                if ($outcome === 'exists') {
+                    $error = t('devices.exists');
+                } elseif (!$ok) {
+                    $error = t('devices.save_failed');
+                } else {
                     $success = t('devices.added', $name);
                     wol_log('device_added', ['device' => $name, 'ip' => wol_client_ip()]);
-                } else {
-                    $error = t('devices.save_failed');
                 }
             }
         } elseif ($action === 'delete') {
             $name = $_POST['device_name'] ?? '';
-            if (!isset($devices[$name])) {
-                $error = t('devices.not_found');
-            } else {
-                unset($devices[$name]);
-                if (devices_save($devices)) {
-                    $success = t('devices.removed', $name);
-                    status_forget($name);
-                    wol_log('device_removed', ['device' => $name, 'ip' => wol_client_ip()]);
-                } else {
-                    $error = t('devices.save_failed');
+            $ok = devices_update(function ($devices) use ($name, &$outcome) {
+                if (!isset($devices[$name])) {
+                    $outcome = 'not_found';
+                    return null;
                 }
+                unset($devices[$name]);
+                $outcome = 'removed';
+                return $devices;
+            });
+            if ($outcome === 'not_found') {
+                $error = t('devices.not_found');
+            } elseif (!$ok) {
+                $error = t('devices.save_failed');
+            } else {
+                $success = t('devices.removed', $name);
+                status_forget($name);
+                wol_log('device_removed', ['device' => $name, 'ip' => wol_client_ip()]);
             }
         } elseif ($action === 'update') {
             $old = (string)($_POST['device_name'] ?? '');
@@ -59,9 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mac = devices_normalize_mac(trim($_POST['device_mac'] ?? ''));
             $ip = devices_normalize_ip($_POST['device_ip'] ?? '');
 
-            if (!isset($devices[$old])) {
-                $error = t('devices.not_found');
-            } elseif ($name === '' || preg_match('//u', $name) !== 1) {
+            if ($name === '' || preg_match('//u', $name) !== 1) {
                 $error = t('devices.name_required');
             } elseif (strlen($name) > 40) {
                 $error = t('devices.name_too_long');
@@ -69,26 +85,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = t('devices.mac_invalid');
             } elseif ($ip === null) {
                 $error = t('devices.ip_invalid');
-            } elseif ($name !== $old && isset($devices[$name])) {
-                $error = t('devices.exists');
             } else {
-                // Der Gerätename ist der Schlüssel der Liste. Beim Umbenennen
-                // wird sie deshalb neu aufgebaut, damit das Gerät an seiner
-                // Position bleibt (unset + neuer Eintrag würde es ans Ende
-                // schieben). Zeitpläne hängen am Eintrag und wandern mit.
-                $updated = [];
-                foreach ($devices as $key => $dev) {
-                    if ($key === $old) {
-                        $dev['mac'] = $mac;
-                        $dev['ip'] = $ip;
-                        $updated[$name] = $dev;
-                    } else {
-                        $updated[$key] = $dev;
+                $ok = devices_update(function ($devices) use ($old, $name, $mac, $ip, &$outcome) {
+                    if (!isset($devices[$old])) {
+                        $outcome = 'not_found';
+                        return null;
                     }
-                }
-                if (!devices_save($updated)) {
+                    if ($name !== $old && isset($devices[$name])) {
+                        $outcome = 'exists';
+                        return null;
+                    }
+                    // Der Gerätename ist der Schlüssel der Liste. Beim Umbenennen
+                    // wird sie deshalb neu aufgebaut, damit das Gerät an seiner
+                    // Position bleibt (unset + neuer Eintrag würde es ans Ende
+                    // schieben). Zeitpläne hängen am Eintrag und wandern mit.
+                    $updated = [];
+                    foreach ($devices as $key => $dev) {
+                        if ($key === $old) {
+                            $dev['mac'] = $mac;
+                            $dev['ip'] = $ip;
+                            $updated[$name] = $dev;
+                        } else {
+                            $updated[$key] = $dev;
+                        }
+                    }
+                    $outcome = $name !== $old ? 'renamed' : 'changed';
+                    return $updated;
+                });
+                if ($outcome === 'not_found') {
+                    $error = t('devices.not_found');
+                } elseif ($outcome === 'exists') {
+                    $error = t('devices.exists');
+                } elseif (!$ok) {
                     $error = t('devices.save_failed');
-                } elseif ($name !== $old) {
+                } elseif ($outcome === 'renamed') {
                     status_rename($old, $name);
                     $success = t('devices.renamed', $old, $name);
                     wol_log('device_renamed', ['device' => $old, 'name' => $name, 'ip' => wol_client_ip()]);
@@ -103,23 +133,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Menge an Namen enthalten wie aktuell gespeichert (z.B. falls in einem
             // anderen Tab zwischenzeitlich ein Gerät gelöscht wurde) - sonst lieber
             // nichts speichern statt Geräte zu verlieren.
-            $current = array_keys($devices);
             $posted = is_array($order) ? array_values($order) : [];
-            sort($current);
-            $postedSorted = $posted;
-            sort($postedSorted);
-            if ($posted === [] || $current !== $postedSorted) {
-                $error = t('devices.reorder_failed');
-            } else {
+            $ok = devices_update(function ($devices) use ($posted, &$outcome) {
+                $current = array_keys($devices);
+                sort($current);
+                $postedSorted = $posted;
+                sort($postedSorted);
+                if ($posted === [] || $current !== $postedSorted) {
+                    $outcome = 'mismatch';
+                    return null;
+                }
                 $reordered = [];
                 foreach ($posted as $k) {
                     $reordered[$k] = $devices[$k];
                 }
-                if (devices_save($reordered)) {
-                    $devices = $reordered;
-                } else {
-                    $error = t('devices.save_failed');
-                }
+                $outcome = 'reordered';
+                return $reordered;
+            });
+            if ($outcome === 'mismatch') {
+                $error = t('devices.reorder_failed');
+            } elseif (!$ok) {
+                $error = t('devices.save_failed');
             }
         }
     }

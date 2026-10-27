@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/datafile.php';
 
 /*
   Speichert Login-Passwort-Hash + Passkey-Credentials in auth/data.php.
@@ -8,6 +9,14 @@ require_once __DIR__ . '/config.php';
   beachtet. Die eigentlichen Daten stehen base64-kodiert danach.
 */
 
+/*
+  Fehler, dessen Text bewusst für die Anzeige gedacht ist (bereits übersetzt).
+  Die WebAuthn-Endpunkte unterscheiden daran, was sie dem Browser zeigen
+  dürfen: eigene Meldungen ja, der Wortlaut unerwarteter Ausnahmen nicht -
+  der kann Interna wie Dateipfade preisgeben.
+*/
+class WolUserMessage extends Exception {}
+
 function auth_default_data() {
     return [
         'password_hash' => null,
@@ -15,33 +24,37 @@ function auth_default_data() {
         'credentials' => [],
         'failed_attempts' => 0,
         'locked_until' => 0,
+        // Eigene Zähler für setup.php: Ein Rateangriff auf den Setup-Schlüssel
+        // soll nicht nebenbei die Passwort-Anmeldung sperren und damit den
+        // rechtmässigen Benutzer aussperren.
+        'setup_failed_attempts' => 0,
+        'setup_locked_until' => 0,
     ];
 }
 
+/* Füllt fehlende Felder mit Default auf (z.B. nach einem Update). */
+function auth_normalize($data) {
+    return (is_array($data) ? $data : []) + auth_default_data();
+}
+
 function auth_load() {
-    $defaults = auth_default_data();
+    return auth_normalize(wol_datafile_read(AUTH_DATA_FILE));
+}
 
-    if (!is_file(AUTH_DATA_FILE)) {
-        return $defaults;
-    }
+/*
+  Lese-Ändern-Schreiben unter exklusiver Sperre: $fn bekommt die aktuellen
+  Daten und liefert die neuen zurück (null = nichts ändern).
 
-    $raw = file_get_contents(AUTH_DATA_FILE);
-    $marker = '?>';
-    $pos = strpos($raw, $marker);
-    $encoded = $pos === false ? '' : trim(substr($raw, $pos + strlen($marker)));
-    $data = null;
-
-    if ($encoded !== '') {
-        $json = base64_decode($encoded, true);
-        $data = $json !== false ? json_decode($json, true) : null;
-    }
-
-    if (!is_array($data)) {
-        $data = [];
-    }
-
-    // fehlende Felder mit Default auffüllen (z.B. nach Update)
-    return $data + $defaults;
+  Zwingend überall dort, wo der neue Wert vom alten abhängt. Mit
+  auth_load() + auth_save() lesen parallele Anfragen denselben Stand und
+  überschreiben sich gegenseitig - beim Zähler der Fehlanmeldungen hätte
+  das die Sperre nach fünf Versuchen praktisch ausgehebelt, weil gleichzeitig
+  abgeschickte Versuche alle von null hochgezählt hätten.
+*/
+function auth_update(callable $fn) {
+    return wol_datafile_update(AUTH_DATA_FILE, function ($raw) use ($fn) {
+        return $fn(auth_normalize($raw));
+    });
 }
 
 /**
@@ -49,20 +62,11 @@ function auth_load() {
  * (typisch: Ordner auth/ ist für den Webserver-Benutzer nicht beschreibbar).
  */
 function auth_save(array $data) {
-    // JSON_INVALID_UTF8_SUBSTITUTE: falls z.B. ein Gerätename beim Kürzen
-    // mitten in einem Umlaut abgeschnitten wurde, darf das Speichern nicht scheitern.
-    $encoded = base64_encode(json_encode($data, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE));
-    $content = "<?php http_response_code(403); exit; ?>\n" . $encoded . "\n";
-
-    $tmp = AUTH_DATA_FILE . '.tmp';
-    if (@file_put_contents($tmp, $content, LOCK_EX) !== strlen($content)) {
-        return false;
-    }
-    if (!@rename($tmp, AUTH_DATA_FILE)) {
-        @unlink($tmp);
-        return false;
-    }
-    return true;
+    // Ersetzt den gesamten Inhalt - ebenfalls unter der Sperre, sonst könnte
+    // ein ungesperrter Schreibvorgang eine laufende Änderung überschreiben.
+    return wol_datafile_update(AUTH_DATA_FILE, function () use ($data) {
+        return $data;
+    });
 }
 
 /**

@@ -32,6 +32,11 @@ function wol_datafile_write($file, array $data) {
         @unlink($tmp);
         return false;
     }
+    // Ohne das entsteht die Datei mit der Standard-Umask, meist 0644 - der
+    // Passwort-Hash und die Passkey-Daten wären dann für jeden Benutzer des
+    // Systems lesbar. Auf einem eigenen Container nebensächlich, auf einem
+    // gemeinsam genutzten NAS nicht.
+    @chmod($file, 0640);
     return true;
 }
 

@@ -15,33 +15,82 @@ $noPasswordSet = empty($data['password_hash']);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = t('login.csrf');
-    } elseif (!empty($data['locked_until']) && $data['locked_until'] > time()) {
-        $wait = $data['locked_until'] - time();
-        $error = t('login.locked', (int)ceil($wait / 60));
-    } elseif ($noPasswordSet) {
-        $error = t('login.no_password');
-    } elseif (password_verify($_POST['password'], $data['password_hash'])) {
-        $data['failed_attempts'] = 0;
-        $data['locked_until'] = 0;
-        auth_save($data);
-        $_SESSION['authenticated'] = true;
-        session_regenerate_id(true);
-        wol_log('login', ['method' => 'password', 'ip' => wol_client_ip()]);
-        header('Location: index.php');
-        exit;
     } else {
-        $data['failed_attempts'] = (int)$data['failed_attempts'] + 1;
-        $locked = $data['failed_attempts'] >= AUTH_MAX_ATTEMPTS;
-        if ($locked) {
-            $data['locked_until'] = time() + AUTH_LOCKOUT_SECONDS;
-            $data['failed_attempts'] = 0;
+        /*
+          Sperre prüfen, Passwort vergleichen und den Zähler fortschreiben
+          geschieht gemeinsam unter der Dateisperre (auth_update). Vorher lief
+          das über auth_load() + auth_save(): Gleichzeitig abgeschickte
+          Versuche lasen alle denselben Zählerstand und schrieben denselben
+          erhöhten Wert zurück - die Sperre nach AUTH_MAX_ATTEMPTS Versuchen
+          liess sich so durch Parallelität umgehen. Der langsame
+          password_verify()-Aufruf liegt bewusst mit in der Sperre: Damit
+          bringt paralleles Ausprobieren keinen Zeitvorteil mehr.
+
+          Sitzung, Protokoll und Weiterleitung bleiben ausserhalb - innerhalb
+          der Sperre wird nur gerechnet, nicht umgeleitet.
+        */
+        $outcome = 'save_failed';
+        $waitMinutes = 0;
+
+        $ok = auth_update(function ($data) use (&$outcome, &$waitMinutes) {
+            if (!empty($data['locked_until']) && $data['locked_until'] > time()) {
+                $outcome = 'locked';
+                $waitMinutes = (int)ceil(($data['locked_until'] - time()) / 60);
+                return null; // nichts schreiben, Sperre läuft bereits
+            }
+            if (empty($data['password_hash'])) {
+                $outcome = 'no_password';
+                return null;
+            }
+            if (password_verify($_POST['password'], $data['password_hash'])) {
+                $outcome = 'ok';
+                $data['failed_attempts'] = 0;
+                $data['locked_until'] = 0;
+                return $data;
+            }
+
+            $data['failed_attempts'] = (int)$data['failed_attempts'] + 1;
+            if ($data['failed_attempts'] >= AUTH_MAX_ATTEMPTS) {
+                $data['locked_until'] = time() + AUTH_LOCKOUT_SECONDS;
+                $data['failed_attempts'] = 0;
+                $outcome = 'locked_now';
+                $waitMinutes = (int)ceil(AUTH_LOCKOUT_SECONDS / 60);
+            } else {
+                $outcome = 'wrong';
+            }
+            return $data;
+        });
+
+        // Schlug das Schreiben fehl (auth/ nicht beschreibbar), darf ein
+        // falsches Passwort nicht trotzdem hereinlassen - der Zähler wäre
+        // dann wirkungslos. Nur der Erfolgsfall ohne Schreibrecht wird
+        // durchgelassen, damit eine Nur-Lese-Installation nutzbar bleibt.
+        if (!$ok && $outcome !== 'ok') {
+            $outcome = $outcome === 'locked' || $outcome === 'no_password' ? $outcome : 'wrong';
         }
-        auth_save($data);
-        wol_log('login_failed', ['ip' => wol_client_ip()]);
-        if ($locked) {
-            wol_log('login_locked', ['ip' => wol_client_ip(), 'minutes' => (int)ceil(AUTH_LOCKOUT_SECONDS / 60)]);
+
+        switch ($outcome) {
+            case 'ok':
+                $_SESSION['authenticated'] = true;
+                session_regenerate_id(true);
+                wol_log('login', ['method' => 'password', 'ip' => wol_client_ip()]);
+                header('Location: index.php');
+                exit;
+            case 'locked':
+                $error = t('login.locked', $waitMinutes);
+                break;
+            case 'no_password':
+                $error = t('login.no_password');
+                break;
+            case 'locked_now':
+                wol_log('login_failed', ['ip' => wol_client_ip()]);
+                wol_log('login_locked', ['ip' => wol_client_ip(), 'minutes' => $waitMinutes]);
+                $error = t('login.wrong_password');
+                break;
+            default:
+                wol_log('login_failed', ['ip' => wol_client_ip()]);
+                $error = t('login.wrong_password');
         }
-        $error = t('login.wrong_password');
     }
 }
 $page_title = t('login.title');

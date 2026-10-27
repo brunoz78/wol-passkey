@@ -16,6 +16,10 @@ try {
     $_SESSION['webauthn_challenge'] = $webauthn->getChallenge()->getBinaryString();
 
     echo json_encode(['success' => true, 'options' => $args]);
-} catch (Throwable $e) {
+} catch (WolUserMessage $e) {
     echo json_encode(['success' => false, 'msg' => $e->getMessage()]);
+} catch (Throwable $e) {
+    // Unerwartete Ausnahme: Wortlaut nur ins Fehlerprotokoll, nicht zum Browser.
+    error_log('wol-passkey: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'msg' => t('wa.failed')]);
 }

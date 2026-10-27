@@ -4,6 +4,40 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.0] – 2026-10-27
+
+### Sicherheit
+- **Sperre nach Fehlversuchen lässt sich nicht mehr umgehen.** Der Zähler
+  wurde bisher gelesen, erhöht und zurückgeschrieben, ohne die Datei zu
+  sperren. Gleichzeitig abgeschickte Anmeldeversuche lasen deshalb alle
+  denselben Stand: Statt fünf Versuchen bis zur Sperre waren deutlich mehr
+  möglich. Prüfung und Zähler laufen jetzt gemeinsam unter einer Dateisperre.
+- **Der Setup-Schlüssel ist jetzt ebenso geschützt wie das Passwort.** Wer ihn
+  kennt, kann ohne Anmeldung ein neues Passwort setzen – bisher liess er sich
+  unbegrenzt und ohne jede Spur im Verlauf erraten. Neu greift dieselbe Sperre
+  wie beim Login, und Fehlversuche stehen im Verlauf. Die Zähler sind von
+  denen des Logins getrennt, damit ein Rateangriff die eigene Anmeldung nicht
+  mitsperrt.
+- **Interne Fehlermeldungen gelangen nicht mehr in den Browser.** Die
+  Passkey-Endpunkte gaben den Wortlaut unerwarteter Ausnahmen aus, der
+  Interna wie Dateipfade verraten kann. Er steht jetzt nur noch im
+  Fehlerprotokoll des Servers; verständliche Hinweise erscheinen weiterhin.
+- **Dateirechte.** Laufzeitdaten werden mit 0640 statt mit der Standard-Umask
+  (meist 0644) abgelegt. Eine Wiederherstellung lockerte ausserdem die Rechte
+  der `config.php` samt Setup-Schlüssel von 640 auf 644.
+- `partials/` erhält eine `.htaccess` wie `auth/`, `lib/` und `lang/`. Der
+  nginx-Vhost deckte den Ordner ab, eine Apache-Installation nicht.
+
+### Behoben
+- **Verlorene Änderungen bei zwei offenen Tabs.** Geräte, Zeitpläne und
+  Passkeys wurden ohne Sperre gelesen und geschrieben; speicherten zwei
+  Fenster kurz nacheinander, verschwand eine Änderung stillschweigend.
+
+### Hinzugefügt
+- `tools/check-lang.php` prüft die Sprachdateien auf doppelte Schlüssel (die
+  PHP beim Laden still verschluckt), fehlende oder überzählige Einträge und
+  abweichende Platzhalter.
+
 ## [1.6.3] – 2026-10-22
 
 ### Geändert

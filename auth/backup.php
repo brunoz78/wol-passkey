@@ -109,6 +109,10 @@ function backup_restore($uploadedTmpPath) {
             @unlink($tmp);
             return 'write_failed';
         }
+        // Wiederherstellen darf die Rechte nicht lockern: Das Installations-
+        // Script setzt config.php auf 640, ohne diese Zeile läge sie danach
+        // mit der Standard-Umask (meist 0644) da - samt Setup-Schlüssel.
+        @chmod($path, 0640);
     }
 
     // config.php wird per require_once geladen - ohne Invalidierung könnte ein

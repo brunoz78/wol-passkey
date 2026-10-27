@@ -18,26 +18,88 @@ if (!$setupKeyMissing && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $setupKey = $_POST['setup_key'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $newPassword2 = $_POST['new_password2'] ?? '';
+        $loggedIn = is_logged_in();
 
-        $allowed = is_logged_in() || (SETUP_KEY !== '' && hash_equals(SETUP_KEY, $setupKey));
+        /*
+          Der Setup-Schlüssel ist passwortäquivalent: Wer ihn kennt, setzt ohne
+          Anmeldung ein neues Passwort. Deshalb gilt hier dieselbe Sperre wie
+          beim Login, und Fehlversuche landen im Verlauf - vorher konnte man
+          unbegrenzt und spurlos raten. Prüfung und Zähler laufen gemeinsam
+          unter der Dateisperre, sonst liesse sich die Sperre durch parallele
+          Versuche umgehen (siehe auth_update in auth/store.php).
+        */
+        $outcome = 'save_failed';
+        $waitMinutes = 0;
 
-        if (!$allowed) {
-            $error = t('setup.key_wrong');
-        } elseif (strlen($newPassword) < 8) {
-            $error = t('setup.pw_too_short');
-        } elseif ($newPassword !== $newPassword2) {
-            $error = t('setup.pw_mismatch');
-        } else {
-            $data = auth_load();
+        $ok = auth_update(function ($data) use ($loggedIn, $setupKey, $newPassword, $newPassword2, &$outcome, &$waitMinutes) {
+            if (!$loggedIn) {
+                if (!empty($data['setup_locked_until']) && $data['setup_locked_until'] > time()) {
+                    $outcome = 'locked';
+                    $waitMinutes = (int)ceil(($data['setup_locked_until'] - time()) / 60);
+                    return null;
+                }
+                if (SETUP_KEY === '' || !hash_equals(SETUP_KEY, $setupKey)) {
+                    $data['setup_failed_attempts'] = (int)$data['setup_failed_attempts'] + 1;
+                    if ($data['setup_failed_attempts'] >= AUTH_MAX_ATTEMPTS) {
+                        $data['setup_locked_until'] = time() + AUTH_LOCKOUT_SECONDS;
+                        $data['setup_failed_attempts'] = 0;
+                        $outcome = 'locked_now';
+                        $waitMinutes = (int)ceil(AUTH_LOCKOUT_SECONDS / 60);
+                    } else {
+                        $outcome = 'key_wrong';
+                    }
+                    return $data;
+                }
+            }
+
+            // Schlüssel stimmt (oder angemeldet): Passwortregeln prüfen.
+            if (strlen($newPassword) < 8) {
+                $outcome = 'pw_too_short';
+                return null;
+            }
+            if ($newPassword !== $newPassword2) {
+                $outcome = 'pw_mismatch';
+                return null;
+            }
+
             $data['password_hash'] = password_hash($newPassword, PASSWORD_DEFAULT);
             $data['failed_attempts'] = 0;
             $data['locked_until'] = 0;
-            if (auth_save($data)) {
-                $success = t('setup.saved');
-                wol_log('password_set', ['ip' => wol_client_ip()]);
-            } else {
+            $data['setup_failed_attempts'] = 0;
+            $data['setup_locked_until'] = 0;
+            $outcome = 'ok';
+            return $data;
+        });
+
+        switch ($outcome) {
+            case 'ok':
+                if ($ok) {
+                    $success = t('setup.saved');
+                    wol_log('password_set', ['ip' => wol_client_ip()]);
+                } else {
+                    $error = t('setup.save_failed');
+                }
+                break;
+            case 'locked':
+                $error = t('setup.too_many', $waitMinutes);
+                break;
+            case 'locked_now':
+                wol_log('setup_failed', ['ip' => wol_client_ip()]);
+                wol_log('setup_locked', ['ip' => wol_client_ip(), 'minutes' => $waitMinutes]);
+                $error = t('setup.key_wrong');
+                break;
+            case 'key_wrong':
+                wol_log('setup_failed', ['ip' => wol_client_ip()]);
+                $error = t('setup.key_wrong');
+                break;
+            case 'pw_too_short':
+                $error = t('setup.pw_too_short');
+                break;
+            case 'pw_mismatch':
+                $error = t('setup.pw_mismatch');
+                break;
+            default:
                 $error = t('setup.save_failed');
-            }
         }
     }
 }

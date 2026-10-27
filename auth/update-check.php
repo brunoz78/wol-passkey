@@ -31,6 +31,7 @@ function wol_update_cache_save(array $data) {
     $tmp = WOL_UPDATE_CACHE_FILE . '.tmp';
     if (@file_put_contents($tmp, $content, LOCK_EX) === strlen($content)) {
         @rename($tmp, WOL_UPDATE_CACHE_FILE);
+        @chmod(WOL_UPDATE_CACHE_FILE, 0640);
     }
 }
 

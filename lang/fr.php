@@ -63,6 +63,7 @@ return [
                           . 'Le mot de passe ne peut donc pas être enregistré – veuillez donner les droits '
                           . 'd\'écriture sur le dossier « auth » à l\'utilisateur du serveur web (groupe « http »).',
     'setup.key_wrong'    => 'La clé de configuration est incorrecte.',
+    'setup.too_many'       => 'Trop de tentatives échouées. Veuillez réessayer dans %d minute(s).',
     'setup.pw_too_short' => 'Le mot de passe doit comporter au moins 8 caractères.',
     'setup.pw_mismatch'  => 'Les deux mots de passe ne correspondent pas.',
     'setup.saved'        => 'Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.',
@@ -162,6 +163,7 @@ return [
     'wa.no_passkey'       => 'Aucune clé d\'accès envoyée.',
     'wa.unknown_passkey'  => 'Cette clé d\'accès n\'est pas enregistrée ici.',
     'wa.save_failed'      => 'Échec de l\'enregistrement : le dossier « auth » n\'est pas accessible en écriture pour le serveur web.',
+    'wa.failed'          => "L'opération a échoué. Veuillez recharger la page et réessayer.",
 
     // ---------- Planification (schedule.php) ----------
     'sched.title'        => 'Planification',
@@ -228,6 +230,8 @@ return [
     'log.login_passkey'    => 'Connexion avec la clé d’accès « %s »',
     'log.login_failed'     => 'Mot de passe incorrect',
     'log.login_locked'     => 'Connexion bloquée pendant %d minutes (trop de tentatives échouées)',
+    'log.setup_failed'     => 'Clé de configuration incorrecte',
+    'log.setup_locked'     => 'Configuration bloquée pendant %d minutes (trop de tentatives échouées)',
     'log.online'           => '%s est en ligne',
     'log.offline'          => '%s est hors ligne',
     'log.device_added'     => 'Appareil « %s » ajouté',

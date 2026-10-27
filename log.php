@@ -64,6 +64,8 @@ function log_view(array $e) {
                 : [t('log.login_password'), 'i-lock', 'ok'];
         case 'login_failed':    return [t('log.login_failed'), 'i-lock', 'bad'];
         case 'login_locked':    return [t('log.login_locked', (int)($p['minutes'] ?? 0)), 'i-lock', 'bad'];
+        case 'setup_failed':    return [t('log.setup_failed'), 'i-lock', 'bad'];
+        case 'setup_locked':    return [t('log.setup_locked', (int)($p['minutes'] ?? 0)), 'i-lock', 'bad'];
         case 'online':          return [t('log.online', $dev), 'i-mon', 'ok'];
         case 'offline':         return [t('log.offline', $dev), 'i-mon', 'muted'];
         case 'device_added':    return [t('log.device_added', $dev), 'i-plus', ''];

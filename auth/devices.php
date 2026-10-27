@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/datafile.php';
 
 /*
   Verwaltung der WOL-Zielgeräte (Name => MAC-Adresse).
@@ -108,18 +109,21 @@ function devices_load() {
         return $seed;
     }
 
-    $raw = file_get_contents(DEVICES_DATA_FILE);
-    $marker = '?>';
-    $pos = strpos($raw, $marker);
-    $encoded = $pos === false ? '' : trim(substr($raw, $pos + strlen($marker)));
-    $data = null;
+    return devices_normalize_all(wol_datafile_read(DEVICES_DATA_FILE));
+}
 
-    if ($encoded !== '') {
-        $json = base64_decode($encoded, true);
-        $data = $json !== false ? json_decode($json, true) : null;
+/*
+  Lese-Ändern-Schreiben unter exklusiver Sperre, siehe auth_update() in
+  store.php. Hier verhindert es, dass zwei gleichzeitig offene Tabs die
+  Änderung des jeweils anderen stillschweigend verwerfen.
+*/
+function devices_update(callable $fn) {
+    if (!is_file(DEVICES_DATA_FILE)) {
+        devices_load(); // legt die Datei ggf. aus der $maclist in config.php an
     }
-
-    return devices_normalize_all(is_array($data) ? $data : []);
+    return wol_datafile_update(DEVICES_DATA_FILE, function ($raw) use ($fn) {
+        return $fn(devices_normalize_all(is_array($raw) ? $raw : []));
+    });
 }
 
 /*
@@ -127,18 +131,10 @@ function devices_load() {
   (typisch: Ordner auth/ ist für den Webserver-Benutzer nicht beschreibbar).
 */
 function devices_save(array $devices) {
-    $encoded = base64_encode(json_encode($devices, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE));
-    $content = "<?php http_response_code(403); exit; ?>\n" . $encoded . "\n";
-
-    $tmp = DEVICES_DATA_FILE . '.tmp';
-    if (@file_put_contents($tmp, $content, LOCK_EX) !== strlen($content)) {
-        return false;
-    }
-    if (!@rename($tmp, DEVICES_DATA_FILE)) {
-        @unlink($tmp);
-        return false;
-    }
-    return true;
+    // Ersetzt die gesamte Liste - ebenfalls unter der Sperre, siehe auth_save().
+    return wol_datafile_update(DEVICES_DATA_FILE, function () use ($devices) {
+        return $devices;
+    });
 }
 
 function devices_storage_writable() {

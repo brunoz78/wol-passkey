@@ -62,6 +62,7 @@ return [
                           . 'la contraseña no se puede guardar; concede permiso de escritura sobre la '
                           . 'carpeta «auth» al usuario del servidor web (grupo «http»).',
     'setup.key_wrong'    => 'La clave de configuración es incorrecta.',
+    'setup.too_many'       => 'Demasiados intentos fallidos. Vuelve a intentarlo en %d minuto(s).',
     'setup.pw_too_short' => 'La contraseña debe tener al menos 8 caracteres.',
     'setup.pw_mismatch'  => 'Las dos contraseñas no coinciden.',
     'setup.saved'        => 'Contraseña establecida correctamente. Ya puedes iniciar sesión.',
@@ -161,6 +162,7 @@ return [
     'wa.no_passkey'       => 'No se ha enviado ninguna clave de acceso.',
     'wa.unknown_passkey'  => 'Esta clave de acceso no está registrada aquí.',
     'wa.save_failed'      => 'Error al guardar: la carpeta «auth» no tiene permiso de escritura para el servidor web.',
+    'wa.failed'          => 'La operación ha fallado. Recarga la página e inténtalo de nuevo.',
 
     // ---------- Programación (schedule.php) ----------
     'sched.title'        => 'Programación',
@@ -227,6 +229,8 @@ return [
     'log.login_passkey'    => 'Inicio de sesión con la clave de acceso «%s»',
     'log.login_failed'     => 'Contraseña incorrecta',
     'log.login_locked'     => 'Inicio de sesión bloqueado durante %d minutos (demasiados intentos fallidos)',
+    'log.setup_failed'     => 'Clave de configuración incorrecta',
+    'log.setup_locked'     => 'Configuración bloqueada durante %d minutos (demasiados intentos fallidos)',
     'log.online'           => '%s está en línea',
     'log.offline'          => '%s está fuera de línea',
     'log.device_added'     => 'Dispositivo «%s» añadido',

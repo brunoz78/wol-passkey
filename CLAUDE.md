@@ -14,8 +14,13 @@ Schlanke Wake-on-LAN-Weboberfläche mit Passkey-Login (WebAuthn). Reines Flat-Fi
 # Dev-Server (bevorzugt über die Browser-Preview mit launch.json-Config "wol-php"):
 php -d extension=openssl -d extension=sockets -S 127.0.0.1:8765 -t .
 
-# Syntax-Check (es gibt keine Tests und keinen Linter):
+# Syntax-Check (es gibt keinen Linter):
 php -l <datei.php>
+
+# Sprachdateien gegeneinander prüfen - doppelte Schlüssel (die PHP beim Laden
+# still verschluckt), fehlende/überzählige Schlüssel, abweichende Platzhalter.
+# Nach jeder Änderung an lang/ ausführen:
+php tools/check-lang.php
 
 # Release-ZIP bauen -> dist/wol-passkey-<version>.zip
 build-release.cmd 1.2.3            # Windows-Starter
@@ -37,7 +42,7 @@ Neue Dateien, die nur der Entwicklung dienen, müssen in `tools/build-release.ph
 
 **WebAuthn:** Vier JSON-Endpoints im Root (`webauthn-{register,login}-{options,verify}.php`), Client-Seite in `assets/webauthn-client.js`. Challenge liegt in der Session; die RP-ID wird in `auth/config.php` dynamisch aus `X-Forwarded-Host` bzw. `Host` abgeleitet. Die Bibliothek `lib/webauthn/` ist vendored Third-Party-Code (lbuchs/WebAuthn) – nicht modifizieren.
 
-**i18n (`auth/i18n.php`):** `lang/de.php` ist die Ausgangssprache; andere Sprachen überschreiben per `array_merge`, fehlende Schlüssel fallen auf Deutsch zurück. Ausgabe über `t()` (roh, sprintf-fähig) und `te()` (HTML-escaped). Schlüssel mit Präfix `js.` werden als `window.WOL_I18N` ins JavaScript exportiert. Neue UI-Texte immer in `lang/de.php` **und** `lang/en.php` eintragen; neue Sprache = Datei kopieren + in `i18n_languages()` registrieren. Der Sprachwechsel `?lang=xx` setzt ein Cookie und leitet **relativ** um.
+**i18n (`auth/i18n.php`):** `lang/de.php` ist die Ausgangssprache; andere Sprachen überschreiben per `array_merge`, fehlende Schlüssel fallen auf Deutsch zurück. Ausgabe über `t()` (roh, sprintf-fähig) und `te()` (HTML-escaped). Schlüssel mit Präfix `js.` werden als `window.WOL_I18N` ins JavaScript exportiert. Neue UI-Texte immer in **allen vier** Sprachdateien eintragen und danach `php tools/check-lang.php` laufen lassen – ein versehentlich doppelter Schlüssel überschreibt sonst stillschweigend einen bestehenden Text. Neue Sprache = Datei kopieren + in `i18n_languages()` registrieren. Der Sprachwechsel `?lang=xx` setzt ein Cookie und leitet **relativ** um.
 
 **Reverse Proxy ist eine feste Randbedingung:** `X-Forwarded-Proto` entscheidet über Secure-Cookies (session.php, i18n.php), `X-Forwarded-Host` über die WebAuthn-RP-ID, und Redirects/Links müssen relativ bleiben (interner Pfad ≠ öffentlicher Pfad). Bei Änderungen an Cookies, Redirects oder Host-Ermittlung dieses Szenario mitdenken.
 

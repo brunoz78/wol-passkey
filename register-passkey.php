@@ -11,30 +11,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = t('passkey.csrf');
     } elseif (($_POST['action'] ?? '') === 'delete') {
-        $data = auth_load();
         $id = $_POST['credential_id'] ?? '';
         $name = t('passkey.unnamed');
         $found = false;
 
-        foreach ($data['credentials'] as $i => $cred) {
-            if (($cred['id'] ?? '') === $id) {
-                $name = $cred['name'] ?? $name;
-                unset($data['credentials'][$i]);
-                $found = true;
-                break;
+        // Suchen und Entfernen gemeinsam unter der Sperre (siehe auth_update):
+        // sonst könnte eine gleichzeitige Registrierung den gerade gelesenen
+        // Stand überschreiben und den neuen Passkey wieder verlieren.
+        $ok = auth_update(function ($data) use ($id, &$name, &$found) {
+            foreach ($data['credentials'] as $i => $cred) {
+                if (($cred['id'] ?? '') === $id) {
+                    $name = $cred['name'] ?? $name;
+                    unset($data['credentials'][$i]);
+                    $found = true;
+                    break;
+                }
             }
-        }
+            if (!$found) {
+                return null;
+            }
+            $data['credentials'] = array_values($data['credentials']);
+            return $data;
+        });
 
         if (!$found) {
             $error = t('passkey.not_found');
+        } elseif (!$ok) {
+            $error = t('passkey.save_failed');
         } else {
-            $data['credentials'] = array_values($data['credentials']);
-            if (auth_save($data)) {
-                $success = t('passkey.removed', $name);
-                wol_log('passkey_removed', ['name' => $name, 'ip' => wol_client_ip()]);
-            } else {
-                $error = t('passkey.save_failed');
-            }
+            $success = t('passkey.removed', $name);
+            wol_log('passkey_removed', ['name' => $name, 'ip' => wol_client_ip()]);
         }
     }
 }
