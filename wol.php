@@ -10,7 +10,6 @@ Version 1.0 - 2014.11.01
 */
 
 
-flush();
 // __DIR__, damit die Datei auch von der Kommandozeile (cron.php) aus geht,
 // wo das Arbeitsverzeichnis ein beliebiges sein kann.
 require_once __DIR__ . '/config.php';

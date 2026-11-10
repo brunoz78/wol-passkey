@@ -31,8 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
         */
         $outcome = 'save_failed';
         $waitMinutes = 0;
+        // "password[]=x" kommt als Array an; password_verify() bräche dann
+        // mit einem Fehler ab, bevor der Versuch gezählt ist. So zählt er
+        // als gewöhnlicher Fehlversuch.
+        $password = is_string($_POST['password']) ? $_POST['password'] : '';
 
-        $ok = auth_update(function ($data) use (&$outcome, &$waitMinutes) {
+        $ok = auth_update(function ($data) use ($password, &$outcome, &$waitMinutes) {
             if (!empty($data['locked_until']) && $data['locked_until'] > time()) {
                 $outcome = 'locked';
                 $waitMinutes = (int)ceil(($data['locked_until'] - time()) / 60);
@@ -42,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
                 $outcome = 'no_password';
                 return null;
             }
-            if (password_verify($_POST['password'], $data['password_hash'])) {
+            if (password_verify($password, $data['password_hash'])) {
                 $outcome = 'ok';
                 $data['failed_attempts'] = 0;
                 $data['locked_until'] = 0;

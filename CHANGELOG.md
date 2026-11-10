@@ -4,6 +4,26 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.1] – 2026-11-10
+
+### Sicherheit
+- **Wiederherstellung nimmt keinen fremden Code mehr an.** Eine hochgeladene
+  `config.php` musste bisher nur mit `<?php` beginnen und wurde danach bei
+  jedem Seitenaufruf ausgeführt – über ein präpariertes Sicherungs-ZIP liess
+  sich so beliebiger Code einschleusen. Jetzt sind nur noch Zuweisungen fester
+  Werte an die bekannten Einstellungen erlaubt; Funktionsaufrufe, `include`
+  und HTML werden abgelehnt. Auch die Datendateien werden strenger geprüft.
+- **Aufwecken läuft per POST statt über die Adresse.** Der CSRF-Token stand
+  vorher in der URL und damit im Zugriffsprotokoll von Webserver und Proxy
+  sowie im Browserverlauf. Nebenbei weckt ein Neuladen der Seite das Gerät
+  nicht mehr ein zweites Mal.
+- **Schutz-Header auf jeder Seite:** Einbetten in fremde Seiten ist verboten
+  (`X-Frame-Options`, `frame-ancestors`), dazu `X-Content-Type-Options` und
+  `Referrer-Policy`.
+- Als Array geschickte Formularfelder (`password[]=x`) lösten einen
+  PHP-Fehler aus, bevor der Fehlversuch gezählt war. Sie gelten jetzt als
+  gewöhnlicher Fehlversuch.
+
 ## [1.7.0] – 2026-10-27
 
 ### Sicherheit

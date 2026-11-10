@@ -15,9 +15,13 @@ if (!$setupKeyMissing && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = t('setup.csrf');
     } else {
-        $setupKey = $_POST['setup_key'] ?? '';
-        $newPassword = $_POST['new_password'] ?? '';
-        $newPassword2 = $_POST['new_password2'] ?? '';
+        // Arrays ("setup_key[]=x") wie leere Eingaben behandeln, siehe login.php.
+        $text = function ($name) {
+            return is_string($_POST[$name] ?? null) ? $_POST[$name] : '';
+        };
+        $setupKey = $text('setup_key');
+        $newPassword = $text('new_password');
+        $newPassword2 = $text('new_password2');
         $loggedIn = is_logged_in();
 
         /*

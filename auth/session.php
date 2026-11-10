@@ -3,6 +3,20 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/i18n.php';
 require_once __DIR__ . '/update-check.php';
 
+/*
+  Schutz-Header für jede Seite. Hier statt im Webserver gesetzt, damit sie
+  auch auf einem NAS oder hinter Apache gelten, wo niemand den Vhost anpasst.
+  - Einbetten in fremde Seiten verbieten (Clickjacking), alt und neu
+  - Dateitypen nicht erraten lassen
+  - beim Verlassen der Seite keine Adresse mitschicken
+*/
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('X-Frame-Options: DENY');
+    header("Content-Security-Policy: frame-ancestors 'none'");
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: same-origin');
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_name(AUTH_SESSION_NAME);
     session_set_cookie_params([

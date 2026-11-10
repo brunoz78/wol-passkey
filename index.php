@@ -17,32 +17,55 @@ $devices = devices_load();
 $wakeLabel    = null; // Name (oder MAC) des aufgeweckten Geräts für die Erfolgsmeldung
 $wakeWaitName = null; // gesetzt, wenn der Status danach per JS abgefragt werden kann
 $wakeError    = null;
-$wakemachine = $_GET['wake_machine'] ?? '';
 
-if ($wakemachine !== '' && $wakemachine !== '-1') {
-    if (!csrf_check($_GET['csrf_token'] ?? '')) {
-        $wakeError = t('index.csrf');
+/*
+  Aufwecken läuft per POST und leitet danach auf die Seite zurück. Vorher
+  stand alles in der Adresse (GET): Der CSRF-Token landete damit im
+  Zugriffsprotokoll von Webserver und Proxy und im Browserverlauf, und ein
+  Neuladen der Seite weckte das Gerät ein zweites Mal. Das Ergebnis wandert
+  für die eine Anzeige nach der Weiterleitung über die Sitzung.
+*/
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $wakemachine = is_string($_POST['wake_machine'] ?? null) ? $_POST['wake_machine'] : '';
+    $flash = ['label' => null, 'wait' => null, 'error' => null];
+
+    if (!csrf_check($_POST['csrf_token'] ?? '')) {
+        $flash['error'] = t('index.csrf');
     } else {
+        // Nur eingetragene Geräte - die Auswahl kommt aus der eigenen Liste.
         $wakeName = null;
         $wakeIp   = '';
         foreach ($devices as $name => $dev) {
-            if (strcasecmp($dev['mac'], $wakemachine) === 0) {
+            if ($wakemachine !== '' && strcasecmp($dev['mac'], $wakemachine) === 0) {
                 $wakeName = (string)$name;
                 $wakeIp   = $dev['ip'];
                 break;
             }
         }
-        $ok = WakeOnLan($networkbroadcast, $wakemachine, $port, $wakeIp);
-        wol_log($ok ? 'wake' : 'wake_failed', ['device' => $wakeName ?? $wakemachine, 'ip' => wol_client_ip()]);
-        if ($ok) {
-            $wakeLabel = $wakeName ?? $wakemachine;
-            if ($wakeName !== null && $wakeIp !== '') {
-                $wakeWaitName = $wakeName;
-            }
+        if ($wakeName === null) {
+            $flash['error'] = t('index.wake_failed');
         } else {
-            $wakeError = t('index.wake_failed');
+            $ok = WakeOnLan($networkbroadcast, $devices[$wakeName]['mac'], $port, $wakeIp);
+            wol_log($ok ? 'wake' : 'wake_failed', ['device' => $wakeName, 'ip' => wol_client_ip()]);
+            if ($ok) {
+                $flash['label'] = $wakeName;
+                $flash['wait'] = $wakeIp !== '' ? $wakeName : null;
+            } else {
+                $flash['error'] = t('index.wake_failed');
+            }
         }
     }
+
+    $_SESSION['wake_flash'] = $flash;
+    header('Location: index.php'); // relativ, siehe Reverse-Proxy-Hinweis in CLAUDE.md
+    exit;
+}
+
+if (isset($_SESSION['wake_flash']) && is_array($_SESSION['wake_flash'])) {
+    $wakeLabel    = $_SESSION['wake_flash']['label'] ?? null;
+    $wakeWaitName = $_SESSION['wake_flash']['wait'] ?? null;
+    $wakeError    = $_SESSION['wake_flash']['error'] ?? null;
+    unset($_SESSION['wake_flash']);
 }
 
 $page_title = null;
@@ -63,7 +86,7 @@ require __DIR__ . '/partials/head.php';
       <p class="section-label" style="margin-top:20px"><?php te('index.no_devices'); ?></p>
       <a class="btn mt" href="devices.php"><svg><use href="#i-plus"/></svg><?php te('index.add_device'); ?></a>
     <?php else: ?>
-      <form name="WakeOnLan" method="get" action="index.php">
+      <form name="WakeOnLan" method="post" action="index.php">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>" />
         <p class="section-label" style="margin-top:18px"><?php te('index.your_devices'); ?></p>
         <div class="devlist">
