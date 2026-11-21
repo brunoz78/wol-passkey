@@ -4,6 +4,21 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionsnummern an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.2] – 2026-11-21
+
+### Hinweis
+- **PHP-Sicherheitsupdate CVE-2026-129289.** Eine Lücke in PHP-FPM erlaubt
+  es, über eine wiederverwendete FastCGI-Verbindung eine eigene Anfrage
+  einzuschleusen (CVSS 9.2). Behoben in PHP 8.2.36, 8.3.37, 8.4.28 und
+  8.5.13 vom 19.11.2026. An der Anwendung selbst ändert sich nichts.
+- **Proxmox:** `update` im Container holt PHP 8.4.28 und startet PHP-FPM neu.
+- **Andere Installationen** (NAS, eigener Webserver) müssen PHP über die
+  Paketverwaltung des Systems aktualisieren und den PHP-Dienst danach neu
+  starten.
+- Mit dem mitgelieferten nginx-Vhost ist die Lücke nach unserer Einschätzung
+  nicht ausnutzbar, weil er FastCGI-Verbindungen nicht wiederverwendet
+  (`fastcgi_keep_conn` ist nicht gesetzt). Das Update wird trotzdem empfohlen.
+
 ## [1.7.1] – 2026-11-10
 
 ### Sicherheit
